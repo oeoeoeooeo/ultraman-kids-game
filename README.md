@@ -3,7 +3,7 @@
 給小朋友玩的超人力霸王（Ultraman）互動遊戲，單一 HTML 檔，無需安裝，繁體中文介面。
 專為 4～6 歲小朋友設計：大按鈕、語音朗讀題目、答錯不懲罰、兩兄弟可一起玩。
 
-**目前版本：v1.1.0**
+**目前版本：v1.1.1**
 
 ## 🎮 遊戲模式
 
@@ -24,7 +24,10 @@
 
 ## 🚀 怎麼玩
 
-直接用瀏覽器開啟 `index.html`，或前往 GitHub Pages 線上版本。
+直接用瀏覽器開啟 `index.html`，或使用線上版本：
+
+- Firebase Hosting：https://ultraman-kids-game.web.app
+- GitHub Pages：https://oeoeoeooeo.github.io/ultraman-kids-game/
 支援電腦（滑鼠、鍵盤）、平板與手機（觸控），直立、橫向皆有最佳化排版。
 語音功能建議使用 Chrome 或 Safari。
 
@@ -34,8 +37,12 @@
 - 角色以 SVG 依配色與頭冠特徵繪製（非官方圖像），怪獸以 Emoji 呈現
 - 音效由 Web Audio API 即時合成，語音使用 Web Speech API
 - 響應式排版：Container Queries、`dvh`、safe-area，涵蓋 375px 手機到桌機
+- 部署：Firebase Hosting 免費 Spark 方案，未綁定帳單；`predeploy` 只把 `index.html` 複製到 `dist/` 上傳
+- 安全標頭：嚴格 CSP（`connect-src 'none'`，不對外連線）、`X-Frame-Options: DENY`、`nosniff`、`no-referrer`、HSTS
 
 ## 📝 版本紀錄
+
+- **v1.1.1**（2026-09-05）：部署至 Firebase Hosting（web.app），加入安全標頭與內嵌 favicon
 
 - **v1.1.0**（2026-09-05）：全面響應式排版重做（手機直立/橫向、平板、桌機）、戰鬥畫面單屏顯示、加入版號、翻牌配對排版修正
 - **v1.0.0**（2026-09-05）：五種遊戲模式初版
