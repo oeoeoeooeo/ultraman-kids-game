@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%AD%90%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>超人力霸王 小英雄遊樂園 v1.2.0</title>
+<title>超人力霸王 小英雄遊樂園 v1.3.0</title>
 <style>
   :root{
     --bg1:#0b1033; --bg2:#1b2a6b; --card:#182452; --card2:#22347a;
@@ -115,6 +115,9 @@
   .hero-card{background:var(--card); border:3px solid #ffffff22; border-radius:18px; padding:8px; text-align:center; cursor:pointer; transition:transform .1s; font-weight:800; font-size:16px;}
   .hero-card:hover{transform:scale(1.05); border-color:var(--yellow);}
   .hero-card svg{height:120px; width:auto;}
+  .dex .hero-card small{display:block; font-size:11px; opacity:.7; font-weight:600;}
+  .dex-emoji{font-size:64px; line-height:1.2; filter:drop-shadow(0 4px 6px #0008);}
+  @media (max-width:600px){ .dex-emoji{font-size:44px;} }
   .era-title{font-size:clamp(17px,3vw,22px); font-weight:900; margin:18px 0 4px; padding:6px 12px; background:#0006; border-radius:12px; border-left:6px solid var(--yellow);}
 
   /* ---------- transform ---------- */
@@ -589,23 +592,143 @@ const ULTRAS = [
     hints:['他是諾亞的黑暗版本！','他是納克斯故事裡最後的大魔王。','黑色的身體，紫色的線。'] },
 ];
 
+const MCATS = [
+  { id:'kaiju',  title:'🦖 怪獸' },
+  { id:'alien',  title:'👽 宇宙人' },
+  { id:'robot',  title:'🤖 機器人與兵器' },
+  { id:'boss',   title:'👑 超級大魔王' },
+  { id:'friend', title:'🤝 好朋友怪獸（不用打）' },
+];
 const MONSTERS = [
-  { name:'巴爾坦星人', emoji:'🦀', hp:10, desc:'手是大剪刀的外星人，會「呵呵呵」地笑' },
-  { name:'哥莫拉', emoji:'🦖', hp:12, desc:'尾巴超有力的古代怪獸' },
-  { name:'雷德王', emoji:'🦍', hp:12, desc:'力氣超大的怪獸之王' },
-  { name:'傑頓', emoji:'👾', hp:16, desc:'最強的宇宙恐龍' },
-  { name:'艾雷王', emoji:'🦎', hp:10, desc:'會放電的怪獸' },
-  { name:'金古橋', emoji:'🤖', hp:14, desc:'超級硬的宇宙機器人' },
-  { name:'哥爾贊', emoji:'🐊', hp:11, desc:'皮很厚的超古代怪獸' },
-  { name:'泰蘭特', emoji:'🐉', hp:14, desc:'很多怪獸合成的暴君' },
-  { name:'達達', emoji:'👽', hp:8, desc:'會變臉的奇怪外星人' },
-  { name:'貝利亞', emoji:'👹', hp:18, desc:'邪惡的黑暗超人' },
+  /* ---------- 超異象之謎 / 初代 ---------- */
+  { id:'gomess', name:'哥美斯', emoji:'🦕', hp:10, cat:'kaiju', from:'超異象之謎', desc:'古代怪獸，超人力霸王系列史上第一隻登場的怪獸', hints:['他是整個系列裡第一隻出現的怪獸！','住在地底隧道裡，被利特拉打敗。'] },
+  { id:'litra', name:'利特拉', emoji:'🐦', hp:8, cat:'kaiju', from:'超異象之謎', desc:'原始怪鳥，會噴出很燙的液體', hints:['他是一隻從蛋裡孵出來的原始怪鳥！','他打敗了哥美斯。'] },
+  { id:'garamon', name:'加拉蒙', emoji:'🍄', hp:9, cat:'robot', from:'超異象之謎', desc:'隕石怪獸，其實是外星人操控的機器人', hints:['他是從隕石裡出來的，走路搖搖晃晃！','他跟皮古蒙長得一模一樣。'] },
+  { id:'kanegon', name:'卡內貢', emoji:'💰', hp:7, cat:'kaiju', from:'超異象之謎', desc:'吃錢的怪獸，是一個貪心的小男孩變成的', hints:['他最愛吃錢！','脖子上有一個會數錢的計數器。'] },
+  { id:'kemur', name:'凱姆爾人', emoji:'👤', hp:9, cat:'alien', from:'超異象之謎', desc:'誘拐怪人，跑得超快、頭會轉來轉去', hints:['他會把人變不見！','跑得超級快，頭還會轉一圈。'] },
+  { id:'ragon', name:'拉貢', emoji:'🧜', hp:9, cat:'kaiju', from:'超異象之謎', desc:'海底原人，喜歡音樂', hints:['他住在海底，長得像半魚人。','他聽到音樂會安靜下來。'] },
+  { id:'peguila', name:'貝吉拉', emoji:'🐧', hp:11, cat:'kaiju', from:'超異象之謎', desc:'冷凍怪獸，住在南極，會噴冷凍氣', hints:['他住在南極，像一隻超大企鵝！','嘴巴會噴出冷凍氣。'] },
+  { id:'bemular', name:'貝姆拉', emoji:'🦎', hp:10, cat:'kaiju', from:'初代', desc:'宇宙怪獸，初代打的第一隻怪獸', hints:['他是初代超人力霸王打的第一隻怪獸！','藍色的身體，嘴巴會噴熱線。'] },
+  { id:'baltan', name:'巴爾坦星人', emoji:'🦀', hp:10, cat:'alien', from:'初代', desc:'宇宙忍者，手是大剪刀，會「呵呵呵」地笑', hints:['他的手是一對大剪刀！','會「呵呵呵呵」地笑，還會分身變很多個。'] },
+  { id:'neronga', name:'尼隆加', emoji:'🦏', hp:10, cat:'kaiju', from:'初代', desc:'透明怪獸，會變透明、喜歡吃電', hints:['他會變透明，讓你看不見！','最喜歡吃電。'] },
+  { id:'greenmons', name:'雷蒙斯', emoji:'🌵', hp:8, cat:'kaiju', from:'初代', desc:'怪奇植物怪獸，會噴迷霧', hints:['他是一株長得太大的植物怪獸！','很怕火。'] },
+  { id:'guesra', name:'給斯拉', emoji:'🐡', hp:9, cat:'kaiju', from:'初代', desc:'海獸，最愛吃可可豆', hints:['他住在海裡！','最喜歡吃可可豆，吃了會變大。'] },
+  { id:'antlar', name:'安托拉', emoji:'🪲', hp:12, cat:'kaiju', from:'初代', desc:'磁力怪獸，有一對大鉗子，光線打不壞', hints:['他有一對超大的鉗子，像螞蟻獅！','會用磁力把鐵吸走，斯派修姆光線打不壞他。'] },
+  { id:'redking', name:'紅王', emoji:'🦍', hp:12, cat:'kaiju', from:'初代', desc:'骷髅怪獸，怪獸島上力氣最大的怪獸王', hints:['他是怪獸島上力氣最大的怪獸王！','沒有光線，只會用力揍和丟石頭。'] },
+  { id:'pigmon', name:'皮古蒙', emoji:'🧸', hp:5, cat:'friend', from:'初代', desc:'友好珍獸，跟加拉蒙長得一樣，是人類的好朋友', hints:['他是人類的好朋友，個子小小的！','他跟加拉蒙長得一模一樣，但是好人。'], friend:true },
+  { id:'gavora', name:'加勃拉', emoji:'🦔', hp:10, cat:'kaiju', from:'初代', desc:'鈾怪獸，頭上有像花瓣一樣的裝甲', hints:['他的頭上有像花瓣一樣會打開的裝甲！','他吃鈾，會發出放射線。'] },
+  { id:'jamila', name:'加米拉', emoji:'🧟', hp:9, cat:'kaiju', from:'初代', desc:'棲星怪獸，本來是一位太空人', hints:['他本來是一位太空人，被留在外星變成了怪獸。','他很怕水。'] },
+  { id:'gomora', name:'哥摩拉', emoji:'🦖', hp:12, cat:'kaiju', from:'初代', desc:'古代怪獸，尾巴超有力，最有名的恐龍怪獸', hints:['他的尾巴超有力，一甩就把大樓打壞！','後來變成艾克斯的好朋友。'] },
+  { id:'dada', name:'達達', emoji:'👽', hp:8, cat:'alien', from:'初代', desc:'三面怪人，有三張臉會變來變去', hints:['他有三張臉會變來變去！','黑白條紋的身體，會把人變小。'] },
+  { id:'goldon', name:'戈爾登', emoji:'🐗', hp:10, cat:'kaiju', from:'初代', desc:'黃金怪獸，身體裡有黃金', hints:['他的身體裡有很多黃金！','住在山裡的地底。'] },
+  { id:'mefilas', name:'美菲拉斯星人', emoji:'🧛', hp:12, cat:'alien', from:'初代', desc:'惡質宇宙人，很會說話，想騙人類把地球讓給他', hints:['他很會講話，想騙小朋友說「把地球給我」。','他穿得像一位紳士，跟初代打成平手。'] },
+  { id:'skydon', name:'斯凱頓', emoji:'🐘', hp:14, cat:'kaiju', from:'初代', desc:'百萬噸怪獸，超級重', hints:['他超級重，有一百萬噸！','初代怎麼抬都抬不起來他。'] },
+  { id:'zaragas', name:'薩拉嘎斯', emoji:'🐲', hp:11, cat:'kaiju', from:'初代', desc:'變身怪獸，被打會變身變強、會發強光', hints:['他被打會變身，變得更強！','身上會發出很亮的光讓人看不見。'] },
+  { id:'keylla', name:'基拉', emoji:'🌟', hp:9, cat:'kaiju', from:'初代', desc:'光熱怪獸，眼睛會發超亮的光', hints:['他的眼睛會發出超亮的光！','來自 Q 星。'] },
+  { id:'zetton', name:'積頓', emoji:'👾', hp:16, cat:'boss', from:'初代', desc:'宇宙恐龍，打敗初代的最強怪獸', hints:['他是打敗初代超人力霸王的最強怪獸！','會「批波波波」地叫，還會吸收光線。'] },
+  { id:'alienzetton', name:'積頓星人', emoji:'🎭', hp:9, cat:'alien', from:'初代', desc:'變身怪人，帶積頓來地球的宇宙人', hints:['他把積頓帶來地球！','會變成人類的樣子躲起來。'] },
+  { id:'geronimon', name:'傑羅尼蒙', emoji:'🦅', hp:12, cat:'kaiju', from:'初代', desc:'怪獸酋長，會讓死掉的怪獸復活', hints:['他是怪獸的酋長，會讓死掉的怪獸復活！','頭上有很多羽毛。'] },
+  { id:'bullton', name:'布魯頓', emoji:'🪨', hp:12, cat:'kaiju', from:'初代', desc:'四次元怪獸，會讓空間變得亂七八糟', hints:['他是一顆奇怪的石頭，會讓空間變得亂七八糟！','來自四次元。'] },
+  { id:'telesdon', name:'鐵列斯頓', emoji:'🐊', hp:11, cat:'kaiju', from:'初代', desc:'地底怪獸，會噴火', hints:['他住在地底，嘴巴會噴火！','是地底人放出來的。'] },
+  { id:'seabozu', name:'希博斯', emoji:'💀', hp:9, cat:'kaiju', from:'初代', desc:'亡靈怪獸，只想回到怪獸墓場', hints:['他是骷髅怪獸，只想回到怪獸墓場。','初代不是要打他，是想幫他回家。'] },
+  { id:'zarab', name:'扎拉布星人', emoji:'🪞', hp:10, cat:'alien', from:'初代', desc:'兇惡宇宙人，會變成假的初代', hints:['他會變成假的初代超人力霸王！','假初代的腳尖是尖的、眼睛是吊吊的。'] },
+  { id:'abolas', name:'阿波拉斯', emoji:'🐸', hp:10, cat:'kaiju', from:'初代', desc:'青色發泡怪獸，會噴泡泡', hints:['他是藍色的，嘴巴會噴白色泡泡！','他的對手是紅色的巴尼拉。'] },
+  { id:'banila', name:'巴尼拉', emoji:'🔥', hp:10, cat:'kaiju', from:'初代', desc:'赤色火焰怪獸，會噴火', hints:['他是紅色的，會噴火！','他跟藍色的阿波拉斯打架。'] },
+
+  /* ---------- 超人七號 ---------- */
+  { id:'eleking', name:'艾雷王', emoji:'🦎', hp:10, cat:'kaiju', from:'超人七號', desc:'放電龍，沒有眼睛、頭上的角會轉', hints:['他會放電！','沒有眼睛，頭上有兩根像天線的角會轉來轉去。'] },
+  { id:'kingjoe', name:'金古橋', emoji:'🤖', hp:14, cat:'robot', from:'超人七號', desc:'超級硬的宇宙機器人，四台飛船合體', hints:['他是四台飛船合體變成的機器人！','超級硬，光線打不壞他。'] },
+  { id:'metron', name:'美特隆星人', emoji:'🛸', hp:9, cat:'alien', from:'超人七號', desc:'愛對話的宇宙人，坐在榻榻米上聊天', hints:['他坐在榻榻米上跟人聊天！','他想讓人類互相不信任。'] },
+  { id:'gubila', name:'古比拉', emoji:'🐬', hp:10, cat:'kaiju', from:'超人七號', desc:'深海怪獸，鼻子是會轉的鑽頭', hints:['他的鼻子是一個會轉的鑽頭！','住在深海裡。'] },
+  { id:'windom', name:'溫達姆', emoji:'🦾', hp:9, cat:'friend', from:'超人七號', desc:'膠囊怪獸，超人七號的機器人夥伴', hints:['他是超人七號的膠囊怪獸夥伴！','會從膠囊裡跑出來幫忙打怪獸。'], friend:true },
+  { id:'miclas', name:'米克拉斯', emoji:'🐂', hp:9, cat:'friend', from:'超人七號', desc:'膠囊怪獸，有牛角，力氣很大', hints:['他是超人七號的膠囊怪獸，有一對牛角！','力氣很大，但是怕冷。'], friend:true },
+  { id:'agira', name:'阿基拉斯', emoji:'🦕', hp:9, cat:'friend', from:'超人七號', desc:'膠囊怪獸，動作很快的恐龍', hints:['他是超人七號的膠囊怪獸，像一隻恐龍！','動作很快。'], friend:true },
+  { id:'guts', name:'加茲星人', emoji:'👁️', hp:11, cat:'alien', from:'超人七號', desc:'會分身的宇宙人，曾抓住超人七號', hints:['他曾經抓住超人七號，把他吊在天上！','會分身，很難打到。'] },
+  { id:'pandon', name:'潘頓', emoji:'🐓', hp:13, cat:'kaiju', from:'超人七號', desc:'雙頭怪獸，超人七號最後的對手', hints:['他有兩個頭！','是超人七號最後的對手。'] },
+
+  /* ---------- 傑克 / 衛司 / 太郎 / 雷歐 ---------- */
+  { id:'bemstar', name:'貝蒙斯坦', emoji:'🦆', hp:12, cat:'kaiju', from:'傑克', desc:'宇宙大怪獸，肚子上的大嘴會吸走光線', hints:['他肚子上有一張大嘴，會把光線吸走！','傑克用超人手鐲才打贏他。'] },
+  { id:'twintail', name:'特洛丹', emoji:'🦐', hp:10, cat:'kaiju', from:'傑克', desc:'古代怪獸，頭在下面、尾巴在上面', hints:['他倒過來走路，頭在下面、兩條尾巴在上面！','他是古頓最愛吃的食物。'] },
+  { id:'gudon', name:'古頓', emoji:'🪱', hp:11, cat:'kaiju', from:'傑克', desc:'地底怪獸，兩隻手是鞭子', hints:['他的兩隻手是長長的鞭子！','最愛吃特洛丹。'] },
+  { id:'blackking', name:'布萊克王', emoji:'🦖', hp:13, cat:'kaiju', from:'傑克', desc:'用心棒怪獸，納克爾星人的保鏢', hints:['他是納克爾星人的保鏢怪獸！','很會打架，讓傑克很辛苦。'] },
+  { id:'knuckle', name:'納克爾星人', emoji:'👊', hp:10, cat:'alien', from:'傑克', desc:'暗殺宇宙人，布萊克王的主人', hints:['他是布萊克王的主人！','他很狡猾，偷偷研究傑克的弱點。'] },
+  { id:'verokron', name:'貝羅克隆', emoji:'🦑', hp:12, cat:'kaiju', from:'衛司', desc:'超獸，身上會發射好多飛彈', hints:['他是第一隻超獸，身上會發射好多飛彈！','超獸比怪獸更強。'] },
+  { id:'baraba', name:'巴拉巴', emoji:'🗡️', hp:12, cat:'kaiju', from:'衛司', desc:'超獸，一隻手是大刀、一隻手是鐵鎚', hints:['他一隻手是大刀、一隻手是鐵鎚！','他是亞波人做的超獸。'] },
+  { id:'yapool', name:'亞波人', emoji:'👺', hp:15, cat:'boss', from:'衛司', desc:'異次元人，製造超獸的大壞蛋', hints:['他是製造超獸的大壞蛋！','住在異次元，衛司的宿敵。'] },
+  { id:'astromons', name:'亞斯特羅蒙斯', emoji:'🌺', hp:11, cat:'kaiju', from:'太郎', desc:'宇宙大怪獸，胸口有一朵食人花', hints:['他胸口有一朵會吃東西的花！','是太郎打的第一隻怪獸。'] },
+  { id:'enmargo', name:'恩馬爾哥', emoji:'👹', hp:12, cat:'kaiju', from:'太郎', desc:'閻魔怪獸，有一把大刀', hints:['他有一把大刀，像閻羅王！','曾經把太郎的頭砍掉，但太郎又復活了。'] },
+  { id:'tyrant', name:'泰蘭特', emoji:'🐉', hp:14, cat:'boss', from:'太郎', desc:'暴君怪獸，很多怪獸的身體合成', hints:['他是很多怪獸的身體合成的！','一路打敗佐菲、初代、超人七號…最後被太郎打倒。'] },
+  { id:'birdon', name:'比爾根', emoji:'🐦‍🔥', hp:13, cat:'kaiju', from:'太郎', desc:'火山怪鳥，曾經打倒太郎和佐菲', hints:['他是一隻會噴火的大鳥！','曾經打倒太郎和佐菲，超級強。'] },
+  { id:'magma', name:'馬格馬星人', emoji:'🌋', hp:11, cat:'alien', from:'雷歐', desc:'雷歐的宿敵，毀了雷歐的家鄉 L77 星', hints:['他毀掉了雷歐的家鄉！','有像鋸子一樣的武器。'] },
+  { id:'nova', name:'諾巴', emoji:'🎈', hp:9, cat:'kaiju', from:'雷歐', desc:'圓盤生物，紅色氣球臉，會噴讓人生氣的紅霧', hints:['他長得像一顆紅色的氣球！','會噴出讓人生氣的紅霧。'] },
+  { id:'silverbloome', name:'席爾巴布魯米', emoji:'🪼', hp:12, cat:'kaiju', from:'雷歐', desc:'圓盤生物，像一隻超大水母', hints:['他像一隻超大的水母，會把東西吸進去！','他打壞了 MAC 的基地。'] },
+
+  /* ---------- 迪卡 / 帝納 / 蓋亞 / 高斯 ---------- */
+  { id:'golza', name:'哥爾贊', emoji:'🐊', hp:12, cat:'kaiju', from:'迪卡', desc:'超古代怪獸，皮很厚，額頭會發光線', hints:['他是迪卡打的第一隻超古代怪獸！','額頭會發出光線，皮超級厚。'] },
+  { id:'melba', name:'美爾巴', emoji:'🦅', hp:10, cat:'kaiju', from:'迪卡', desc:'超古代鳥，會飛、會發光線', hints:['他是超古代的怪鳥，跟哥爾贊一起出現！','眼睛會發光線。'] },
+  { id:'gazort', name:'加佐特', emoji:'🦇', hp:10, cat:'kaiju', from:'迪卡', desc:'變形怪獸，會說「朋友」', hints:['他會說「朋友」，但其實想吃人！','本來是一種住在雲裡的小生物。'] },
+  { id:'silvagon', name:'希爾巴貢', emoji:'🦏', hp:13, cat:'kaiju', from:'迪卡', desc:'超力怪獸，看不到不動的東西', hints:['只要你不動，他就看不到你！','銀色的身體很硬。'] },
+  { id:'goldras', name:'戈爾德拉斯', emoji:'🐲', hp:13, cat:'kaiju', from:'迪卡', desc:'超力怪獸，會操控時間', hints:['他會讓時間停下來！','金色的身體，跟希爾巴貢是同一種怪獸。'] },
+  { id:'kyrieloid', name:'基里艾洛人', emoji:'🔥', hp:12, cat:'alien', from:'迪卡', desc:'炎魔戰士，跟迪卡一樣大的火之戰士', hints:['他是火的戰士，跟迪卡一樣大！','很討厭人類，覺得人類不配擁有光。'] },
+  { id:'gatanothor', name:'加坦傑厄', emoji:'🐙', hp:20, cat:'boss', from:'迪卡', desc:'邪神，迪卡最後的超級大魔王', hints:['他是迪卡最後打的超級大魔王！','把迪卡變成了石像，最後靠小朋友們的光才打贏。'] },
+  { id:'gregorl', name:'格雷戈爾人', emoji:'🥋', hp:12, cat:'alien', from:'帝納', desc:'格鬥宇宙人，只想跟帝納比武', hints:['他只想跟帝納比武，打完就走了！','很有運動精神。'] },
+  { id:'sphere', name:'史菲亞', emoji:'🔮', hp:10, cat:'kaiju', from:'帝納', desc:'宇宙球體，會跟怪獸合體', hints:['他是一顆會飛的球，會跟怪獸合體！','帝納和德卡都跟他打過。'] },
+  { id:'neodarambia', name:'尼歐達蘭比亞', emoji:'🪨', hp:12, cat:'kaiju', from:'帝納', desc:'宇宙球體合成獸，帝納打的第一隻怪獸', hints:['他是史菲亞變成的怪獸！','是帝納打的第一隻怪獸。'] },
+  { id:'galberos', name:'加爾貝洛斯', emoji:'🐺', hp:12, cat:'kaiju', from:'納克斯', desc:'幻覺三頭獸，會讓人看到幻覺', hints:['他有三個頭！','會讓人看到幻覺。'] },
+  { id:'zog', name:'佐格', emoji:'👼', hp:20, cat:'boss', from:'蓋亞', desc:'根源破滅天使，蓋亞最後的大魔王', hints:['她假裝是天使，其實是最後的大魔王！','蓋亞和亞格一起才打倒她。'] },
+  { id:'chaosheader', name:'卡奧斯黑德', emoji:'🌀', hp:14, cat:'boss', from:'高斯', desc:'混沌之力，會讓怪獸變成邪惡的樣子', hints:['他會讓好怪獸變成壞怪獸！','高斯想淨化他，而不是打倒他。'] },
+  { id:'lidorias', name:'莉德利亞斯', emoji:'🕊️', hp:8, cat:'friend', from:'高斯', desc:'高斯的好朋友，溫柔的怪鳥', hints:['她是高斯的好朋友，一隻溫柔的大鳥！','她住在怪獸保護區。'], friend:true },
+
+  /* ---------- 馬克斯 / 梅比斯 ---------- */
+  { id:'grangon', name:'葛蘭剛', emoji:'🌋', hp:11, cat:'kaiju', from:'馬克斯', desc:'熔岩怪獸，身體 900 度超級燙', hints:['他的身體有 900 度，超級燙！','他的對手是冰的拉葛拉斯。'] },
+  { id:'lagoras', name:'拉葛拉斯', emoji:'❄️', hp:11, cat:'kaiju', from:'馬克斯', desc:'冷凍怪獸，噴零下 240 度的冷凍光', hints:['他會噴超級冷的冷凍光！','他的對手是火的葛蘭剛。'] },
+  { id:'dinozaur', name:'迪諾佐爾', emoji:'🦕', hp:11, cat:'kaiju', from:'梅比斯', desc:'宇宙凶險怪獸，梅比斯打的第一隻', hints:['他是梅比斯打的第一隻怪獸！','長長的脖子，嘴巴會發光線。'] },
+  { id:'bogar', name:'波加爾', emoji:'🐊', hp:13, cat:'kaiju', from:'梅比斯', desc:'怪獸獵人，會呼叫怪獸然後吃掉', hints:['他會把其他怪獸叫來然後吃掉！','他是一隻很兇的女怪獸。'] },
+  { id:'empera', name:'恩派拉星人', emoji:'👑', hp:20, cat:'boss', from:'梅比斯', desc:'皇帝，怪獸帝國的統治者、梅比斯最後的敵人', hints:['他是怪獸帝國的皇帝！','很久以前跟超人之父打過，最後被梅比斯和大家打倒。'] },
+
+  /* ---------- 傑洛 / 銀河 / 艾克斯 ---------- */
+  { id:'belial', name:'貝利亞', emoji:'👹', hp:18, cat:'boss', from:'傑洛', desc:'邪惡的黑暗超人，捷德的爸爸', hints:['他是最有名的壞蛋超人力霸王！','他是捷德的爸爸。'], noquiz:true },
+  { id:'darklops', name:'達克羅普斯', emoji:'🤖', hp:13, cat:'robot', from:'傑洛', desc:'傑洛的黑暗機器人版本', hints:['他是照著傑洛做出來的黑色機器人！','頭上也有兩把飛刀。'] },
+  { id:'lugiel', name:'黑暗盧基艾爾', emoji:'🌑', hp:18, cat:'boss', from:'銀河', desc:'把所有超人和怪獸變成人偶的黑暗', hints:['他把所有超人和怪獸都變成人偶！','是銀河的宿敵。'] },
+  { id:'fiveking', name:'五帝王', emoji:'🐲', hp:16, cat:'boss', from:'銀河', desc:'五隻怪獸合體的超級合成獸', hints:['他是五隻怪獸合體變成的！','超級大，銀河和勝利一起才打贏。'] },
+  { id:'greeza', name:'格里薩', emoji:'👻', hp:18, cat:'boss', from:'艾克斯', desc:'虛無怪獸，什麼都沒有、光線打不到', hints:['他是什麼都沒有的怪獸，光線會穿過去！','艾克斯和大家的光合在一起才打贏他。'] },
+  { id:'zaigorg', name:'札格古', emoji:'👹', hp:16, cat:'boss', from:'艾克斯', desc:'閻魔獸，從古代封印裡出來的魔王', hints:['他是被封印在古代的魔王！','在艾克斯的電影裡出現，初代和迪卡也來幫忙。'] },
+  { id:'cybergomora', name:'電腦哥摩拉', emoji:'💾', hp:11, cat:'robot', from:'艾克斯', desc:'電腦怪獸，艾克斯的鎧甲夥伴', hints:['他是住在電腦裡的哥摩拉！','艾克斯可以把他變成鎧甲穿上。'] },
+
+  /* ---------- 歐布 / 捷德 / 羅布 ---------- */
+  { id:'magazetton', name:'瑪伽積頓', emoji:'👾', hp:15, cat:'boss', from:'歐布', desc:'光之魔王獸，積頓的魔王版本', hints:['他是積頓的魔王獸版本，會發出光的爆炸！','歐布打的第一隻魔王獸。'] },
+  { id:'magabasser', name:'瑪伽巴薩', emoji:'🌪️', hp:11, cat:'kaiju', from:'歐布', desc:'風之魔王獸，會製造龍捲風', hints:['他會製造超大的龍捲風！','是一隻風的魔王獸。'] },
+  { id:'magaorochi', name:'瑪伽奧洛奇', emoji:'🐉', hp:18, cat:'boss', from:'歐布', desc:'大魔王獸，魔王獸裡最大的', hints:['他是魔王獸裡最大的一隻！','歐布用歐布聖劍才打倒他。'] },
+  { id:'juggler', name:'賈格拉', emoji:'🃏', hp:13, cat:'alien', from:'歐布', desc:'歐布的宿敵，愛耍帥、會變身的黑暗戰士', hints:['他是歐布的老朋友，也是對手，很愛耍帥！','手上有一把黑色的劍，後來變成好人。'] },
+  { id:'skullgomora', name:'骷髅哥摩拉', emoji:'💀', hp:14, cat:'kaiju', from:'捷德', desc:'融合獸，哥摩拉加紅王合體', hints:['他是哥摩拉和紅王合體的融合獸！','是捷德打的第一隻怪獸。'] },
+  { id:'bezelb', name:'貝澤魯卜', emoji:'🐝', hp:12, cat:'kaiju', from:'歐布', desc:'宇宙惡魔，像大蜜蜂，毒針會讓人暴躁', hints:['他長得像一隻大蜜蜂，會用毒針！','被刺到會變得很暴躁。'] },
+  { id:'grigioking', name:'古魯吉歐王', emoji:'🦴', hp:13, cat:'kaiju', from:'羅布', desc:'爆擊骨獸，羅索和布魯打的第一隻怪獸', hints:['他是羅索和布魯兩兄弟打的第一隻怪獸！','身上有很多骨頭一樣的裝甲。'] },
+  { id:'horoboros', name:'赫羅波羅斯', emoji:'🐺', hp:13, cat:'kaiju', from:'羅布', desc:'豪烈暴獸，像一隻超大的狼', hints:['他像一隻超大的狼，會噴火！','羅索和布魯一起才打贏他。'] },
+
+  /* ---------- 大河 / 傑特 / 特利卡 / 德卡 ---------- */
+  { id:'hellberus', name:'赫爾貝洛斯', emoji:'🐕', hp:12, cat:'kaiju', from:'大河', desc:'地獄犬，大河打的第一隻怪獸', hints:['他像一隻地獄來的大狗！','是大河打的第一隻怪獸。'] },
+  { id:'zandrias', name:'贊德里亞斯', emoji:'🐦', hp:10, cat:'kaiju', from:'大河', desc:'怪鳥媽媽，很愛她的寶寶', hints:['她是一位怪獸媽媽，很愛她的寶寶！','大河一開始不忍心打她。'] },
+  { id:'genegarg', name:'蓋涅加格', emoji:'🦈', hp:12, cat:'kaiju', from:'傑特', desc:'吞下傑特升華器的怪獸，牙齒很多', hints:['他吞下了傑特的升華器！','像一隻大鯊魚，有很多牙齒。'] },
+  { id:'sevenger', name:'賽文加', emoji:'🤖', hp:10, cat:'friend', from:'傑特', desc:'地球防衛隊的機器人，會幫傑特', hints:['他是 STORAGE 的機器人，會幫傑特！','肩膀上有一個大鐵拳。'], friend:true },
+  { id:'celebro', name:'賽雷布羅', emoji:'🧠', hp:12, cat:'alien', from:'傑特', desc:'寄生宇宙人，會附身在人類身上', hints:['他會附身在人類身上，讓人變壞！','他是傑特故事裡真正的壞蛋。'] },
+  { id:'destrudos', name:'帝斯特隆', emoji:'🐉', hp:20, cat:'boss', from:'傑特', desc:'終極兵器，傑特最後的大魔王', hints:['他是傑特最後打的超級大魔王！','超級大，傑特和賽文加一起才打贏。'] },
+  { id:'golba', name:'哥爾巴', emoji:'🦖', hp:13, cat:'kaiju', from:'特利卡', desc:'哥爾贊和美爾巴合體的超古代怪獸', hints:['他是哥爾贊和美爾巴合體的！','是特利卡打的第一隻怪獸。'] },
+  { id:'megalothor', name:'梅加洛佐亞', emoji:'🐙', hp:20, cat:'boss', from:'特利卡', desc:'邪神，特利卡最後的大魔王', hints:['他是特利卡最後打的大魔王，跟加坦傑厄很像！','特利卡變成閃耀特利卡才打贏。'] },
+  { id:'spherezaurus', name:'史菲亞佐拉斯', emoji:'🦕', hp:12, cat:'kaiju', from:'德卡', desc:'被史菲亞合體的恐龍怪獸，德卡打的第一隻', hints:['他是史菲亞球體變成的恐龍怪獸！','是德卡打的第一隻怪獸。'] },
+
+  /* ---------- Blazar / 雅克 ---------- */
+  { id:'bazanga', name:'巴薩戈', emoji:'🦂', hp:12, cat:'kaiju', from:'Blazar', desc:'宇宙甲殼怪獸，布雷薩打的第一隻', hints:['他是布雷薩打的第一隻怪獸！','身上有很硬的殼，像蠍子。'] },
+  { id:'gedos', name:'蓋德斯', emoji:'🐙', hp:11, cat:'kaiju', from:'Blazar', desc:'水陸怪獸，在海裡和陸地都能戰鬥', hints:['他在海裡和陸地都能戰鬥！','嘴巴會噴出黏黏的東西。'] },
+  { id:'nijikagachi', name:'虹蛇尼吉卡加奇', emoji:'🌈', hp:13, cat:'kaiju', from:'Blazar', desc:'虹蛇怪獸，會控制天氣', hints:['他像一條彩虹色的大蛇，會控制天氣！','會讓天空下大雨、打雷。'] },
+  { id:'earthgaron', name:'厄斯加隆', emoji:'🤖', hp:10, cat:'friend', from:'Blazar', desc:'地球防衛隊的機器人，SKaRD 的夥伴', hints:['他是 SKaRD 隊的機器人，會幫布雷薩！','可以變成不同的戰鬥模式。'], friend:true },
+  { id:'varallon', name:'瓦拉隆', emoji:'🪼', hp:20, cat:'boss', from:'Blazar', desc:'宇宙生命體，布雷薩最後的大魔王', hints:['他是布雷薩最後打的大魔王！','超級大，全世界一起才打贏。'] },
+  { id:'shagong', name:'夏戈拉', emoji:'🦖', hp:12, cat:'kaiju', from:'雅克', desc:'雅克打的第一隻怪獸', hints:['他是雅克打的第一隻怪獸！','身上有很多刺。'] },
 ];
 
 /* =====================================================================
    狀態、工具
    ===================================================================== */
-const VERSION = '1.2.0';
+const VERSION = '1.3.0';
 const state = {
   stars: parseInt(localStorage.getItem('ultra_stars')||'0',10),
   mode: localStorage.getItem('ultra_mode') || 'little',   // little=弟弟(3選項) big=哥哥(4選項)
@@ -767,6 +890,8 @@ function goHome(){
       <button class="btn blue" onclick="startQuiz('item')"><span class="ico">🔦</span><span class="txt">猜變身道具<small>貝塔膠囊、神光棒、升華器…</small></span></button>
       <button class="btn yellow" onclick="startBattle()"><span class="ico">⚔️</span><span class="txt">變身！怪獸決鬥<small>選超人、變身、打倒怪獸（可兩人一起玩）</small></span></button>
       <button class="btn green" onclick="startMemory()"><span class="ico">🃏</span><span class="txt">翻牌配對<small>把超人和他的變身道具找出來</small></span></button>
+      <button class="btn grey" onclick="startQuiz('kaiju')" style="background:linear-gradient(180deg,#8bd45c,#3a7d1e); box-shadow:0 6px 0 #1f4a0e, 0 10px 20px #0006"><span class="ico">🦖</span><span class="txt">猜怪獸<small>巴爾坦？哥摩拉？積頓？看提示猜怪獸</small></span></button>
+      <button class="btn grey" onclick="showDex()" style="background:linear-gradient(180deg,#ff9f6e,#c2521a); box-shadow:0 6px 0 #6e2c0a, 0 10px 20px #0006"><span class="ico">📖</span><span class="txt">怪獸圖鑑<small>認識 ${MONSTERS.length} 隻怪獸，還可以直接挑戰！</small></span></button>
     </div>
     <div class="settings">
       <span style="font-weight:800">誰在玩？</span>
@@ -837,11 +962,20 @@ function makeItemQ(){
   }
 }
 
+function makeKaijuQ(){
+  const POOL = MONSTERS.filter(m=>!m.noquiz);
+  let pool = POOL.filter(m=>!quiz.used.has(m.id)); if(pool.length<optCount()) pool=POOL;
+  const m = pick(pool); quiz.used.add(m.id);
+  const others = shuffle(POOL.filter(x=>x.id!==m.id && x.emoji!==m.emoji)).slice(0,optCount()-1);
+  const opts = shuffle([m,...others]).map(x=>({label:x.name, html:`<span>${x.name}</span>`, correct:x.id===m.id}));
+  const hints=[...m.hints, `他在「${m.from}」的故事裡出現。`];
+  return { figure:`<div class="bigemoji">${m.emoji}</div>`, question:'這隻怪獸是誰呢？', hints, opts, speak:`這隻怪獸是誰呢？提示：${hints[0]}`, answer:m.name };
+}
 function nextQuestion(){
   if(quiz.idx>=quiz.total){ return quizResult(); }
-  quiz.q = quiz.type==='char'?makeCharQ(): quiz.type==='form'?makeFormQ(): makeItemQ();
+  quiz.q = quiz.type==='char'?makeCharQ(): quiz.type==='form'?makeFormQ(): quiz.type==='kaiju'?makeKaijuQ(): makeItemQ();
   quiz.firstTry=true; quiz.hintN=1;
-  const titles = {char:'🦸 猜猜我是誰', form:'🌈 猜型態', item:'🔦 猜變身道具'};
+  const titles = {char:'🦸 猜猜我是誰', form:'🌈 猜型態', item:'🔦 猜變身道具', kaiju:'🦖 猜怪獸'};
   const prog = Array.from({length:quiz.total},(_,i)=>`<i class="${i<quiz.idx?'ok':i===quiz.idx?'cur':''}"></i>`).join('');
   setScreen(`${header()}
     <div class="card">
@@ -950,15 +1084,20 @@ function doTransform(){
     setTimeout(()=>{ transforming=false; monsterAppear(); }, 2200);
   }, 500);
 }
+const BATTLE_MONSTERS = MONSTERS.filter(m=>!m.friend);
 function monsterAppear(){
-  const m = pick(MONSTERS); battle.monster = m;
+  const m = battle.preset ? (MONSTERS.find(x=>x.id===battle.preset)||pick(BATTLE_MONSTERS)) : pick(BATTLE_MONSTERS);
+  battle.preset=null; battle.monster = m;
   SFX.roar();
   setScreen(`${header()}
     <div class="card tf">
       <div class="item shake" style="animation:shake .5s 3">${m.emoji}</div>
-      <div class="call" style="color:#ff8a80">怪獸「${m.name}」出現了！</div>
-      <div style="font-size:20px">${m.desc}</div>
-      <button class="btn" style="font-size:28px" onclick="beginFight()">⚔️ 開始戰鬥！（空白鍵）</button>
+      <div class="call" style="color:#ff8a80">${m.cat==='boss'?'👑 超級大魔王':'怪獸'}「${m.name}」出現了！</div>
+      <div style="font-size:20px">${m.desc}<br><small style="opacity:.8">出自：${m.from}</small></div>
+      <div class="row">
+        <button class="btn" style="font-size:28px" onclick="beginFight()">⚔️ 開始戰鬥！（空白鍵）</button>
+        <button class="btn grey" onclick="SFX.click(); monsterAppear()">🔄 換一隻怪獸</button>
+      </div>
     </div>`, (e)=>{ if(e.code==='Space'||e.key==='Enter'){ e.preventDefault(); beginFight(); } });
   say(`怪獸${m.name}出現了！${m.desc}。準備戰鬥！`);
 }
@@ -1105,6 +1244,38 @@ function endBattle(win, text){
         </div>`);
     }, 2200);
   }
+}
+
+/* =====================================================================
+   怪獸圖鑑
+   ===================================================================== */
+function showDex(){
+  SFX.click();
+  setScreen(`${header()}
+    <div class="card">
+      <div class="question">📖 怪獸圖鑑 <small style="font-size:15px;opacity:.8;font-weight:700">（共 ${MONSTERS.length} 隻，點一隻看介紹）</small></div>
+      ${MCATS.map(c=>{ const list=MONSTERS.filter(m=>m.cat===c.id); if(!list.length) return ''; return `<div class="era-title">${c.title}<span style="opacity:.7;font-size:14px;margin-left:8px">${list.length} 隻</span></div>
+      <div class="grid dex">${list.map(m=>`<div class="hero-card" onclick="showMonster('${m.id}')"><div class="dex-emoji">${m.emoji}</div><div>${m.name}</div><small>${m.from}</small></div>`).join('')}</div>`; }).join('')}
+      <div class="row">${homeBtn()}</div>
+    </div>`);
+  say('怪獸圖鑑！點一隻怪獸看介紹。');
+}
+function showMonster(id){
+  SFX.roar();
+  const m = MONSTERS.find(x=>x.id===id); const c=MCATS.find(x=>x.id===m.cat);
+  setScreen(`${header()}
+    <div class="card tf">
+      <div class="item" style="animation:none">${m.emoji}</div>
+      <div class="call" style="color:${m.friend?'#5cf0a0':'#ff8a80'}">${m.name}</div>
+      <div style="font-size:18px;opacity:.85">${c.title}　｜　出自：${m.from}　｜　體力：${'❤️'.repeat(Math.min(5,Math.ceil(m.hp/4)))}</div>
+      <div style="font-size:20px;line-height:1.6;max-width:640px">${m.desc}<br>${m.hints.map(h=>`💡 ${h}`).join('<br>')}</div>
+      <div class="row">
+        ${m.friend?`<div class="hint" style="font-size:20px">🤝 他是好朋友，不用打他！</div>`:`<button class="btn" style="font-size:24px" onclick="battle.preset='${m.id}'; startBattle()">⚔️ 挑戰 ${m.name}！</button>`}
+        <button class="btn grey" onclick="showDex()">📖 回圖鑑</button>
+        ${homeBtn()}
+      </div>
+    </div>`);
+  say(`${m.name}。${m.desc}。`);
 }
 
 /* =====================================================================
