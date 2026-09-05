@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%AD%90%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>超人力霸王 小英雄遊樂園 v1.1.1</title>
+<title>超人力霸王 小英雄遊樂園 v1.2.0</title>
 <style>
   :root{
     --bg1:#0b1033; --bg2:#1b2a6b; --card:#182452; --card2:#22347a;
@@ -115,6 +115,7 @@
   .hero-card{background:var(--card); border:3px solid #ffffff22; border-radius:18px; padding:8px; text-align:center; cursor:pointer; transition:transform .1s; font-weight:800; font-size:16px;}
   .hero-card:hover{transform:scale(1.05); border-color:var(--yellow);}
   .hero-card svg{height:120px; width:auto;}
+  .era-title{font-size:clamp(17px,3vw,22px); font-weight:900; margin:18px 0 4px; padding:6px 12px; background:#0006; border-radius:12px; border-left:6px solid var(--yellow);}
 
   /* ---------- transform ---------- */
   .tf{text-align:center; padding:20px 10px; min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;}
@@ -282,99 +283,231 @@
 /* =====================================================================
    資料：超人力霸王、型態、變身道具、怪獸
    ===================================================================== */
+const ERAS = [
+  { id:'newgen',   title:'🌠 新世代英雄（2013～）' },
+  { id:'heisei',   title:'💫 平成英雄（1996～2009）' },
+  { id:'showa',    title:'⭐ 昭和英雄・光之國（1966～1981）' },
+  { id:'overseas', title:'🌍 海外與其他世界的英雄' },
+  { id:'dark',     title:'🌑 黑暗超人（壞蛋）' },
+];
 const ULTRAS = [
-  { id:'shodai', name:'初代超人力霸王', call:'初代', base:'#dcdcdc', accent:'#e0201f', accent2:'#e0201f', head:'#d6d6d6', crest:'fin',
+  /* ============================ 昭和・光之國 ============================ */
+  { id:'shodai', era:'showa', name:'初代超人力霸王', call:'初代', base:'#dcdcdc', accent:'#e0201f', accent2:'#e0201f', head:'#d6d6d6', crest:'fin',
     item:{name:'貝塔膠囊', emoji:'🔦'}, beam:'斯派修姆光線',
     hints:['他是最早出現的超人力霸王！','銀色的身體、紅色的條紋。','把手臂交叉成十字，就會發射斯派修姆光線！'] },
-  { id:'seven', name:'超人力霸王七號（賽文）', call:'賽文', base:'#d1201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#d1201f', crest:'slugger', protector:true,
+  { id:'zoffy', era:'showa', name:'佐菲', call:'佐菲', base:'#d1201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#d1201f', crest:'fin', protector:true, marks:true,
+    item:null, beam:'M87光線',
+    hints:['他是宇宙警備隊的隊長！','胸口有一排像星星一樣的黃色小點。','他是初代的好朋友，也是大家的隊長。'] },
+  { id:'seven', era:'showa', name:'超人七號（賽文）', call:'超人七號', base:'#d1201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#d1201f', crest:'slugger', protector:true,
     item:{name:'究極眼鏡', emoji:'🕶️'}, beam:'寬幅光線',
-    hints:['他頭上有一把可以飛出去的刀！','紅色的身體、銀色的護甲。','他是賽羅的爸爸！'] },
-  { id:'taro', name:'超人力霸王泰羅', call:'泰羅', base:'#d1201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#d1201f', crest:'horn', protector:true,
+    hints:['他頭上有一把可以飛出去的刀！','紅色的身體、銀色的護甲。','他是傑洛的爸爸！'] },
+  { id:'jack', era:'showa', name:'超人力霸王傑克', call:'傑克', base:'#dcdcdc', accent:'#e0201f', accent2:'#e0201f', head:'#d6d6d6', crest:'fin',
+    item:null, beam:'斯派修姆光線',
+    hints:['他長得很像初代，但條紋不一樣。','他手上有一個很厲害的超人手鐲，可以變成武器。','他不用道具，靠意志力就能變身！'] },
+  { id:'ace', era:'showa', name:'超人力霸王衛司（艾斯）', call:'衛司', base:'#dcdcdc', accent:'#e0201f', accent2:'#e0201f', head:'#d6d6d6', crest:'ace',
+    item:{name:'超人指環', emoji:'💍'}, beam:'梅塔利姆光線',
+    hints:['一開始要兩個人一起碰戒指才能變身！','他最會用切東西的光線刀。','他的頭上有一根尖尖的角。'] },
+  { id:'taro', era:'showa', name:'超人力霸王太郎（泰羅）', call:'太郎', base:'#d1201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#d1201f', crest:'horn', protector:true,
     item:{name:'超人徽章', emoji:'🏅'}, beam:'斯特利姆光線',
-    hints:['他的頭上有兩隻角！','他是超人之父和超人之母的孩子。','他是梅比斯的老師！'] },
-  { id:'tiga', name:'超人力霸王迪卡', call:'迪卡', base:'#c9c9c9', accent:'#e0201f', accent2:'#6a3fb5', head:'#c9c9c9', crest:'tiga',
+    hints:['他的頭上有兩隻角！','他是超人之父和超人之母的孩子。','他是梅比斯的老師，也是大河的爸爸！'] },
+  { id:'leo', era:'showa', name:'超人力霸王雷歐', call:'雷歐', base:'#d1201f', accent:'#c9c9c9', accent2:'#8a1010', head:'#d1201f', crest:'leo',
+    item:{name:'雷歐指環', emoji:'💍'}, beam:'雷歐飛踢',
+    hints:['他來自獅子座 L77 星！','他最厲害的不是光線，是超級厲害的踢！','他的弟弟叫阿斯特拉。'] },
+  { id:'astra', era:'showa', name:'阿斯特拉', call:'阿斯特拉', base:'#d1201f', accent:'#222', accent2:'#c9c9c9', head:'#d1201f', crest:'leo',
+    item:null, beam:'雙重飛踢',
+    hints:['他是雷歐的弟弟！','紅色的身體上有黑色的線條。','他和哥哥一起使用雙重飛踢。'] },
+  { id:'king', era:'showa', name:'超人力霸王尊王', call:'尊王', base:'#d1201f', accent:'#c9c9c9', accent2:'#ffd23f', head:'#d1201f', crest:'crown', protector:true,
+    item:null, beam:'尊王閃光',
+    hints:['他是所有超人力霸王裡最老、最厲害的！','頭上戴著金色的王冠。','他住在一顆很遠的星球上，很少出現。'] },
+  { id:'u80', era:'showa', name:'超人力霸王80', call:'80', base:'#d1201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#d1201f', crest:'fin',
+    item:{name:'明亮棒', emoji:'🖊️'}, beam:'薩克西姆光線',
+    hints:['他的名字是一個數字！','他的人類身分是一位學校老師。','他的搭檔是女超人尤莉安。'] },
+  { id:'yullian', era:'showa', name:'尤莉安', call:'尤莉安', base:'#e0201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#e0201f', crest:'tiga',
+    item:null, beam:'尤莉安光線',
+    hints:['她是一位女超人力霸王！','她是 80 的好朋友。','她是一位很勇敢的公主。'] },
+  { id:'father', era:'showa', name:'超人力霸王之父', call:'超人之父', base:'#d1201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#d1201f', crest:'horn', protector:true,
+    item:null, beam:'父之光線',
+    hints:['他是太郎的爸爸！','頭上有兩隻大角，還有鬍子。','他是宇宙警備隊的大隊長。'] },
+  { id:'mother', era:'showa', name:'超人力霸王之母', call:'超人之母', base:'#dcdcdc', accent:'#e0201f', accent2:'#e0201f', head:'#d6d6d6', crest:'fin',
+    item:null, beam:'母之光線',
+    hints:['她是太郎的媽媽！','銀色的身體，非常溫柔。','她會用治療的光幫大家治好傷。'] },
+
+  /* ============================ 平成 ============================ */
+  { id:'tiga', era:'heisei', name:'超人力霸王迪卡', call:'迪卡', base:'#c9c9c9', accent:'#e0201f', accent2:'#6a3fb5', head:'#c9c9c9', crest:'tiga',
     item:{name:'神光棒', emoji:'🔮'}, beam:'哉佩利敖光線',
     hints:['他有銀色、紫色和紅色三種顏色。','他可以變成強力型和空中型！','他是從石像裡醒來的光之巨人。'],
     forms:[
       {name:'複合型', color:'#c9c9c9', desc:'銀、紫、紅三色平衡的基本型態'},
       {name:'強力型', color:'#e0201f', desc:'全身變成紅色，力氣最大'},
-      {name:'空中型', color:'#6a3fb5', desc:'全身變成紫色，速度最快'} ] },
-  { id:'dyna', name:'超人力霸王帝納', call:'帝納', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'fin',
+      {name:'空中型', color:'#6a3fb5', desc:'全身變成紫色，速度最快'},
+      {name:'閃耀迪卡', color:'#ffd23f', desc:'集合大家的光，全身金光閃閃'} ] },
+  { id:'dyna', era:'heisei', name:'超人力霸王帝納', call:'帝納', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'fin',
     item:{name:'閃光器', emoji:'🔦'}, beam:'索爾捷特光線',
     hints:['他跟迪卡很像，但是有藍色的部分。','他的隊伍叫做超級GUTS。','他可以變成強力型和奇蹟型！'],
     forms:[
       {name:'閃光型', color:'#c9c9c9', desc:'銀、紅、藍三色的基本型態'},
       {name:'強力型', color:'#e0201f', desc:'全身變成紅色，力氣最大'},
       {name:'奇蹟型', color:'#2452c9', desc:'全身變成藍色，會用超能力'} ] },
-  { id:'gaia', name:'超人力霸王蓋亞', call:'蓋亞', base:'#e0201f', accent:'#c9c9c9', accent2:'#222', head:'#e0201f', crest:'fin',
+  { id:'gaia', era:'heisei', name:'超人力霸王蓋亞', call:'蓋亞', base:'#e0201f', accent:'#c9c9c9', accent2:'#222', head:'#e0201f', crest:'fin',
     item:{name:'艾斯普蘭達', emoji:'📱'}, beam:'量子流線',
-    hints:['他是守護地球的紅色巨人。','他有一個好朋友叫阿古茹，是藍色的。','他的變身道具叫艾斯普蘭達。'],
+    hints:['他是守護地球的紅色巨人。','他有一個好朋友叫亞格，是藍色的。','他的變身道具叫艾斯普蘭達。'],
     forms:[
       {name:'V1', color:'#e0201f', desc:'一開始的基本型態'},
       {name:'V2', color:'#e0201f', desc:'變得更強、更多銀色的型態'},
-      {name:'至高型', color:'#6a3fb5', desc:'加入阿古茹的力量，變成藍紫色的最強型態'} ] },
-  { id:'cosmos', name:'超人力霸王高斯', call:'高斯', base:'#4b8fe0', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#4b8fe0', crest:'fin',
+      {name:'至高型', color:'#6a3fb5', desc:'加入亞格的力量，變成藍紫色的最強型態'} ] },
+  { id:'agul', era:'heisei', name:'超人力霸王亞格（阿古茹）', call:'亞格', base:'#2452c9', accent:'#c9c9c9', accent2:'#222', head:'#2452c9', crest:'fin',
+    item:{name:'亞格雷達', emoji:'📱'}, beam:'光子粉碎',
+    hints:['他是藍色的海洋巨人！','他是蓋亞的好朋友，也是對手。','他一開始想保護地球，卻不想保護人類。'] },
+  { id:'cosmos', era:'heisei', name:'超人力霸王高斯', call:'高斯', base:'#4b8fe0', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#4b8fe0', crest:'fin',
     item:{name:'高斯普拉克', emoji:'🌙'}, beam:'月神光線',
     hints:['他是藍色的溫柔巨人。','他喜歡跟怪獸做朋友，而不是打倒它們。','他可以變成紅色的日冕型！'],
     forms:[
       {name:'慈愛型', color:'#4b8fe0', desc:'藍色的溫柔型態，讓怪獸安靜下來'},
       {name:'日冕型', color:'#e0201f', desc:'紅色的戰鬥型態，力氣很大'},
       {name:'日蝕型', color:'#8b5cf6', desc:'藍色加紅色，最厲害的型態'} ] },
-  { id:'mebius', name:'超人力霸王梅比斯', call:'梅比斯', base:'#e0201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#e0201f', crest:'fin',
+  { id:'justice', era:'heisei', name:'超人力霸王正義', call:'正義', base:'#3b5fd9', accent:'#c9c9c9', accent2:'#8b5cf6', head:'#3b5fd9', crest:'fin',
+    item:null, beam:'勝利光線',
+    hints:['他是高斯的夥伴，也是藍色的！','他的名字就是「正義」。','他和高斯合體會變成雷傑！'] },
+  { id:'legend', era:'heisei', name:'超人力霸王雷傑', call:'雷傑', base:'#c9c9c9', accent:'#ffd23f', accent2:'#2452c9', head:'#c9c9c9', crest:'tiga',
+    item:null, beam:'雷傑光線',
+    hints:['他是高斯和正義合體變成的傳說巨人！','身上有金色和藍色。','只有在最危急的時候才會出現。'] },
+  { id:'nexus', era:'heisei', name:'超人力霸王納克斯（奈克瑟斯）', call:'納克斯', base:'#c9c9c9', accent:'#e0201f', accent2:'#222', head:'#c9c9c9', crest:'fin',
+    item:{name:'進化信賴者', emoji:'🔋'}, beam:'超越光線',
+    hints:['他會把光傳給下一個人繼續戰鬥。','他是銀色的，身上有紅色和黑色的線。','他的真正樣子叫做諾亞。'],
+    forms:[
+      {name:'幼年型', color:'#c9c9c9', desc:'銀色的最初型態'},
+      {name:'成年型', color:'#e0201f', desc:'紅色的戰鬥型態'},
+      {name:'藍色成年型', color:'#2452c9', desc:'藍色的高速型態'} ] },
+  { id:'noa', era:'heisei', name:'超人力霸王諾亞', call:'諾亞', base:'#e8e8e8', accent:'#5ac8ff', accent2:'#ffd23f', head:'#e8e8e8', crest:'fin',
+    item:null, beam:'閃電諾亞',
+    hints:['他是納克斯真正的樣子！','全身銀白色，閃閃發光。','他是傳說中最強的光之巨人之一。'] },
+  { id:'max', era:'heisei', name:'超人力霸王馬克斯（麥克斯）', call:'馬克斯', base:'#e0201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#e0201f', crest:'fin',
+    item:{name:'馬克斯火花', emoji:'⚡'}, beam:'馬克斯光線',
+    hints:['他是最快、最強的超人力霸王！','他的手上有一個會轉的圓盤武器。','他的搭檔是超人力霸王傑諾。'] },
+  { id:'mebius', era:'heisei', name:'超人力霸王梅比斯', call:'梅比斯', base:'#e0201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#e0201f', crest:'fin',
     item:{name:'梅比斯手鐲', emoji:'📿'}, beam:'梅比姆光線',
-    hints:['他是泰羅的學生。','紅色身體、銀色的線條。','他可以變成燃燒勇敢型！'],
+    hints:['他是太郎的學生。','紅色身體、銀色的線條。','他可以變成燃燒勇敢型！'],
     forms:[
       {name:'勇敢型', color:'#e0201f', desc:'跟希卡利合作變成的型態'},
       {name:'燃燒勇敢型', color:'#ff7a00', desc:'火焰般的力量，胸口會發光'},
       {name:'鳳凰勇敢型', color:'#ffd23f', desc:'很多超人力霸王的力量合在一起，金光閃閃'} ] },
-  { id:'zero', name:'超人力霸王賽羅', call:'賽羅', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'zero', protector:true,
-    item:{name:'究極賽羅眼鏡', emoji:'🕶️'}, beam:'集束射線',
-    hints:['他是賽文的兒子！','他的頭上有兩把飛刀。','他常說：「我是超人力霸王賽羅，賽文的兒子！」'],
+  { id:'hikari', era:'heisei', name:'超人力霸王希卡利', call:'希卡利', base:'#1f4fd1', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#1f4fd1', crest:'fin', protector:true,
+    item:{name:'騎士手鐲', emoji:'📿'}, beam:'騎士射線',
+    hints:['他是藍色的超人力霸王！','他是梅比斯的好朋友，也是科學家。','他曾經因為生氣變成黑暗的獵人騎士。'] },
+  { id:'neos', era:'heisei', name:'超人力霸王雷歐斯（涅歐斯）', call:'雷歐斯', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'fin',
+    item:{name:'艾斯特拉', emoji:'🔦'}, beam:'雷歐斯光線',
+    hints:['他的身上有紅色和藍色的線條。','他的搭檔是超人七號21。','他們一起守護地球。'] },
+  { id:'seven21', era:'heisei', name:'超人七號21', call:'超人七號21', base:'#d1201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#d1201f', crest:'slugger', protector:true,
+    item:null, beam:'21光線',
+    hints:['他長得很像超人七號，但是名字多了數字 21！','他是雷歐斯的搭檔。','頭上也有一把飛刀。'] },
+  { id:'zearth', era:'heisei', name:'超人力霸王傑斯', call:'傑斯', base:'#dcdcdc', accent:'#e0201f', accent2:'#ffd23f', head:'#dcdcdc', crest:'fin',
+    item:{name:'皮卡利牙刷', emoji:'🪥'}, beam:'斯佩修雷光線',
+    hints:['他變身用的道具居然是一支牙刷！','他很愛乾淨，最怕髒東西。','他是一位有點搞笑的超人力霸王。'] },
+  { id:'nice', era:'heisei', name:'超人力霸王耐斯', call:'耐斯', base:'#e0201f', accent:'#c9c9c9', accent2:'#ffd23f', head:'#e0201f', crest:'fin',
+    item:{name:'耐斯夢想器', emoji:'🎮'}, beam:'耐斯光線',
+    hints:['他來自 TOY1 號星，很愛玩具！','他常常說「耐斯！」','他很喜歡跟小朋友一起玩。'] },
+  { id:'zero', era:'heisei', name:'超人力霸王傑洛（賽羅）', call:'傑洛', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'zero', protector:true,
+    item:{name:'究極傑洛眼鏡', emoji:'🕶️'}, beam:'集束射線',
+    hints:['他是超人七號的兒子！','他的頭上有兩把飛刀。','他常說：「我是超人力霸王傑洛，超人七號的兒子！」'],
     forms:[
-      {name:'強力賽羅', color:'#e0201f', desc:'紅色的力量型態，像火一樣'},
-      {name:'月神奇蹟賽羅', color:'#2452c9', desc:'藍色的型態，會用超能力'},
-      {name:'究極賽羅', color:'#c9c9c9', desc:'穿上究極鎧甲的型態'},
-      {name:'閃耀賽羅', color:'#ffd23f', desc:'全身金光閃閃，能讓時間倒轉'} ] },
-  { id:'ginga', name:'超人力霸王銀河', call:'銀河', base:'#c9c9c9', accent:'#3b5fd9', accent2:'#e0201f', head:'#c9c9c9', crest:'fin',
+      {name:'強力傑洛', color:'#e0201f', desc:'紅色的力量型態，像火一樣'},
+      {name:'月神奇蹟傑洛', color:'#2452c9', desc:'藍色的型態，會用超能力'},
+      {name:'究極傑洛', color:'#c9c9c9', desc:'穿上究極鎧甲的型態'},
+      {name:'閃耀傑洛', color:'#ffd23f', desc:'全身金光閃閃，能讓時間倒轉'} ] },
+  { id:'saga', era:'heisei', name:'超人力霸王傳奇', call:'傳奇', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'tiga',
+    item:{name:'傳奇手鐲', emoji:'📿'}, beam:'傳奇極限光線',
+    hints:['他是傑洛、帝納、高斯三個人合體變成的！','身上有紅色、藍色和銀色。','他是為了打倒超級怪獸才出現的。'] },
+
+  /* ============================ 新世代 ============================ */
+  { id:'ginga', era:'newgen', name:'超人力霸王銀河', call:'銀河', base:'#c9c9c9', accent:'#3b5fd9', accent2:'#e0201f', head:'#c9c9c9', crest:'fin',
     item:{name:'銀河火花', emoji:'✨'}, beam:'銀河十字射線',
-    hints:['他是從未來來的超人力霸王。','身上有像星星一樣的藍色線條。','他的好夥伴是勝利！'] },
-  { id:'x', name:'超人力霸王艾克斯', call:'艾克斯', base:'#c9c9c9', accent:'#3b8fd9', accent2:'#e0201f', head:'#c9c9c9', crest:'fin',
+    hints:['他是從未來來的超人力霸王。','身上有像星星一樣的藍色線條。','他的好夥伴是勝利！'],
+    forms:[
+      {name:'銀河', color:'#3b5fd9', desc:'銀河本來的樣子'},
+      {name:'銀河閃耀', color:'#e0201f', desc:'借用昭和六位前輩的力量'},
+      {name:'銀河勝利', color:'#c9c9c9', desc:'和勝利合體變成的樣子'} ] },
+  { id:'victory', era:'newgen', name:'超人力霸王勝利', call:'勝利', base:'#e0201f', accent:'#222', accent2:'#c9c9c9', head:'#e0201f', crest:'fin',
+    item:{name:'勝利槍', emoji:'🔫'}, beam:'勝利射線',
+    hints:['他是銀河的好夥伴！','他的手可以變成怪獸的武器。','紅色和黑色的身體，胸口有一個 V。'],
+    forms:[
+      {name:'勝利', color:'#e0201f', desc:'勝利本來的樣子'},
+      {name:'騎士勝利', color:'#ffd23f', desc:'借用希卡利的力量，穿上金色鎧甲'} ] },
+  { id:'gingavictory', era:'newgen', name:'超人力霸王銀河勝利', call:'銀河勝利', base:'#c9c9c9', accent:'#3b5fd9', accent2:'#e0201f', head:'#c9c9c9', crest:'tiga',
+    item:null, beam:'銀河勝利最終光線',
+    hints:['他是銀河和勝利合體變成的！','可以使用很多前輩的招式。','非常非常強！'] },
+  { id:'x', era:'newgen', name:'超人力霸王艾克斯', call:'艾克斯', base:'#c9c9c9', accent:'#3b8fd9', accent2:'#e0201f', head:'#c9c9c9', crest:'fin',
     item:{name:'X裝置', emoji:'📟'}, beam:'贊納迪姆光線',
-    hints:['他曾經住在電腦裡面！','他可以穿上怪獸鎧甲。','他的名字是一個英文字母。'] },
-  { id:'orb', name:'超人力霸王歐布', call:'歐布', base:'#e0201f', accent:'#c9c9c9', accent2:'#3b5fd9', head:'#e0201f', crest:'fin',
+    hints:['他曾經住在電腦裡面！','他可以穿上怪獸鎧甲。','他的名字是一個英文字母。'],
+    forms:[
+      {name:'艾克斯', color:'#3b8fd9', desc:'艾克斯本來的樣子'},
+      {name:'哥莫拉鎧甲', color:'#8a6a3a', desc:'穿上哥莫拉的怪獸鎧甲'},
+      {name:'超越艾克斯', color:'#ffd23f', desc:'和大地心靈相通後的金色型態'} ] },
+  { id:'orb', era:'newgen', name:'超人力霸王歐布', call:'歐布', base:'#e0201f', accent:'#c9c9c9', accent2:'#3b5fd9', head:'#e0201f', crest:'fin',
     item:{name:'歐布圓環', emoji:'💿'}, beam:'斯佩利翁光線',
     hints:['他會借用兩位超人力霸王的力量來變身！','他的人類身分是一個到處旅行的人。','他的變身道具是一個圓環。'],
     forms:[
       {name:'閃耀奧特曼', color:'#e0201f', desc:'借用初代和迪卡的力量'},
-      {name:'燃燒勇者', color:'#ff7a00', desc:'借用泰羅和梅比斯的力量'},
-      {name:'颶風史萊修', color:'#2452c9', desc:'借用傑克和賽羅的力量'},
+      {name:'燃燒勇者', color:'#ff7a00', desc:'借用太郎和梅比斯的力量'},
+      {name:'颶風史萊修', color:'#2452c9', desc:'借用傑克和傑洛的力量'},
       {name:'歐布原生', color:'#c9c9c9', desc:'歐布真正的樣子，會用歐布聖劍'} ] },
-  { id:'geed', name:'超人力霸王捷德', call:'捷德', base:'#e0201f', accent:'#222', accent2:'#c9c9c9', head:'#e0201f', crest:'geed',
+  { id:'geed', era:'newgen', name:'超人力霸王捷德', call:'捷德', base:'#e0201f', accent:'#222', accent2:'#c9c9c9', head:'#e0201f', crest:'geed',
     item:{name:'捷德升華器', emoji:'📟'}, beam:'雷格利姆光線',
     hints:['他是貝利亞的兒子，但他是好人！','他用膠囊來變身。','他的身體有紅色和黑色。'],
     forms:[
       {name:'原始型', color:'#e0201f', desc:'借用初代和貝利亞的力量'},
-      {name:'堅固燃燒', color:'#ff7a00', desc:'借用賽文和雷歐的力量'},
+      {name:'堅固燃燒', color:'#ff7a00', desc:'借用超人七號和雷歐的力量'},
       {name:'敏捷神速', color:'#3b8fd9', desc:'借用希卡利和高斯的力量'},
-      {name:'王者形態', color:'#ffd23f', desc:'借用超人之王的力量，金色的型態'} ] },
-  { id:'rosso', name:'超人力霸王羅索', call:'羅索', base:'#e0201f', accent:'#c9c9c9', accent2:'#ffd23f', head:'#e0201f', crest:'fin',
+      {name:'王者形態', color:'#ffd23f', desc:'借用尊王的力量，金色的型態'} ] },
+  { id:'rosso', era:'newgen', name:'超人力霸王羅索', call:'羅索', base:'#e0201f', accent:'#c9c9c9', accent2:'#ffd23f', head:'#e0201f', crest:'fin',
     item:{name:'羅布陀螺', emoji:'🌀'}, beam:'火焰球射擊',
-    hints:['他是哥哥，弟弟叫布魯！','他是紅色的，會用火的力量。','他們兄弟一起用陀螺變身。'] },
-  { id:'blu', name:'超人力霸王布魯', call:'布魯', base:'#2452c9', accent:'#c9c9c9', accent2:'#ffd23f', head:'#2452c9', crest:'fin',
+    hints:['他是哥哥，弟弟叫布魯！','他是紅色的，會用火的力量。','他們兄弟一起用陀螺變身。'],
+    forms:[
+      {name:'火焰', color:'#e0201f', desc:'借用太郎的力量，用火攻擊'},
+      {name:'水', color:'#2452c9', desc:'借用銀河的力量，用水攻擊'},
+      {name:'風', color:'#8b5cf6', desc:'借用迪卡的力量，速度變快'},
+      {name:'大地', color:'#8a6a3a', desc:'借用勝利的力量，力氣變大'} ] },
+  { id:'blu', era:'newgen', name:'超人力霸王布魯', call:'布魯', base:'#2452c9', accent:'#c9c9c9', accent2:'#ffd23f', head:'#2452c9', crest:'fin',
     item:{name:'羅布陀螺', emoji:'🌀'}, beam:'水流光線',
-    hints:['他是弟弟，哥哥叫羅索！','他是藍色的，會用水的力量。','他們兄弟一起用陀螺變身。'] },
-  { id:'taiga', name:'超人力霸王泰迦', call:'泰迦', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'fin',
-    item:{name:'泰迦火花', emoji:'⚡'}, beam:'斯特利姆爆破',
-    hints:['他是泰羅的兒子！','他有兩個好夥伴：泰塔斯和風馬。','三個人一起組成三重奏。'] },
-  { id:'z', name:'超人力霸王Z（傑特）', call:'傑特', base:'#e0201f', accent:'#c9c9c9', accent2:'#3b5fd9', head:'#e0201f', crest:'fin',
+    hints:['他是弟弟，哥哥叫羅索！','他是藍色的，會用水的力量。','他們兄弟一起用陀螺變身。'],
+    forms:[
+      {name:'水', color:'#2452c9', desc:'借用銀河的力量，用水攻擊'},
+      {name:'火焰', color:'#e0201f', desc:'借用太郎的力量，用火攻擊'},
+      {name:'風', color:'#8b5cf6', desc:'借用迪卡的力量，速度變快'},
+      {name:'大地', color:'#8a6a3a', desc:'借用勝利的力量，力氣變大'} ] },
+  { id:'grigio', era:'newgen', name:'女超人力霸王格麗喬', call:'格麗喬', base:'#8b5cf6', accent:'#c9c9c9', accent2:'#ff6fb5', head:'#8b5cf6', crest:'tiga',
+    item:{name:'羅布陀螺', emoji:'🌀'}, beam:'格麗喬光線',
+    hints:['她是羅索和布魯的妹妹！','紫色和粉紅色的女超人。','三兄妹合體會變成格羅布。'] },
+  { id:'ruebe', era:'newgen', name:'超人力霸王羅布', call:'羅布', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'tiga',
+    item:{name:'羅布光輪', emoji:'🪐'}, beam:'羅布火流光線',
+    hints:['他是羅索和布魯兩兄弟合體變成的！','一半紅色、一半藍色。','兄弟同心，力量加倍！'] },
+  { id:'groob', era:'newgen', name:'超人力霸王格羅布', call:'格羅布', base:'#8b5cf6', accent:'#e0201f', accent2:'#2452c9', head:'#8b5cf6', crest:'tiga',
+    item:null, beam:'格羅布光線',
+    hints:['他是羅索、布魯和格麗喬三兄妹合體變成的！','有紅色、藍色和紫色。','全家一起才能變成他！'] },
+  { id:'taiga', era:'newgen', name:'超人力霸王大河（泰迦）', call:'大河', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'fin',
+    item:{name:'大河火花', emoji:'⚡'}, beam:'斯特利姆爆破',
+    hints:['他是太郎的兒子！','他有兩個好夥伴：泰塔斯和風馬。','三個人一起組成三重奏。'],
+    forms:[
+      {name:'大河', color:'#e0201f', desc:'大河本來的樣子'},
+      {name:'光子大地', color:'#ffd23f', desc:'借用地球的光，變成金色的型態'},
+      {name:'三重奏', color:'#8b5cf6', desc:'大河、泰塔斯、風馬三個人合體'} ] },
+  { id:'titas', era:'newgen', name:'超人力霸王泰塔斯', call:'泰塔斯', base:'#c9c9c9', accent:'#e0201f', accent2:'#ffd23f', head:'#c9c9c9', crest:'fin', protector:true,
+    item:{name:'大河火花', emoji:'⚡'}, beam:'泰塔斯光線',
+    hints:['他是大河的夥伴，肌肉超級大！','他來自 U40 星，力氣最大。','他也是一位很有學問的老師。'] },
+  { id:'fuma', era:'newgen', name:'超人力霸王風馬', call:'風馬', base:'#2452c9', accent:'#222', accent2:'#c9c9c9', head:'#2452c9', crest:'fin',
+    item:{name:'大河火花', emoji:'⚡'}, beam:'風馬手裡劍',
+    hints:['他是大河的夥伴，像忍者一樣快！','藍色和黑色的身體。','他會丟手裡劍！'] },
+  { id:'reiga', era:'newgen', name:'超人力霸王令河', call:'令河', base:'#c9c9c9', accent:'#e0201f', accent2:'#ffd23f', head:'#c9c9c9', crest:'tiga',
+    item:null, beam:'令河終極光線',
+    hints:['他是大河、泰塔斯、風馬和很多新世代超人合體變成的！','金色和銀色，非常閃亮。','只在電影裡出現過。'] },
+  { id:'z', era:'newgen', name:'超人力霸王Z（傑特）', call:'傑特', base:'#e0201f', accent:'#c9c9c9', accent2:'#3b5fd9', head:'#e0201f', crest:'fin',
     item:{name:'Z升華器', emoji:'📟'}, beam:'傑斯提姆光線',
-    hints:['他是賽羅的徒弟！','他變身時會喊：「請跟著我一起喊我的名字！」','他的名字是英文字母 Z。'],
+    hints:['他是傑洛的徒弟！','他變身時會喊：「請跟著我一起喊我的名字！」','他的名字是英文字母 Z。'],
     forms:[
       {name:'原始型', color:'#e0201f', desc:'傑特本來的樣子'},
-      {name:'阿爾法鋸刃', color:'#3b5fd9', desc:'借用賽羅和捷德的力量，速度很快'},
-      {name:'貝塔粉碎', color:'#ff7a00', desc:'借用初代和艾斯的力量，力氣很大'},
+      {name:'阿爾法鋸刃', color:'#3b5fd9', desc:'借用傑洛和捷德的力量，速度很快'},
+      {name:'貝塔粉碎', color:'#ff7a00', desc:'借用初代和衛司的力量，力氣很大'},
       {name:'伽馬未來', color:'#8b5cf6', desc:'借用迪卡、帝納和蓋亞的力量，會用魔法一樣的招式'} ] },
-  { id:'trigger', name:'超人力霸王特利卡', call:'特利卡', base:'#c9c9c9', accent:'#e0201f', accent2:'#6a3fb5', head:'#c9c9c9', crest:'tiga',
+  { id:'trigger', era:'newgen', name:'超人力霸王特利卡', call:'特利卡', base:'#c9c9c9', accent:'#e0201f', accent2:'#6a3fb5', head:'#c9c9c9', crest:'tiga',
     item:{name:'GUTS神光棒', emoji:'🔮'}, beam:'哉佩利敖光線',
     hints:['他長得很像迪卡，是新世代的光之巨人。','他的變身道具是GUTS神光棒。','他也有強力型和空中型！'],
     forms:[
@@ -382,22 +515,78 @@ const ULTRAS = [
       {name:'強力型', color:'#e0201f', desc:'全身變成紅色，力氣最大'},
       {name:'空中型', color:'#6a3fb5', desc:'全身變成紫色，速度最快'},
       {name:'閃耀特利卡', color:'#ffd23f', desc:'全身金光閃閃的永恆型態'} ] },
-  { id:'decker', name:'超人力霸王德卡', call:'德卡', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'fin',
+  { id:'decker', era:'newgen', name:'超人力霸王德卡', call:'德卡', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'fin',
     item:{name:'超人D閃光器', emoji:'🔦'}, beam:'賽爾傑德光線',
     hints:['他長得很像帝納。','他的變身道具是一支閃光器。','他有強力型和奇蹟型！'],
     forms:[
       {name:'閃光型', color:'#c9c9c9', desc:'銀、紅、藍三色的基本型態'},
       {name:'強力型', color:'#e0201f', desc:'全身變成紅色，力氣最大'},
       {name:'奇蹟型', color:'#2452c9', desc:'全身變成藍色，會用超能力'} ] },
-  { id:'blazar', name:'超人力霸王布雷薩', call:'布雷薩', base:'#c9c9c9', accent:'#2452c9', accent2:'#e0201f', head:'#c9c9c9', crest:'fin',
+  { id:'dinas', era:'newgen', name:'超人力霸王帝納斯', call:'帝納斯', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'tiga',
+    item:null, beam:'帝納斯光線',
+    hints:['她是德卡的新夥伴，是一位女超人！','紅色、銀色和藍色。','她在德卡的電影裡出現。'] },
+  { id:'blazar', era:'newgen', name:'超人力霸王Blazar（布雷薩）', call:'布雷薩', base:'#c9c9c9', accent:'#2452c9', accent2:'#e0201f', head:'#c9c9c9', crest:'fin',
     item:{name:'布雷薩手鐲', emoji:'💎'}, beam:'螺旋長槍',
-    hints:['他戰鬥的時候會像野獸一樣大叫！','他會用光做出一支長槍。','他的變身石頭是布雷薩石。'] },
-  { id:'arc', name:'超人力霸王亞克', call:'亞克', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'arc',
-    item:{name:'亞克放大器', emoji:'📐'}, beam:'亞克終結光線',
-    hints:['他是用想像力戰鬥的超人力霸王！','他的頭上有一個像彩虹橋一樣的弧形。','他的變身道具叫亞克放大器。'] },
-  { id:'omega', name:'超人力霸王歐米茄', call:'歐米茄', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'slugger',
-    item:{name:'歐米茄斬擊器', emoji:'🗡️'}, beam:'歐米茄光線',
+    hints:['他戰鬥的時候會像野獸一樣大叫！','他會用光做出一支長槍。','他的變身石頭是布雷薩石。'],
+    forms:[
+      {name:'布雷薩', color:'#2452c9', desc:'布雷薩本來的樣子'},
+      {name:'法德蘭鎧甲', color:'#e0201f', desc:'穿上火龍法德蘭的鎧甲'} ] },
+  { id:'arc', era:'newgen', name:'超人力霸王雅克（亞克）', call:'雅克', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'arc',
+    item:{name:'雅克放大器', emoji:'📐'}, beam:'雅克終結光線',
+    hints:['他是用想像力戰鬥的超人力霸王！','他的頭上有一個像彩虹橋一樣的弧形。','他的變身道具叫雅克放大器。'],
+    forms:[
+      {name:'雅克', color:'#c9c9c9', desc:'雅克本來的樣子'},
+      {name:'索利斯鎧甲', color:'#e0201f', desc:'像太陽一樣的紅色鎧甲，力氣很大'},
+      {name:'露娜鎧甲', color:'#2452c9', desc:'像月亮一樣的藍色鎧甲，速度很快'} ] },
+  { id:'omega', era:'newgen', name:'超人力霸王奧米加（歐米茄）', call:'奧米加', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'slugger',
+    item:{name:'奧米加斬擊器', emoji:'🗡️'}, beam:'奧米加光線',
     hints:['他是最新的超人力霸王！','他的名字是希臘字母的最後一個。','他頭上的斬擊器可以拿下來當武器。'] },
+
+  /* ============================ 海外與其他世界 ============================ */
+  { id:'joneus', era:'overseas', name:'超人力霸王喬尼亞斯', call:'喬尼亞斯', base:'#e0201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#e0201f', crest:'fin',
+    item:{name:'光線閃光器', emoji:'🔦'}, beam:'普拉尼姆光線',
+    hints:['他是第一位卡通動畫的超人力霸王！','他來自 U40 星。','他是泰塔斯的前輩。'] },
+  { id:'great', era:'overseas', name:'超人力霸王葛雷', call:'葛雷', base:'#c9c9c9', accent:'#e0201f', accent2:'#c9c9c9', head:'#c9c9c9', crest:'fin',
+    item:{name:'三角洲血漿', emoji:'🔦'}, beam:'燃燒血漿',
+    hints:['他是在澳洲拍的超人力霸王！','銀色的身體、紅色的線。','他的胸口有一個大大的紅色圖案。'] },
+  { id:'powered', era:'overseas', name:'超人力霸王帕瓦德', call:'帕瓦德', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'fin', eyes:'#5ac8ff',
+    item:{name:'閃光稜鏡', emoji:'🔷'}, beam:'超級斯派修姆光線',
+    hints:['他是在美國拍的超人力霸王！','他的眼睛是藍色的，很特別。','他長得很像初代，但是肌肉更大。'] },
+  { id:'scott', era:'overseas', name:'超人力霸王史考特', call:'史考特', base:'#e0201f', accent:'#c9c9c9', accent2:'#222', head:'#e0201f', crest:'fin',
+    item:null, beam:'史考特光線',
+    hints:['他是美國卡通裡的超人力霸王！','他有兩個好朋友查克和貝絲。','三個人一起組成超人隊。'] },
+  { id:'chuck', era:'overseas', name:'超人力霸王查克', call:'查克', base:'#c9c9c9', accent:'#e0201f', accent2:'#222', head:'#c9c9c9', crest:'fin',
+    item:null, beam:'查克光線',
+    hints:['他是美國卡通裡的超人力霸王！','他是史考特和貝絲的隊友。','銀色的身體、紅色的線。'] },
+  { id:'beth', era:'overseas', name:'女超人力霸王貝絲', call:'貝絲', base:'#e0201f', accent:'#c9c9c9', accent2:'#ffd23f', head:'#e0201f', crest:'tiga',
+    item:null, beam:'貝絲光線',
+    hints:['她是美國卡通裡的女超人力霸王！','她是史考特和查克的隊友。','她會用光線幫大家治療。'] },
+  { id:'boy', era:'overseas', name:'超人力霸王男孩', call:'男孩', base:'#e0201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#e0201f', crest:'fin',
+    item:null, beam:'男孩光線',
+    hints:['他是一個還在長大的小超人力霸王！','他很喜歡學習新知識。','他常常介紹怪獸給大家看。'] },
+  { id:'ribut', era:'overseas', name:'超人力霸王利布特', call:'利布特', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'fin',
+    item:null, beam:'銀河突擊',
+    hints:['他來自馬來西亞的卡通！','他是銀河救援隊的一員。','他會用很厲害的功夫。'] },
+  { id:'regulos', era:'overseas', name:'超人力霸王雷克洛斯', call:'雷克洛斯', base:'#c9c9c9', accent:'#222', accent2:'#3b8fd9', head:'#c9c9c9', crest:'fin',
+    item:null, beam:'宇宙拳法',
+    hints:['他是用拳法戰鬥的超人力霸王！','他來自 D60 星，是利布特的朋友。','他可以變成宇宙猛獸的姿態。'] },
+
+  /* ============================ 黑暗超人 ============================ */
+  { id:'belial', era:'dark', name:'超人力霸王貝利亞', call:'貝利亞', base:'#222', accent:'#e0201f', accent2:'#e0201f', head:'#222', crest:'geed', eyes:'#ff3b3b',
+    item:{name:'千兆戰鬥儀', emoji:'🔱'}, beam:'死亡西姆光線',
+    hints:['他是最有名的壞蛋超人力霸王！','黑色的身體、紅色的線，眼睛是紅色的。','他是捷德的爸爸。'] },
+  { id:'tregear', era:'dark', name:'超人力霸王托雷基亞', call:'托雷基亞', base:'#1a3a8a', accent:'#111', accent2:'#c9c9c9', head:'#1a3a8a', crest:'fin', eyes:'#5ac8ff',
+    item:{name:'托雷基亞之眼', emoji:'👁️'}, beam:'托雷基亞之瞳',
+    hints:['他是藍色和黑色的壞蛋超人！','他以前是太郎的好朋友，後來變壞了。','他是大河的敵人。'] },
+  { id:'eviltiga', era:'dark', name:'邪惡迪卡', call:'邪惡迪卡', base:'#444', accent:'#e0201f', accent2:'#222', head:'#444', crest:'tiga', eyes:'#ff3b3b',
+    item:null, beam:'邪惡射線',
+    hints:['他長得很像迪卡，但是是黑色的！','是一個科學家因為貪心變成的。','眼睛是紅色的。'] },
+  { id:'triggerdark', era:'dark', name:'黑暗特利卡', call:'黑暗特利卡', base:'#333', accent:'#6a3fb5', accent2:'#222', head:'#333', crest:'tiga', eyes:'#ff3b3b',
+    item:null, beam:'黑暗哉佩利敖光線',
+    hints:['他是特利卡的黑暗樣子！','黑色和紫色的身體。','後來他變成了光的特利卡。'] },
+  { id:'zagi', era:'dark', name:'黑暗扎基', call:'黑暗扎基', base:'#222', accent:'#8b5cf6', accent2:'#c9c9c9', head:'#222', crest:'fin', eyes:'#ff3b3b',
+    item:null, beam:'閃電扎基',
+    hints:['他是諾亞的黑暗版本！','他是納克斯故事裡最後的大魔王。','黑色的身體，紫色的線。'] },
 ];
 
 const MONSTERS = [
@@ -416,7 +605,7 @@ const MONSTERS = [
 /* =====================================================================
    狀態、工具
    ===================================================================== */
-const VERSION = '1.1.1';
+const VERSION = '1.2.0';
 const state = {
   stars: parseInt(localStorage.getItem('ultra_stars')||'0',10),
   mode: localStorage.getItem('ultra_mode') || 'little',   // little=弟弟(3選項) big=哥哥(4選項)
@@ -487,7 +676,7 @@ const SFX = {
 
 /* ---------- 繪製超人力霸王 (SVG) ---------- */
 function ultraSVG(u, h=200, cls=''){
-  const {base, accent, accent2=accent, head=base, crest='fin', protector=false} = u;
+  const {base, accent, accent2=accent, head=base, crest='fin', protector=false, eyes='#ffe66d', marks=false} = u;
   let crestSVG='';
   if(crest==='fin') crestSVG=`<path d="M57 8 L60 -2 L63 8 L62 20 L58 20 Z" fill="#cfcfcf" stroke="#888" stroke-width="1"/>`;
   else if(crest==='slugger') crestSVG=`<path d="M46 12 Q60 -6 74 12 L72 16 Q60 4 48 16 Z" fill="#e8e8e8" stroke="#777" stroke-width="1.2"/>`;
@@ -495,6 +684,9 @@ function ultraSVG(u, h=200, cls=''){
   else if(crest==='horn') crestSVG=`<path d="M46 14 L40 -4 L52 10 Z" fill="#e8e8e8" stroke="#777"/><path d="M74 14 L80 -4 L68 10 Z" fill="#e8e8e8" stroke="#777"/><path d="M57 8 L60 0 L63 8 L62 18 L58 18 Z" fill="#cfcfcf" stroke="#888"/>`;
   else if(crest==='tiga') crestSVG=`<path d="M50 10 L60 -2 L70 10 L66 18 L60 8 L54 18 Z" fill="#e8e8e8" stroke="#777"/>`;
   else if(crest==='geed') crestSVG=`<path d="M52 8 L60 -4 L68 8 L64 18 L60 6 L56 18 Z" fill="#e8e8e8" stroke="#777"/><path d="M57 4 L60 -8 L63 4 Z" fill="#ffd23f"/>`;
+  else if(crest==='crown') crestSVG=`<path d="M42 12 L46 -4 L52 8 L60 -8 L68 8 L74 -4 L78 12 Q60 4 42 12 Z" fill="#ffd23f" stroke="#a87400" stroke-width="1.2"/><circle cx="60" cy="-2" r="3" fill="#ff3b3b"/>`;
+  else if(crest==='ace') crestSVG=`<path d="M56 10 L60 -8 L64 10 L62 20 L58 20 Z" fill="#e8e8e8" stroke="#777"/>`;
+  else if(crest==='leo') crestSVG=`<path d="M52 10 L56 -4 L58 8 L60 -8 L62 8 L64 -4 L68 10 L64 18 L56 18 Z" fill="#e8e8e8" stroke="#777"/>`;
   else if(crest==='arc') crestSVG=`<path d="M44 16 Q60 -8 76 16" fill="none" stroke="#e8e8e8" stroke-width="5"/><path d="M44 16 Q60 -8 76 16" fill="none" stroke="#2ec4ff" stroke-width="2"/>`;
   return `<svg class="${cls}" viewBox="-5 -10 130 215" height="${h}" xmlns="http://www.w3.org/2000/svg">
     <defs><filter id="g${u.id}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
@@ -519,14 +711,15 @@ function ultraSVG(u, h=200, cls=''){
     <path d="M32 84 L44 84 L38 100 Z" fill="${accent2}" opacity=".9"/>
     <path d="M88 84 L76 84 L82 100 Z" fill="${accent2}" opacity=".9"/>
     ${protector?`<path d="M40 58 Q60 50 80 58 L78 80 Q60 88 42 80 Z" fill="#d4d4d4" stroke="#8a8a8a" stroke-width="1.5"/>`:''}
+    ${marks?`<circle cx="46" cy="66" r="2.5" fill="#ffd23f"/><circle cx="53" cy="63" r="2.5" fill="#ffd23f"/><circle cx="67" cy="63" r="2.5" fill="#ffd23f"/><circle cx="74" cy="66" r="2.5" fill="#ffd23f"/>`:''}
     <!-- color timer -->
     <circle cx="60" cy="86" r="7.5" fill="#2ec4ff" stroke="#fff" stroke-width="1.5" filter="url(#g${u.id})" class="ctimer-dot"/>
     <!-- neck & head -->
     <rect x="52" y="44" width="16" height="12" fill="${base}"/>
     <ellipse cx="60" cy="30" rx="21" ry="25" fill="${head}"/>
     ${crestSVG}
-    <path d="M41 30 Q49 19 57 31 Q50 38 41 30 Z" fill="#ffe66d" stroke="#fff" stroke-width="1" filter="url(#g${u.id})"/>
-    <path d="M79 30 Q71 19 63 31 Q70 38 79 30 Z" fill="#ffe66d" stroke="#fff" stroke-width="1" filter="url(#g${u.id})"/>
+    <path d="M41 30 Q49 19 57 31 Q50 38 41 30 Z" fill="${eyes}" stroke="#fff" stroke-width="1" filter="url(#g${u.id})"/>
+    <path d="M79 30 Q71 19 63 31 Q70 38 79 30 Z" fill="${eyes}" stroke="#fff" stroke-width="1" filter="url(#g${u.id})"/>
     <path d="M50 46 Q60 50 70 46" stroke="#0004" stroke-width="2" fill="none"/>
   </svg>`;
 }
@@ -624,19 +817,20 @@ function makeFormQ(){
   return { figure: ultraSVG(u,230), question, hints:[], opts, speak:`${question} 是 ${opts.map(o=>o.label).join('？還是 ')}？`, answer:f.name };
 }
 function makeItemQ(){
-  let pool = ULTRAS.filter(u=>!quiz.used.has(u.id) && u.id!=='blu'); if(pool.length<optCount()) pool=ULTRAS.filter(u=>u.id!=='blu');
+  const WITH_ITEM = ULTRAS.filter(u=>u.item);
+  let pool = WITH_ITEM.filter(u=>!quiz.used.has(u.id)); if(pool.length<optCount()) pool=WITH_ITEM;
   const u = pick(pool); quiz.used.add(u.id);
   const dir = Math.random()<0.5 ? 0 : 1;
   if(dir===0){
     // 看道具猜超人
-    const others = shuffle(ULTRAS.filter(x=>x.item.name!==u.item.name)).slice(0,optCount()-1);
+    const others = shuffle(WITH_ITEM.filter(x=>x.item.name!==u.item.name)).slice(0,optCount()-1);
     const opts = shuffle([u,...others]).map(x=>({label:x.call, html:optLabelUltra(x), correct:x.item.name===u.item.name}));
     const question = `「${u.item.name}」是誰的變身道具呢？`;
     return { figure:`<div class="bigemoji">${u.item.emoji}</div>`, question, hints:[`道具名字：${u.item.name}`], opts, speak:`${question} 是 ${opts.map(o=>o.label).join('？還是 ')}？`, answer:u.call };
   }else{
     // 看超人猜道具
     const seen = new Set([u.item.name]);
-    const others = shuffle(ULTRAS).filter(x=>{ if(seen.has(x.item.name)) return false; seen.add(x.item.name); return true; }).slice(0,optCount()-1);
+    const others = shuffle(WITH_ITEM).filter(x=>{ if(seen.has(x.item.name)) return false; seen.add(x.item.name); return true; }).slice(0,optCount()-1);
     const opts = shuffle([u,...others]).map(x=>({label:x.item.name, html:`<span class="oemoji">${x.item.emoji}</span><span>${x.item.name}</span>`, correct:x.item.name===u.item.name}));
     const question = `${u.call} 是用什麼道具變身的呢？`;
     return { figure: ultraSVG(u,230), question, hints:[], opts, speak:`${question} 是 ${opts.map(o=>o.label).join('？還是 ')}？`, answer:u.item.name };
@@ -720,8 +914,9 @@ function startBattle(){
   SFX.click();
   setScreen(`${header()}
     <div class="card">
-      <div class="question">⚔️ 選一位超人力霸王來變身！</div>
-      <div class="grid">${ULTRAS.map(u=>`<div class="hero-card" onclick="chooseHero('${u.id}')">${ultraSVG(u,120)}<div>${u.call}</div></div>`).join('')}</div>
+      <div class="question">⚔️ 選一位超人力霸王來變身！<small style="font-size:15px;opacity:.8;font-weight:700">（共 ${ULTRAS.length} 位）</small></div>
+      ${ERAS.map(e=>`<div class="era-title">${e.title}</div>
+      <div class="grid">${ULTRAS.filter(u=>u.era===e.id).map(u=>`<div class="hero-card" onclick="chooseHero('${u.id}')">${ultraSVG(u,120)}<div>${u.call}</div></div>`).join('')}</div>`).join('')}
       <div class="row">${homeBtn()}</div>
     </div>`);
   say('選一位超人力霸王來變身！');
@@ -731,13 +926,13 @@ function chooseHero(id){
   const u = byId(id); battle.hero=u;
   setScreen(`${header()}
     <div class="card tf" id="tf">
-      <div class="item">${u.item.emoji}</div>
-      <div style="font-size:22px; font-weight:800">拿出「${u.item.name}」！</div>
+      <div class="item">${u.item?u.item.emoji:'✨'}</div>
+      <div style="font-size:22px; font-weight:800">${u.item?`拿出「${u.item.name}」！`:'集中精神，用光的力量變身！'}</div>
       <div class="call">大聲喊：「${u.call}！」</div>
       <button class="btn yellow" style="font-size:30px" onclick="doTransform()">✨ 按下空白鍵 或 點這裡 變身！</button>
       <div class="row">${homeBtn()}</div>
     </div>`, (e)=>{ if(e.code==='Space'||e.key==='Enter'){ e.preventDefault(); doTransform(); } });
-  say(`拿出${u.item.name}！大聲喊：${u.call}！然後按下變身！`);
+  say(u.item?`拿出${u.item.name}！大聲喊：${u.call}！然後按下變身！`:`集中精神！大聲喊：${u.call}！然後按下變身！`);
 }
 let transforming=false;
 function doTransform(){
@@ -920,7 +1115,7 @@ function startMemory(){
   SFX.click();
   const pairs = state.mode==='little' ? 4 : 6;
   // 選出道具名稱不重複的超人
-  const seen=new Set(); const chosen=shuffle(ULTRAS).filter(u=>{ if(seen.has(u.item.name)) return false; seen.add(u.item.name); return true; }).slice(0,pairs);
+  const seen=new Set(); const chosen=shuffle(ULTRAS.filter(u=>u.item)).filter(u=>{ if(seen.has(u.item.name)) return false; seen.add(u.item.name); return true; }).slice(0,pairs);
   const cards = shuffle(chosen.flatMap(u=>[
     {pair:u.id, kind:'hero', html:`${ultraSVG(u,90)}<div>${u.call}</div>`, label:u.call},
     {pair:u.id, kind:'item', html:`<div class="em">${u.item.emoji}</div><div>${u.item.name}</div>`, label:u.item.name},
