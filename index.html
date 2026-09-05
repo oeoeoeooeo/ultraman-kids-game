@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b1033">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>超人力霸王 小英雄遊樂園 v1.1.0</title>
+<style>
+  :root{
+    --bg1:#0b1033; --bg2:#1b2a6b; --card:#182452; --card2:#22347a;
+    --red:#e6332a; --blue:#2ec4ff; --yellow:#ffd23f; --green:#3ddc84; --purple:#8b5cf6;
+    --text:#ffffff;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none;}
+  html,body{margin:0; height:100%;}
+  body{
+    font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(2px 2px at 20% 30%, #fff 50%, transparent 51%),
+      radial-gradient(2px 2px at 70% 15%, #fff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 40% 80%, #fff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 85% 60%, #fff 50%, transparent 51%),
+      radial-gradient(2px 2px at 10% 90%, #fff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 55% 45%, #fff 50%, transparent 51%),
+      radial-gradient(2px 2px at 92% 88%, #fff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 30% 55%, #fff 50%, transparent 51%),
+      linear-gradient(180deg,var(--bg1),var(--bg2));
+    background-attachment:fixed;
+    overflow-x:hidden;
+  }
+  #app{max-width:960px; margin:0 auto; padding:10px 14px 30px; padding-left:max(14px,env(safe-area-inset-left)); padding-right:max(14px,env(safe-area-inset-right)); min-height:100%;}
+  #app.inbattle{padding-bottom:8px; max-width:1100px;}
+
+  /* ---------- header ---------- */
+  .top{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; flex-wrap:nowrap;}
+  .top .title{font-size:clamp(16px,4vw,30px); font-weight:900; letter-spacing:1px; text-shadow:0 2px 0 #000a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .top .title span{color:var(--yellow);}
+  .stars{background:#0008; padding:6px 14px; border-radius:999px; font-size:clamp(15px,2.5vw,20px); font-weight:800; border:2px solid var(--yellow); white-space:nowrap; flex:none;}
+  .stars small{font-size:14px; opacity:.85;}
+  .toolbar{display:flex; gap:8px; flex-wrap:wrap;}
+  .pill{background:#0008; border:2px solid #fff4; color:#fff; border-radius:999px; padding:6px 12px; font-size:15px; font-weight:700; cursor:pointer;}
+  .pill.on{border-color:var(--green); background:#3ddc8433;}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    border:none; cursor:pointer; color:#fff; font-weight:900; font-size:clamp(18px,3vw,24px);
+    padding:16px 22px; border-radius:20px; text-shadow:0 2px 0 #0006;
+    background:linear-gradient(180deg,#ff6b5e,#d81e1e); box-shadow:0 6px 0 #8a1010, 0 10px 20px #0006;
+    transition:transform .08s, box-shadow .08s; position:relative;
+  }
+  .btn:active{transform:translateY(5px); box-shadow:0 1px 0 #8a1010, 0 4px 10px #0006;}
+  .btn.blue{background:linear-gradient(180deg,#5ad6ff,#1a84d8); box-shadow:0 6px 0 #0b4f8a, 0 10px 20px #0006;}
+  .btn.blue:active{box-shadow:0 1px 0 #0b4f8a;}
+  .btn.green{background:linear-gradient(180deg,#5cf0a0,#14a85a); box-shadow:0 6px 0 #0a6b38, 0 10px 20px #0006;}
+  .btn.green:active{box-shadow:0 1px 0 #0a6b38;}
+  .btn.yellow{background:linear-gradient(180deg,#ffe27a,#f0a500); box-shadow:0 6px 0 #9a6a00, 0 10px 20px #0006; color:#3a2500; text-shadow:none;}
+  .btn.yellow:active{box-shadow:0 1px 0 #9a6a00;}
+  .btn.purple{background:linear-gradient(180deg,#b48cff,#6d3fd6); box-shadow:0 6px 0 #3b1e80, 0 10px 20px #0006;}
+  .btn.purple:active{box-shadow:0 1px 0 #3b1e80;}
+  .btn.grey{background:linear-gradient(180deg,#8a97b8,#4d5a7d); box-shadow:0 6px 0 #2a3247, 0 10px 20px #0006;}
+  .btn.grey:active{box-shadow:0 1px 0 #2a3247;}
+  .btn.small{font-size:16px; padding:10px 16px; border-radius:14px; box-shadow:0 4px 0 #0006;}
+  .btn:disabled{filter:grayscale(.8) brightness(.6); cursor:default; transform:none;}
+
+  /* ---------- home ---------- */
+  .menu{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:12px;}
+  .menu .btn{display:flex; flex-direction:column; align-items:center; gap:6px; padding:26px 16px; min-height:150px;}
+  .menu .btn .ico{font-size:52px; line-height:1;}
+  .menu .btn small{font-size:14px; font-weight:600; opacity:.9;}
+  .menu .btn .txt{display:flex; flex-direction:column; gap:4px; align-items:center;}
+  .ver{text-align:center; opacity:.55; font-size:13px; margin-top:18px; letter-spacing:1px;}
+  .intro{background:#0008; border-radius:18px; padding:14px 18px; margin-top:16px; font-size:16px; line-height:1.7; border:2px solid #fff2;}
+  .settings{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px;}
+
+  /* ---------- quiz ---------- */
+  .card{background:var(--card); border-radius:24px; padding:18px; border:3px solid #ffffff22; box-shadow:0 10px 30px #0008;}
+  .qhead{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-weight:800;}
+  .progress{display:flex; gap:6px;}
+  .progress i{width:16px; height:16px; border-radius:50%; background:#fff3; display:inline-block;}
+  .progress i.ok{background:var(--green);} .progress i.cur{background:var(--yellow); box-shadow:0 0 10px var(--yellow);}
+  .qbody{display:flex; gap:20px; align-items:center; flex-wrap:wrap; justify-content:center;}
+  .figure{background:radial-gradient(circle,#ffffff22,transparent 70%); border-radius:20px; padding:10px; display:flex; align-items:center; justify-content:center; min-width:180px;}
+  .figure .bigemoji{font-size:clamp(70px,14vh,120px); line-height:1.1; filter:drop-shadow(0 6px 10px #000a);}
+  .figure svg{height:clamp(150px,30vh,230px); width:auto;}
+  .qtext{flex:1; min-width:240px;}
+  .question{font-size:clamp(22px,3.5vw,30px); font-weight:900; line-height:1.4; margin:8px 0;}
+  .hint{background:#ffd23f22; border-left:6px solid var(--yellow); padding:8px 12px; border-radius:10px; margin:6px 0; font-size:18px;}
+  .options{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:16px;}
+  .opt{
+    background:linear-gradient(180deg,#3350a8,#22347a); border:3px solid #ffffff33; color:#fff; border-radius:20px;
+    padding:14px; font-size:clamp(18px,3vw,24px); font-weight:800; cursor:pointer; display:flex; align-items:center; gap:12px; justify-content:center;
+    min-height:76px; box-shadow:0 5px 0 #0f1a45; transition:transform .1s;
+  }
+  .opt:active{transform:translateY(3px);}
+  .opt .mini svg{height:70px; width:auto;}
+  .opt .oemoji{font-size:38px;}
+  .opt .dot{width:26px; height:26px; border-radius:50%; border:3px solid #fff; display:inline-block; flex:none;}
+  .opt.right{background:linear-gradient(180deg,#5cf0a0,#14a85a); border-color:#fff; animation:pop .5s;}
+  .opt.wrong{background:linear-gradient(180deg,#8a3a3a,#5a1e1e); opacity:.6; animation:shake .4s;}
+  .opt:disabled{cursor:default;}
+  .feedback{text-align:center; font-size:26px; font-weight:900; min-height:40px; margin-top:12px;}
+  .row{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:18px;}
+
+  /* ---------- result ---------- */
+  .result{text-align:center; padding:30px 10px;}
+  .result .big{font-size:clamp(34px,7vw,64px); font-weight:900; text-shadow:0 4px 0 #0008;}
+  .result .starsrow{font-size:clamp(34px,7vw,60px); margin:10px 0; letter-spacing:4px;}
+
+  /* ---------- select hero ---------- */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; margin-top:12px;}
+  .hero-card{background:var(--card); border:3px solid #ffffff22; border-radius:18px; padding:8px; text-align:center; cursor:pointer; transition:transform .1s; font-weight:800; font-size:16px;}
+  .hero-card:hover{transform:scale(1.05); border-color:var(--yellow);}
+  .hero-card svg{height:120px; width:auto;}
+
+  /* ---------- transform ---------- */
+  .tf{text-align:center; padding:20px 10px; min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;}
+  .tf .item{font-size:130px; line-height:1; filter:drop-shadow(0 0 30px #fff8); animation:float 1.6s ease-in-out infinite;}
+  .tf .call{font-size:clamp(30px,6vw,56px); font-weight:900; color:var(--yellow); text-shadow:0 0 20px #ffd23f88;}
+  .flash{position:fixed; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:50;}
+  .flash.go{animation:flash 1.2s ease-out forwards;}
+  .rise{animation:rise 1.4s ease-out forwards;}
+  .hero-big svg{height:min(60vh,420px); width:auto; filter:drop-shadow(0 0 30px #2ec4ff88);}
+
+  /* ---------- battle ---------- */
+  .battle{position:relative; display:flex; flex-direction:column; gap:6px; height:calc(100vh - 18px); height:calc(100dvh - 18px); min-height:420px;}
+  .bhud{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .bhud .stars{font-size:15px; padding:4px 10px;}
+  .bhud .home{margin-left:auto;}
+  .hud{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;}
+  .hearts{font-size:28px; letter-spacing:2px;}
+  .ctimer{display:flex; align-items:center; gap:8px; background:#0008; padding:6px 14px; border-radius:999px; font-size:24px; font-weight:900;}
+  .ctimer .lamp{width:22px; height:22px; border-radius:50%; background:var(--blue); box-shadow:0 0 14px var(--blue);}
+  .ctimer.danger .lamp{background:var(--red); box-shadow:0 0 14px var(--red); animation:blink .5s infinite;}
+  .ctimer.danger{color:#ff8a80;}
+  .hpwrap{flex:1; min-width:160px; background:#0008; border-radius:999px; height:26px; border:2px solid #fff6; overflow:hidden; position:relative;}
+  .hpwrap .bar{height:100%; background:linear-gradient(90deg,#ff4d4d,#ffb347); transition:width .25s; }
+  .hpwrap .lbl{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; text-shadow:0 1px 2px #000;}
+  .arena{
+    position:relative; flex:1; min-height:140px; border-radius:24px; overflow:hidden; border:3px solid #ffffff22; container-type:size;
+    background:linear-gradient(180deg,#26386f 0%, #4a5f9d 55%, #7a6a52 56%, #5a4a38 100%);
+  }
+  .arena .city{position:absolute; bottom:44%; left:0; right:0; height:70px; background:
+    linear-gradient(90deg, transparent 0 4%, #1c2748 4% 10%, transparent 10% 13%, #1c2748 13% 22%, transparent 22% 26%, #1c2748 26% 31%, transparent 31% 36%, #1c2748 36% 46%, transparent 46% 50%, #1c2748 50% 57%, transparent 57% 60%, #1c2748 60% 70%, transparent 70% 74%, #1c2748 74% 80%, transparent 80% 84%, #1c2748 84% 93%, transparent 93%);
+    opacity:.8;}
+  .hero{position:absolute; left:6%; bottom:6%; transition:transform .12s; filter:drop-shadow(0 10px 10px #0008);}
+  .hero svg{height:min(38vh,300px); height:min(72cqh,42cqw,360px); width:auto;}
+  .hero.attack{transform:translateX(60px) rotate(-8deg);}
+  .hero.block{transform:scale(.95); filter:drop-shadow(0 0 20px var(--blue));}
+  .hero.hurt{animation:shake .4s;}
+  .monster{position:absolute; right:6%; bottom:8%; text-align:center; transition:transform .12s;}
+  .monster .memoji{font-size:min(28vh,190px); font-size:min(48cqh,34cqw,220px); line-height:1; filter:drop-shadow(0 10px 10px #0008);}
+  .monster .mname{font-weight:900; font-size:clamp(13px,2.5vw,20px); background:#000a; border-radius:10px; padding:2px 10px; display:inline-block;}
+  .monster.hit{animation:hit .3s;}
+  .monster.attacking{transform:translateX(-50px) scale(1.08);}
+  .monster.dead{animation:spinout 1.4s forwards;}
+  .beam{position:absolute; left:22%; right:22%; top:38%; height:40px; border-radius:20px; opacity:0; pointer-events:none;
+    background:linear-gradient(90deg,#fff,#2ec4ff,#fff,#2ec4ff,#fff); box-shadow:0 0 40px #2ec4ff, 0 0 80px #fff;}
+  .beam.fire{animation:beam .9s ease-out forwards;}
+  .warn{position:absolute; top:8%; left:50%; transform:translateX(-50%); background:#ffd23f; color:#3a2500; font-weight:900; font-size:clamp(20px,4vw,30px); padding:8px 18px; border-radius:16px; display:none; animation:blink .4s infinite;}
+  .warn.show{display:block;}
+  .msg{text-align:center; font-size:clamp(17px,3.5vw,26px); font-weight:900; min-height:1.4em; margin:2px 0; text-shadow:0 2px 0 #000;}
+  .energy{background:#0008; border-radius:999px; height:22px; border:2px solid #fff6; overflow:hidden; margin:0; position:relative; flex:none;}
+  .energy .ebar{height:100%; background:linear-gradient(90deg,#2ec4ff,#fff); transition:width .2s; width:0;}
+  .energy.full .ebar{animation:blink .5s infinite;}
+  .energy .lbl{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; text-shadow:0 1px 2px #000;}
+  .controls{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; flex:none;}
+  .ctl{display:flex; flex-direction:column; align-items:center; gap:2px; padding:12px 6px; font-size:clamp(16px,2.6vw,22px); line-height:1.15;}
+  .ctl small{font-size:13px; opacity:.9; font-weight:700;}
+  .keys{font-size:13px; opacity:.85; text-align:center; margin:0; line-height:1.5;}
+  .keys b{color:var(--yellow);}
+  .shake{animation:shake .4s;}
+  /* ---------- 大螢幕：競技場固定高度，不拉滿 ---------- */
+  @media (min-width:900px) and (min-height:760px){
+    .battle{height:auto; min-height:0;}
+    .arena{flex:none; height:480px;}
+  }
+  /* ---------- 直立方向：競技場依寬度定高，角色放大 ---------- */
+  @media (orientation:portrait){
+    .battle{height:auto; min-height:0;}
+    .arena{flex:none; height:min(50vh,105vw);}
+    .hero svg{height:min(78cqh,44cqw,420px);}
+    .monster .memoji{font-size:min(52cqh,36cqw,260px);}
+  }
+  /* ---------- 手機直立 ---------- */
+  @media (max-width:600px){
+    #app{padding:8px 10px 24px;}
+    .card{padding:12px; border-radius:18px;}
+    .menu{gap:10px;}
+    .menu .btn{flex-direction:row; justify-content:flex-start; text-align:left; gap:14px; min-height:0; padding:14px 16px;}
+    .menu .btn .ico{font-size:38px;}
+    .menu .btn .txt{align-items:flex-start; gap:2px;}
+    .menu .btn small{font-size:13px;}
+    .settings{gap:6px;} .pill{font-size:13px; padding:5px 10px;}
+    .intro{font-size:14px; padding:10px 12px;}
+    .question{font-size:20px;} .hint{font-size:15px; padding:6px 10px;}
+    .qbody{gap:8px;} .figure{min-width:0; padding:4px;}
+    .figure svg{height:clamp(120px,24vh,180px);} .figure .bigemoji{font-size:clamp(64px,12vh,96px);}
+    .options{grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
+    .opt{min-height:62px; font-size:17px; padding:8px; gap:6px; border-radius:14px;}
+    .opt .mini svg{height:46px;} .opt .oemoji{font-size:26px;} .opt .dot{width:20px; height:20px;}
+    .feedback{font-size:20px;}
+    .grid{grid-template-columns:repeat(3,1fr); gap:8px;}
+    .hero-card svg{height:84px;} .hero-card{font-size:14px; padding:6px; border-radius:14px;}
+    .tf{padding:10px 6px; gap:10px; min-height:0;} .tf .item{font-size:96px;} .tf .btn{font-size:22px !important;}
+    .hero{left:3%;} .monster{right:3%;}
+    .hearts{font-size:22px;} .ctimer{font-size:18px; padding:4px 10px;} .ctimer .lamp{width:16px; height:16px;}
+    .bhud{gap:6px;} .bhud .home{padding:6px 12px; font-size:15px;} .bhud .stars{font-size:14px; padding:3px 8px;}
+    .hpwrap{height:22px; min-width:120px;} .hpwrap .lbl{font-size:12px;}
+    .ctl small{font-size:11px;}
+    .keys{display:none;}
+    .result .big{font-size:32px;}
+  }
+  /* ---------- 手機橫向 ---------- */
+  @media (orientation:landscape) and (max-height:520px){
+    #app{padding:6px 10px 10px;}
+    .top{margin-bottom:6px;} .top .title{font-size:18px;} .stars{font-size:14px; padding:4px 10px;}
+    .menu{grid-template-columns:repeat(3,1fr); gap:8px;}
+    .menu .btn{min-height:0; padding:10px; gap:2px;} .menu .btn .ico{font-size:30px;} .menu .btn small{display:none;}
+    .intro{display:none;}
+    .card{padding:10px;}
+    .qbody{flex-wrap:nowrap;} .figure svg{height:clamp(110px,40vh,180px);} .figure .bigemoji{font-size:70px;}
+    .question{font-size:19px; margin:2px 0;} .hint{font-size:14px; padding:4px 10px; margin:4px 0;}
+    .options{grid-template-columns:repeat(4,1fr); gap:8px; margin-top:8px;}
+    .opt{min-height:52px; font-size:16px; padding:6px;} .opt .mini svg{height:40px;} .opt .oemoji{font-size:24px;}
+    .grid{grid-template-columns:repeat(6,1fr); gap:8px;} .hero-card svg{height:72px;} .hero-card{font-size:13px;}
+    .tf{min-height:0; padding:8px; gap:6px;} .tf .item{font-size:64px; animation:none;} .tf .call{font-size:24px;}
+    .hero-big svg{height:38vh;}
+    .battle{display:grid; grid-template-columns:1fr 180px; grid-template-rows:auto 1fr auto auto; gap:6px 10px; height:calc(100dvh - 12px); min-height:0;}
+    .bhud{grid-column:1/-1;} .bhud .stars{display:none;}
+    .arena{grid-column:1; grid-row:2/5; border-radius:16px;}
+    .controls{grid-column:2; grid-row:2; grid-template-columns:1fr; align-content:start; gap:8px;}
+    .ctl{padding:8px 4px; font-size:17px;} .ctl small{font-size:11px;}
+    .msg{grid-column:2; grid-row:3; font-size:15px;}
+    .energy{grid-column:2; grid-row:4; height:18px;} .energy .lbl{font-size:11px;}
+    .keys{display:none;}
+    .hearts{font-size:20px;} .ctimer{font-size:16px; padding:3px 10px;} .ctimer .lamp{width:14px; height:14px;}
+    .hpwrap{height:20px;} .hpwrap .lbl{font-size:12px;}
+    .mgrid{max-width:520px;} .mgrid.six{grid-template-columns:repeat(6,1fr);}
+    .mcard{aspect-ratio:1/1;}
+    .result{padding:10px;} .result .big{font-size:30px;} .result .hero-big svg{height:30vh;} .result .starsrow{font-size:32px; margin:4px 0;}
+  }
+
+  /* ---------- memory ---------- */
+  .mgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:12px auto 0; max-width:720px; width:100%;}
+  @media (min-width:600px){.mgrid.six{grid-template-columns:repeat(6,1fr);}}
+  .mgrid.four{max-width:520px;}
+  .mcard{aspect-ratio:3/4; perspective:800px; cursor:pointer;}
+  .mcard .inner{position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d;}
+  .mcard.flip .inner{transform:rotateY(180deg);}
+  .mcard .face{position:absolute; inset:0; border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; backface-visibility:hidden; border:3px solid #ffffff33; font-weight:800; font-size:14px; text-align:center; padding:4px;}
+  .mcard .back{background:linear-gradient(135deg,#d81e1e,#7a1010); font-size:44px; color:#ffd23f; text-shadow:0 2px 0 #000a;}
+  .mcard .front{background:var(--card2); transform:rotateY(180deg);}
+  .mcard .front svg{height:60%; width:auto;}
+  .mcard .front .em{font-size:44px; line-height:1;}
+  .mcard.done .front{background:linear-gradient(180deg,#14a85a,#0a6b38); border-color:#fff;}
+
+  /* ---------- animations ---------- */
+  @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
+  @keyframes hit{0%{transform:translateX(0) rotate(0)}50%{transform:translateX(20px) rotate(8deg); filter:brightness(2)}100%{transform:translateX(0)}}
+  @keyframes flash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+  @keyframes rise{0%{transform:scale(.2) rotate(-20deg); opacity:0}60%{transform:scale(1.1); opacity:1}100%{transform:scale(1)}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  @keyframes beam{0%{opacity:1; transform:scaleX(0); transform-origin:left}30%{opacity:1; transform:scaleX(1)}100%{opacity:0; transform:scaleX(1)}}
+  @keyframes spinout{0%{transform:rotate(0) scale(1); opacity:1}100%{transform:rotate(720deg) scale(0) translateY(-300px); opacity:0}}
+  @keyframes fall{0%{transform:translateY(-20px) rotate(0)}100%{transform:translateY(110vh) rotate(720deg)}}
+  .confetti{position:fixed; top:0; width:12px; height:18px; z-index:60; pointer-events:none; animation:fall linear forwards;}
+  .fade{animation:fadein .4s;}
+  @keyframes fadein{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="flash" id="flash"></div>
+
+<script>
+/* =====================================================================
+   資料：超人力霸王、型態、變身道具、怪獸
+   ===================================================================== */
+const ULTRAS = [
+  { id:'shodai', name:'初代超人力霸王', call:'初代', base:'#dcdcdc', accent:'#e0201f', accent2:'#e0201f', head:'#d6d6d6', crest:'fin',
+    item:{name:'貝塔膠囊', emoji:'🔦'}, beam:'斯派修姆光線',
+    hints:['他是最早出現的超人力霸王！','銀色的身體、紅色的條紋。','把手臂交叉成十字，就會發射斯派修姆光線！'] },
+  { id:'seven', name:'超人力霸王七號（賽文）', call:'賽文', base:'#d1201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#d1201f', crest:'slugger', protector:true,
+    item:{name:'究極眼鏡', emoji:'🕶️'}, beam:'寬幅光線',
+    hints:['他頭上有一把可以飛出去的刀！','紅色的身體、銀色的護甲。','他是賽羅的爸爸！'] },
+  { id:'taro', name:'超人力霸王泰羅', call:'泰羅', base:'#d1201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#d1201f', crest:'horn', protector:true,
+    item:{name:'超人徽章', emoji:'🏅'}, beam:'斯特利姆光線',
+    hints:['他的頭上有兩隻角！','他是超人之父和超人之母的孩子。','他是梅比斯的老師！'] },
+  { id:'tiga', name:'超人力霸王迪卡', call:'迪卡', base:'#c9c9c9', accent:'#e0201f', accent2:'#6a3fb5', head:'#c9c9c9', crest:'tiga',
+    item:{name:'神光棒', emoji:'🔮'}, beam:'哉佩利敖光線',
+    hints:['他有銀色、紫色和紅色三種顏色。','他可以變成強力型和空中型！','他是從石像裡醒來的光之巨人。'],
+    forms:[
+      {name:'複合型', color:'#c9c9c9', desc:'銀、紫、紅三色平衡的基本型態'},
+      {name:'強力型', color:'#e0201f', desc:'全身變成紅色，力氣最大'},
+      {name:'空中型', color:'#6a3fb5', desc:'全身變成紫色，速度最快'} ] },
+  { id:'dyna', name:'超人力霸王帝納', call:'帝納', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'fin',
+    item:{name:'閃光器', emoji:'🔦'}, beam:'索爾捷特光線',
+    hints:['他跟迪卡很像，但是有藍色的部分。','他的隊伍叫做超級GUTS。','他可以變成強力型和奇蹟型！'],
+    forms:[
+      {name:'閃光型', color:'#c9c9c9', desc:'銀、紅、藍三色的基本型態'},
+      {name:'強力型', color:'#e0201f', desc:'全身變成紅色，力氣最大'},
+      {name:'奇蹟型', color:'#2452c9', desc:'全身變成藍色，會用超能力'} ] },
+  { id:'gaia', name:'超人力霸王蓋亞', call:'蓋亞', base:'#e0201f', accent:'#c9c9c9', accent2:'#222', head:'#e0201f', crest:'fin',
+    item:{name:'艾斯普蘭達', emoji:'📱'}, beam:'量子流線',
+    hints:['他是守護地球的紅色巨人。','他有一個好朋友叫阿古茹，是藍色的。','他的變身道具叫艾斯普蘭達。'],
+    forms:[
+      {name:'V1', color:'#e0201f', desc:'一開始的基本型態'},
+      {name:'V2', color:'#e0201f', desc:'變得更強、更多銀色的型態'},
+      {name:'至高型', color:'#6a3fb5', desc:'加入阿古茹的力量，變成藍紫色的最強型態'} ] },
+  { id:'cosmos', name:'超人力霸王高斯', call:'高斯', base:'#4b8fe0', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#4b8fe0', crest:'fin',
+    item:{name:'高斯普拉克', emoji:'🌙'}, beam:'月神光線',
+    hints:['他是藍色的溫柔巨人。','他喜歡跟怪獸做朋友，而不是打倒它們。','他可以變成紅色的日冕型！'],
+    forms:[
+      {name:'慈愛型', color:'#4b8fe0', desc:'藍色的溫柔型態，讓怪獸安靜下來'},
+      {name:'日冕型', color:'#e0201f', desc:'紅色的戰鬥型態，力氣很大'},
+      {name:'日蝕型', color:'#8b5cf6', desc:'藍色加紅色，最厲害的型態'} ] },
+  { id:'mebius', name:'超人力霸王梅比斯', call:'梅比斯', base:'#e0201f', accent:'#c9c9c9', accent2:'#c9c9c9', head:'#e0201f', crest:'fin',
+    item:{name:'梅比斯手鐲', emoji:'📿'}, beam:'梅比姆光線',
+    hints:['他是泰羅的學生。','紅色身體、銀色的線條。','他可以變成燃燒勇敢型！'],
+    forms:[
+      {name:'勇敢型', color:'#e0201f', desc:'跟希卡利合作變成的型態'},
+      {name:'燃燒勇敢型', color:'#ff7a00', desc:'火焰般的力量，胸口會發光'},
+      {name:'鳳凰勇敢型', color:'#ffd23f', desc:'很多超人力霸王的力量合在一起，金光閃閃'} ] },
+  { id:'zero', name:'超人力霸王賽羅', call:'賽羅', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'zero', protector:true,
+    item:{name:'究極賽羅眼鏡', emoji:'🕶️'}, beam:'集束射線',
+    hints:['他是賽文的兒子！','他的頭上有兩把飛刀。','他常說：「我是超人力霸王賽羅，賽文的兒子！」'],
+    forms:[
+      {name:'強力賽羅', color:'#e0201f', desc:'紅色的力量型態，像火一樣'},
+      {name:'月神奇蹟賽羅', color:'#2452c9', desc:'藍色的型態，會用超能力'},
+      {name:'究極賽羅', color:'#c9c9c9', desc:'穿上究極鎧甲的型態'},
+      {name:'閃耀賽羅', color:'#ffd23f', desc:'全身金光閃閃，能讓時間倒轉'} ] },
+  { id:'ginga', name:'超人力霸王銀河', call:'銀河', base:'#c9c9c9', accent:'#3b5fd9', accent2:'#e0201f', head:'#c9c9c9', crest:'fin',
+    item:{name:'銀河火花', emoji:'✨'}, beam:'銀河十字射線',
+    hints:['他是從未來來的超人力霸王。','身上有像星星一樣的藍色線條。','他的好夥伴是勝利！'] },
+  { id:'x', name:'超人力霸王艾克斯', call:'艾克斯', base:'#c9c9c9', accent:'#3b8fd9', accent2:'#e0201f', head:'#c9c9c9', crest:'fin',
+    item:{name:'X裝置', emoji:'📟'}, beam:'贊納迪姆光線',
+    hints:['他曾經住在電腦裡面！','他可以穿上怪獸鎧甲。','他的名字是一個英文字母。'] },
+  { id:'orb', name:'超人力霸王歐布', call:'歐布', base:'#e0201f', accent:'#c9c9c9', accent2:'#3b5fd9', head:'#e0201f', crest:'fin',
+    item:{name:'歐布圓環', emoji:'💿'}, beam:'斯佩利翁光線',
+    hints:['他會借用兩位超人力霸王的力量來變身！','他的人類身分是一個到處旅行的人。','他的變身道具是一個圓環。'],
+    forms:[
+      {name:'閃耀奧特曼', color:'#e0201f', desc:'借用初代和迪卡的力量'},
+      {name:'燃燒勇者', color:'#ff7a00', desc:'借用泰羅和梅比斯的力量'},
+      {name:'颶風史萊修', color:'#2452c9', desc:'借用傑克和賽羅的力量'},
+      {name:'歐布原生', color:'#c9c9c9', desc:'歐布真正的樣子，會用歐布聖劍'} ] },
+  { id:'geed', name:'超人力霸王捷德', call:'捷德', base:'#e0201f', accent:'#222', accent2:'#c9c9c9', head:'#e0201f', crest:'geed',
+    item:{name:'捷德升華器', emoji:'📟'}, beam:'雷格利姆光線',
+    hints:['他是貝利亞的兒子，但他是好人！','他用膠囊來變身。','他的身體有紅色和黑色。'],
+    forms:[
+      {name:'原始型', color:'#e0201f', desc:'借用初代和貝利亞的力量'},
+      {name:'堅固燃燒', color:'#ff7a00', desc:'借用賽文和雷歐的力量'},
+      {name:'敏捷神速', color:'#3b8fd9', desc:'借用希卡利和高斯的力量'},
+      {name:'王者形態', color:'#ffd23f', desc:'借用超人之王的力量，金色的型態'} ] },
+  { id:'rosso', name:'超人力霸王羅索', call:'羅索', base:'#e0201f', accent:'#c9c9c9', accent2:'#ffd23f', head:'#e0201f', crest:'fin',
+    item:{name:'羅布陀螺', emoji:'🌀'}, beam:'火焰球射擊',
+    hints:['他是哥哥，弟弟叫布魯！','他是紅色的，會用火的力量。','他們兄弟一起用陀螺變身。'] },
+  { id:'blu', name:'超人力霸王布魯', call:'布魯', base:'#2452c9', accent:'#c9c9c9', accent2:'#ffd23f', head:'#2452c9', crest:'fin',
+    item:{name:'羅布陀螺', emoji:'🌀'}, beam:'水流光線',
+    hints:['他是弟弟，哥哥叫羅索！','他是藍色的，會用水的力量。','他們兄弟一起用陀螺變身。'] },
+  { id:'taiga', name:'超人力霸王泰迦', call:'泰迦', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'fin',
+    item:{name:'泰迦火花', emoji:'⚡'}, beam:'斯特利姆爆破',
+    hints:['他是泰羅的兒子！','他有兩個好夥伴：泰塔斯和風馬。','三個人一起組成三重奏。'] },
+  { id:'z', name:'超人力霸王Z（傑特）', call:'傑特', base:'#e0201f', accent:'#c9c9c9', accent2:'#3b5fd9', head:'#e0201f', crest:'fin',
+    item:{name:'Z升華器', emoji:'📟'}, beam:'傑斯提姆光線',
+    hints:['他是賽羅的徒弟！','他變身時會喊：「請跟著我一起喊我的名字！」','他的名字是英文字母 Z。'],
+    forms:[
+      {name:'原始型', color:'#e0201f', desc:'傑特本來的樣子'},
+      {name:'阿爾法鋸刃', color:'#3b5fd9', desc:'借用賽羅和捷德的力量，速度很快'},
+      {name:'貝塔粉碎', color:'#ff7a00', desc:'借用初代和艾斯的力量，力氣很大'},
+      {name:'伽馬未來', color:'#8b5cf6', desc:'借用迪卡、帝納和蓋亞的力量，會用魔法一樣的招式'} ] },
+  { id:'trigger', name:'超人力霸王特利卡', call:'特利卡', base:'#c9c9c9', accent:'#e0201f', accent2:'#6a3fb5', head:'#c9c9c9', crest:'tiga',
+    item:{name:'GUTS神光棒', emoji:'🔮'}, beam:'哉佩利敖光線',
+    hints:['他長得很像迪卡，是新世代的光之巨人。','他的變身道具是GUTS神光棒。','他也有強力型和空中型！'],
+    forms:[
+      {name:'複合型', color:'#c9c9c9', desc:'銀、紫、紅三色的基本型態'},
+      {name:'強力型', color:'#e0201f', desc:'全身變成紅色，力氣最大'},
+      {name:'空中型', color:'#6a3fb5', desc:'全身變成紫色，速度最快'},
+      {name:'閃耀特利卡', color:'#ffd23f', desc:'全身金光閃閃的永恆型態'} ] },
+  { id:'decker', name:'超人力霸王德卡', call:'德卡', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'fin',
+    item:{name:'超人D閃光器', emoji:'🔦'}, beam:'賽爾傑德光線',
+    hints:['他長得很像帝納。','他的變身道具是一支閃光器。','他有強力型和奇蹟型！'],
+    forms:[
+      {name:'閃光型', color:'#c9c9c9', desc:'銀、紅、藍三色的基本型態'},
+      {name:'強力型', color:'#e0201f', desc:'全身變成紅色，力氣最大'},
+      {name:'奇蹟型', color:'#2452c9', desc:'全身變成藍色，會用超能力'} ] },
+  { id:'blazar', name:'超人力霸王布雷薩', call:'布雷薩', base:'#c9c9c9', accent:'#2452c9', accent2:'#e0201f', head:'#c9c9c9', crest:'fin',
+    item:{name:'布雷薩手鐲', emoji:'💎'}, beam:'螺旋長槍',
+    hints:['他戰鬥的時候會像野獸一樣大叫！','他會用光做出一支長槍。','他的變身石頭是布雷薩石。'] },
+  { id:'arc', name:'超人力霸王亞克', call:'亞克', base:'#c9c9c9', accent:'#e0201f', accent2:'#2452c9', head:'#c9c9c9', crest:'arc',
+    item:{name:'亞克放大器', emoji:'📐'}, beam:'亞克終結光線',
+    hints:['他是用想像力戰鬥的超人力霸王！','他的頭上有一個像彩虹橋一樣的弧形。','他的變身道具叫亞克放大器。'] },
+  { id:'omega', name:'超人力霸王歐米茄', call:'歐米茄', base:'#e0201f', accent:'#c9c9c9', accent2:'#2452c9', head:'#e0201f', crest:'slugger',
+    item:{name:'歐米茄斬擊器', emoji:'🗡️'}, beam:'歐米茄光線',
+    hints:['他是最新的超人力霸王！','他的名字是希臘字母的最後一個。','他頭上的斬擊器可以拿下來當武器。'] },
+];
+
+const MONSTERS = [
+  { name:'巴爾坦星人', emoji:'🦀', hp:10, desc:'手是大剪刀的外星人，會「呵呵呵」地笑' },
+  { name:'哥莫拉', emoji:'🦖', hp:12, desc:'尾巴超有力的古代怪獸' },
+  { name:'雷德王', emoji:'🦍', hp:12, desc:'力氣超大的怪獸之王' },
+  { name:'傑頓', emoji:'👾', hp:16, desc:'最強的宇宙恐龍' },
+  { name:'艾雷王', emoji:'🦎', hp:10, desc:'會放電的怪獸' },
+  { name:'金古橋', emoji:'🤖', hp:14, desc:'超級硬的宇宙機器人' },
+  { name:'哥爾贊', emoji:'🐊', hp:11, desc:'皮很厚的超古代怪獸' },
+  { name:'泰蘭特', emoji:'🐉', hp:14, desc:'很多怪獸合成的暴君' },
+  { name:'達達', emoji:'👽', hp:8, desc:'會變臉的奇怪外星人' },
+  { name:'貝利亞', emoji:'👹', hp:18, desc:'邪惡的黑暗超人' },
+];
+
+/* =====================================================================
+   狀態、工具
+   ===================================================================== */
+const VERSION = '1.1.0';
+const state = {
+  stars: parseInt(localStorage.getItem('ultra_stars')||'0',10),
+  mode: localStorage.getItem('ultra_mode') || 'little',   // little=弟弟(3選項) big=哥哥(4選項)
+  voice: localStorage.getItem('ultra_voice') !== '0',
+  keyHandler: null,
+  cleanup: null,
+};
+const app = document.getElementById('app');
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
+const optCount = () => state.mode==='little' ? 3 : 4;
+const byId = id => ULTRAS.find(u=>u.id===id);
+function addStars(n){ state.stars += n; localStorage.setItem('ultra_stars', state.stars); const el=document.getElementById('starcount'); if(el) el.textContent=state.stars; }
+function saveSettings(){ localStorage.setItem('ultra_mode', state.mode); localStorage.setItem('ultra_voice', state.voice?'1':'0'); }
+
+/* ---------- 語音朗讀 ---------- */
+let zhVoice = null;
+function loadVoices(){
+  const vs = speechSynthesis.getVoices();
+  zhVoice = vs.find(v=>v.lang==='zh-TW') || vs.find(v=>/zh[-_]TW/i.test(v.lang)) || vs.find(v=>/^zh/i.test(v.lang)) || null;
+}
+if('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+function say(text, rate=0.95){
+  if(!state.voice || !('speechSynthesis' in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-TW'; u.rate = rate; u.pitch = 1.05;
+    if(zhVoice) u.voice = zhVoice;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ---------- 音效 (Web Audio) ---------- */
+let actx = null;
+function ac(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx && actx.state==='suspended') actx.resume(); return actx; }
+function tone(freq, dur=0.15, type='square', vol=0.15, slideTo=null, when=0){
+  const c=ac(); if(!c) return;
+  const o=c.createOscillator(), g=c.createGain();
+  o.type=type; o.frequency.setValueAtTime(freq, c.currentTime+when);
+  if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, c.currentTime+when+dur);
+  g.gain.setValueAtTime(vol, c.currentTime+when); g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+when+dur);
+  o.connect(g); g.connect(c.destination); o.start(c.currentTime+when); o.stop(c.currentTime+when+dur+0.02);
+}
+function noise(dur=0.12, vol=0.2){
+  const c=ac(); if(!c) return;
+  const buf=c.createBuffer(1, c.sampleRate*dur, c.sampleRate); const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
+  const s=c.createBufferSource(); s.buffer=buf; const g=c.createGain(); g.gain.value=vol;
+  const f=c.createBiquadFilter(); f.type='lowpass'; f.frequency.value=900;
+  s.connect(f); f.connect(g); g.connect(c.destination); s.start();
+}
+const SFX = {
+  click(){ tone(600,0.06,'square',0.08); },
+  correct(){ tone(523,0.12,'square',0.12); tone(659,0.12,'square',0.12,null,0.12); tone(784,0.2,'square',0.12,null,0.24); tone(1046,0.3,'square',0.12,null,0.36); },
+  wrong(){ tone(200,0.25,'sawtooth',0.12,120); },
+  punch(){ noise(0.1,0.25); tone(140,0.1,'square',0.15,60); },
+  block(){ tone(880,0.08,'triangle',0.15); tone(1320,0.12,'triangle',0.15,null,0.08); },
+  hurt(){ tone(300,0.3,'sawtooth',0.15,80); noise(0.2,0.2); },
+  beam(){ tone(300,0.9,'sawtooth',0.15,1800); tone(200,0.9,'square',0.1,1200); noise(0.6,0.15); },
+  transform(){ for(let i=0;i<8;i++) tone(300+i*120,0.12,'square',0.1,null,i*0.08); tone(400,1.2,'sawtooth',0.12,2400,0.6); },
+  win(){ [523,659,784,1046,784,1046,1318].forEach((f,i)=>tone(f,0.18,'square',0.12,null,i*0.13)); },
+  lose(){ [400,350,300,250].forEach((f,i)=>tone(f,0.3,'triangle',0.12,null,i*0.25)); },
+  tick(){ tone(1200,0.05,'square',0.06); },
+  flip(){ tone(700,0.06,'triangle',0.1,900); },
+  roar(){ tone(120,0.6,'sawtooth',0.18,60); noise(0.5,0.25); },
+};
+
+/* ---------- 繪製超人力霸王 (SVG) ---------- */
+function ultraSVG(u, h=200, cls=''){
+  const {base, accent, accent2=accent, head=base, crest='fin', protector=false} = u;
+  let crestSVG='';
+  if(crest==='fin') crestSVG=`<path d="M57 8 L60 -2 L63 8 L62 20 L58 20 Z" fill="#cfcfcf" stroke="#888" stroke-width="1"/>`;
+  else if(crest==='slugger') crestSVG=`<path d="M46 12 Q60 -6 74 12 L72 16 Q60 4 48 16 Z" fill="#e8e8e8" stroke="#777" stroke-width="1.2"/>`;
+  else if(crest==='zero') crestSVG=`<path d="M44 14 Q52 -2 60 8 L58 14 Q52 8 47 17 Z" fill="#e8e8e8" stroke="#777"/><path d="M76 14 Q68 -2 60 8 L62 14 Q68 8 73 17 Z" fill="#e8e8e8" stroke="#777"/>`;
+  else if(crest==='horn') crestSVG=`<path d="M46 14 L40 -4 L52 10 Z" fill="#e8e8e8" stroke="#777"/><path d="M74 14 L80 -4 L68 10 Z" fill="#e8e8e8" stroke="#777"/><path d="M57 8 L60 0 L63 8 L62 18 L58 18 Z" fill="#cfcfcf" stroke="#888"/>`;
+  else if(crest==='tiga') crestSVG=`<path d="M50 10 L60 -2 L70 10 L66 18 L60 8 L54 18 Z" fill="#e8e8e8" stroke="#777"/>`;
+  else if(crest==='geed') crestSVG=`<path d="M52 8 L60 -4 L68 8 L64 18 L60 6 L56 18 Z" fill="#e8e8e8" stroke="#777"/><path d="M57 4 L60 -8 L63 4 Z" fill="#ffd23f"/>`;
+  else if(crest==='arc') crestSVG=`<path d="M44 16 Q60 -8 76 16" fill="none" stroke="#e8e8e8" stroke-width="5"/><path d="M44 16 Q60 -8 76 16" fill="none" stroke="#2ec4ff" stroke-width="2"/>`;
+  return `<svg class="${cls}" viewBox="-5 -10 130 215" height="${h}" xmlns="http://www.w3.org/2000/svg">
+    <defs><filter id="g${u.id}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <!-- legs -->
+    <rect x="40" y="128" width="17" height="62" rx="8" fill="${base}"/>
+    <rect x="63" y="128" width="17" height="62" rx="8" fill="${base}"/>
+    <rect x="40" y="152" width="17" height="9" fill="${accent}"/>
+    <rect x="63" y="152" width="17" height="9" fill="${accent}"/>
+    <rect x="37" y="184" width="23" height="12" rx="5" fill="${accent}"/>
+    <rect x="60" y="184" width="23" height="12" rx="5" fill="${accent}"/>
+    <!-- arms -->
+    <rect x="14" y="64" width="17" height="62" rx="8" fill="${base}"/>
+    <rect x="89" y="64" width="17" height="62" rx="8" fill="${base}"/>
+    <rect x="14" y="88" width="17" height="9" fill="${accent}"/>
+    <rect x="89" y="88" width="17" height="9" fill="${accent}"/>
+    <rect x="12" y="116" width="21" height="14" rx="6" fill="${accent2}"/>
+    <rect x="87" y="116" width="21" height="14" rx="6" fill="${accent2}"/>
+    <!-- torso -->
+    <path d="M30 60 Q60 48 90 60 L86 134 L34 134 Z" fill="${base}"/>
+    <path d="M30 60 L60 96 L90 60 L90 74 L60 110 L30 74 Z" fill="${accent}"/>
+    <path d="M34 134 L60 112 L86 134 Z" fill="${accent2}"/>
+    <path d="M32 84 L44 84 L38 100 Z" fill="${accent2}" opacity=".9"/>
+    <path d="M88 84 L76 84 L82 100 Z" fill="${accent2}" opacity=".9"/>
+    ${protector?`<path d="M40 58 Q60 50 80 58 L78 80 Q60 88 42 80 Z" fill="#d4d4d4" stroke="#8a8a8a" stroke-width="1.5"/>`:''}
+    <!-- color timer -->
+    <circle cx="60" cy="86" r="7.5" fill="#2ec4ff" stroke="#fff" stroke-width="1.5" filter="url(#g${u.id})" class="ctimer-dot"/>
+    <!-- neck & head -->
+    <rect x="52" y="44" width="16" height="12" fill="${base}"/>
+    <ellipse cx="60" cy="30" rx="21" ry="25" fill="${head}"/>
+    ${crestSVG}
+    <path d="M41 30 Q49 19 57 31 Q50 38 41 30 Z" fill="#ffe66d" stroke="#fff" stroke-width="1" filter="url(#g${u.id})"/>
+    <path d="M79 30 Q71 19 63 31 Q70 38 79 30 Z" fill="#ffe66d" stroke="#fff" stroke-width="1" filter="url(#g${u.id})"/>
+    <path d="M50 46 Q60 50 70 46" stroke="#0004" stroke-width="2" fill="none"/>
+  </svg>`;
+}
+
+/* ---------- 版面共用 ---------- */
+function header(){
+  return `<div class="top">
+    <div class="title">🌟 超人力霸王 <span>小英雄遊樂園</span></div>
+    <div class="toolbar">
+      <div class="stars">⭐ <span id="starcount">${state.stars}</span> <small>顆星</small></div>
+    </div>
+  </div>`;
+}
+function setScreen(html, keyHandler=null){
+  if(state.cleanup){ state.cleanup(); state.cleanup=null; }
+  if(state.keyHandler){ window.removeEventListener('keydown', state.keyHandler); }
+  state.keyHandler = keyHandler;
+  if(keyHandler) window.addEventListener('keydown', keyHandler);
+  app.innerHTML = html;
+  app.classList.toggle('inbattle', html.includes('class="battle"'));
+  app.classList.remove('fade'); void app.offsetWidth; app.classList.add('fade');
+  window.scrollTo(0,0);
+}
+function confetti(n=70){
+  const colors=['#e6332a','#2ec4ff','#ffd23f','#3ddc84','#8b5cf6','#fff'];
+  for(let i=0;i<n;i++){
+    const d=document.createElement('div'); d.className='confetti';
+    d.style.left=Math.random()*100+'vw'; d.style.background=pick(colors);
+    d.style.animationDuration=(1.8+Math.random()*1.8)+'s'; d.style.animationDelay=(Math.random()*0.6)+'s';
+    d.style.borderRadius=Math.random()>0.5?'50%':'3px';
+    document.body.appendChild(d); setTimeout(()=>d.remove(),4000);
+  }
+}
+function homeBtn(){ return `<button class="btn grey small" onclick="goHome()">🏠 回首頁</button>`; }
+
+/* =====================================================================
+   首頁
+   ===================================================================== */
+function goHome(){
+  speechSynthesis && speechSynthesis.cancel();
+  setScreen(`${header()}
+    <div class="menu">
+      <button class="btn" onclick="startQuiz('char')"><span class="ico">🦸</span><span class="txt">猜猜我是誰<small>看顏色和提示，猜出超人力霸王</small></span></button>
+      <button class="btn purple" onclick="startQuiz('form')"><span class="ico">🌈</span><span class="txt">猜型態<small>強力型？空中型？誰的力量？</small></span></button>
+      <button class="btn blue" onclick="startQuiz('item')"><span class="ico">🔦</span><span class="txt">猜變身道具<small>貝塔膠囊、神光棒、升華器…</small></span></button>
+      <button class="btn yellow" onclick="startBattle()"><span class="ico">⚔️</span><span class="txt">變身！怪獸決鬥<small>選超人、變身、打倒怪獸（可兩人一起玩）</small></span></button>
+      <button class="btn green" onclick="startMemory()"><span class="ico">🃏</span><span class="txt">翻牌配對<small>把超人和他的變身道具找出來</small></span></button>
+    </div>
+    <div class="settings">
+      <span style="font-weight:800">誰在玩？</span>
+      <button class="pill ${state.mode==='little'?'on':''}" onclick="setMode('little')">👶 弟弟模式（3個選項）</button>
+      <button class="pill ${state.mode==='big'?'on':''}" onclick="setMode('big')">👦 哥哥模式（4個選項）</button>
+      <button class="pill ${state.voice?'on':''}" onclick="toggleVoice()">🔊 唸出題目：${state.voice?'開':'關'}</button>
+    </div>
+    <div class="intro">
+      💡 <b>怎麼玩：</b>用滑鼠點、用手指按，或用鍵盤都可以。答對就得 ⭐，答錯沒關係，可以再試一次！<br>
+      🎮 <b>怪獸決鬥鍵盤：</b>哥哥用 <b>A</b> 攻擊、<b>S</b> 防禦；弟弟用 <b>L</b> 攻擊、<b>K</b> 防禦；能量滿了按 <b>空白鍵</b> 發射必殺光線！
+    </div>
+    <div class="ver">超人力霸王 小英雄遊樂園　v${VERSION}</div>`);
+}
+function setMode(m){ state.mode=m; saveSettings(); SFX.click(); goHome(); }
+function toggleVoice(){ state.voice=!state.voice; saveSettings(); SFX.click(); if(state.voice) say('語音打開了！'); goHome(); }
+
+/* =====================================================================
+   猜謎（角色 / 型態 / 道具）
+   ===================================================================== */
+const quiz = { type:'char', idx:0, total:5, correct:0, q:null, firstTry:true, hintN:1, used:new Set() };
+
+function startQuiz(type){
+  SFX.click();
+  Object.assign(quiz,{type, idx:0, correct:0, used:new Set()});
+  nextQuestion();
+}
+function optLabelUltra(u){ return `<span class="mini">${ultraSVG(u,70)}</span><span>${u.call}</span>`; }
+
+function makeCharQ(){
+  let pool = ULTRAS.filter(u=>!quiz.used.has(u.id)); if(pool.length<optCount()) pool=ULTRAS;
+  const u = pick(pool); quiz.used.add(u.id);
+  const others = shuffle(ULTRAS.filter(x=>x.id!==u.id && x.call!==u.call)).slice(0,optCount()-1);
+  const opts = shuffle([u,...others]).map(x=>({label:x.call, html:`<span>${x.call}</span>`, correct:x.id===u.id}));
+  return { figure: ultraSVG(u,230), question:'這位超人力霸王是誰呢？', hints:u.hints, opts, speak:`這位超人力霸王是誰呢？提示：${u.hints[0]}` , answer:u.call };
+}
+function makeFormQ(){
+  const FU = ULTRAS.filter(u=>u.forms);
+  let pool = FU.filter(u=>!quiz.used.has(u.id)); if(pool.length===0) pool=FU;
+  const u = pick(pool); quiz.used.add(u.id);
+  const f = pick(u.forms);
+  let others = shuffle(u.forms.filter(x=>x!==f)).slice(0,optCount()-1);
+  if(others.length<optCount()-1){
+    const extra = shuffle(FU.filter(x=>x!==u).flatMap(x=>x.forms).filter(x=>!u.forms.some(y=>y.name===x.name)));
+    others = others.concat(extra.slice(0,optCount()-1-others.length));
+  }
+  const opts = shuffle([f,...others]).map(x=>({label:x.name, html:`<span class="dot" style="background:${x.color}"></span><span>${x.name}</span>`, correct:x===f}));
+  const question = `${u.call} 的「${f.desc}」，是哪一個型態？`;
+  return { figure: ultraSVG(u,230), question, hints:[], opts, speak:`${question} 是 ${opts.map(o=>o.label).join('？還是 ')}？`, answer:f.name };
+}
+function makeItemQ(){
+  let pool = ULTRAS.filter(u=>!quiz.used.has(u.id) && u.id!=='blu'); if(pool.length<optCount()) pool=ULTRAS.filter(u=>u.id!=='blu');
+  const u = pick(pool); quiz.used.add(u.id);
+  const dir = Math.random()<0.5 ? 0 : 1;
+  if(dir===0){
+    // 看道具猜超人
+    const others = shuffle(ULTRAS.filter(x=>x.item.name!==u.item.name)).slice(0,optCount()-1);
+    const opts = shuffle([u,...others]).map(x=>({label:x.call, html:optLabelUltra(x), correct:x.item.name===u.item.name}));
+    const question = `「${u.item.name}」是誰的變身道具呢？`;
+    return { figure:`<div class="bigemoji">${u.item.emoji}</div>`, question, hints:[`道具名字：${u.item.name}`], opts, speak:`${question} 是 ${opts.map(o=>o.label).join('？還是 ')}？`, answer:u.call };
+  }else{
+    // 看超人猜道具
+    const seen = new Set([u.item.name]);
+    const others = shuffle(ULTRAS).filter(x=>{ if(seen.has(x.item.name)) return false; seen.add(x.item.name); return true; }).slice(0,optCount()-1);
+    const opts = shuffle([u,...others]).map(x=>({label:x.item.name, html:`<span class="oemoji">${x.item.emoji}</span><span>${x.item.name}</span>`, correct:x.item.name===u.item.name}));
+    const question = `${u.call} 是用什麼道具變身的呢？`;
+    return { figure: ultraSVG(u,230), question, hints:[], opts, speak:`${question} 是 ${opts.map(o=>o.label).join('？還是 ')}？`, answer:u.item.name };
+  }
+}
+
+function nextQuestion(){
+  if(quiz.idx>=quiz.total){ return quizResult(); }
+  quiz.q = quiz.type==='char'?makeCharQ(): quiz.type==='form'?makeFormQ(): makeItemQ();
+  quiz.firstTry=true; quiz.hintN=1;
+  const titles = {char:'🦸 猜猜我是誰', form:'🌈 猜型態', item:'🔦 猜變身道具'};
+  const prog = Array.from({length:quiz.total},(_,i)=>`<i class="${i<quiz.idx?'ok':i===quiz.idx?'cur':''}"></i>`).join('');
+  setScreen(`${header()}
+    <div class="card">
+      <div class="qhead"><span>${titles[quiz.type]}　第 ${quiz.idx+1} 題</span><span class="progress">${prog}</span></div>
+      <div class="qbody">
+        <div class="figure">${quiz.q.figure}</div>
+        <div class="qtext">
+          <div class="question">${quiz.q.question} <button class="pill" onclick="say(quiz.q.speak)">🔊</button></div>
+          <div id="hints">${quiz.q.hints.length?`<div class="hint">💡 ${quiz.q.hints[0]}</div>`:''}</div>
+          ${quiz.q.hints.length>1?`<button class="btn yellow small" id="morehint" onclick="moreHint()">💡 再一個提示</button>`:''}
+        </div>
+      </div>
+      <div class="options">${quiz.q.opts.map((o,i)=>`<button class="opt" data-i="${i}" onclick="answer(${i},this)">${o.html}</button>`).join('')}</div>
+      <div class="feedback" id="fb"></div>
+      <div class="row">${homeBtn()}</div>
+    </div>`, (e)=>{
+      // 鍵盤 1~4 選答案
+      const n = parseInt(e.key,10);
+      if(n>=1 && n<=quiz.q.opts.length){ const b=document.querySelector(`.opt[data-i="${n-1}"]`); if(b && !b.disabled) answer(n-1,b); }
+    });
+  say(quiz.q.speak);
+}
+function moreHint(){
+  SFX.click();
+  const h = quiz.q.hints[quiz.hintN]; if(!h) return;
+  quiz.hintN++;
+  document.getElementById('hints').insertAdjacentHTML('beforeend', `<div class="hint">💡 ${h}</div>`);
+  say(h);
+  if(quiz.hintN>=quiz.q.hints.length){ const b=document.getElementById('morehint'); if(b) b.remove(); }
+}
+function answer(i, btn){
+  const o = quiz.q.opts[i]; const fb=document.getElementById('fb');
+  if(o.correct){
+    SFX.correct(); btn.classList.add('right');
+    document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+    const gained = quiz.firstTry?2:1;
+    addStars(gained); quiz.correct++;
+    fb.innerHTML = `🎉 答對了！是「${quiz.q.answer}」！ +${gained}⭐`;
+    say(`答對了！是${quiz.q.answer}！`);
+    if(quiz.firstTry) confetti(30);
+    quiz.idx++;
+    setTimeout(nextQuestion, 1800);
+  }else{
+    SFX.wrong(); btn.classList.add('wrong'); btn.disabled=true; quiz.firstTry=false;
+    fb.textContent = '❌ 不是這個，再試一次！';
+    say('再試一次！');
+  }
+}
+function quizResult(){
+  SFX.win(); confetti(120);
+  const starsRow = '⭐'.repeat(Math.max(1,quiz.correct));
+  setScreen(`${header()}
+    <div class="card result">
+      <div class="big">太棒了！小英雄！</div>
+      <div class="starsrow">${starsRow}</div>
+      <div style="font-size:24px; font-weight:800">你完成了 ${quiz.total} 題挑戰！</div>
+      <div class="row">
+        <button class="btn green" onclick="startQuiz('${quiz.type}')">🔁 再玩一次</button>
+        ${homeBtn()}
+      </div>
+    </div>`);
+  say('太棒了，小英雄！你完成了挑戰！');
+}
+
+/* =====================================================================
+   變身！怪獸決鬥
+   ===================================================================== */
+const battle = {};
+function startBattle(){
+  SFX.click();
+  setScreen(`${header()}
+    <div class="card">
+      <div class="question">⚔️ 選一位超人力霸王來變身！</div>
+      <div class="grid">${ULTRAS.map(u=>`<div class="hero-card" onclick="chooseHero('${u.id}')">${ultraSVG(u,120)}<div>${u.call}</div></div>`).join('')}</div>
+      <div class="row">${homeBtn()}</div>
+    </div>`);
+  say('選一位超人力霸王來變身！');
+}
+function chooseHero(id){
+  SFX.click();
+  const u = byId(id); battle.hero=u;
+  setScreen(`${header()}
+    <div class="card tf" id="tf">
+      <div class="item">${u.item.emoji}</div>
+      <div style="font-size:22px; font-weight:800">拿出「${u.item.name}」！</div>
+      <div class="call">大聲喊：「${u.call}！」</div>
+      <button class="btn yellow" style="font-size:30px" onclick="doTransform()">✨ 按下空白鍵 或 點這裡 變身！</button>
+      <div class="row">${homeBtn()}</div>
+    </div>`, (e)=>{ if(e.code==='Space'||e.key==='Enter'){ e.preventDefault(); doTransform(); } });
+  say(`拿出${u.item.name}！大聲喊：${u.call}！然後按下變身！`);
+}
+let transforming=false;
+function doTransform(){
+  if(transforming) return; transforming=true;
+  const u=battle.hero;
+  SFX.transform();
+  const fl=document.getElementById('flash'); fl.classList.remove('go'); void fl.offsetWidth; fl.classList.add('go');
+  say(`${u.call}！`, 1.1);
+  setTimeout(()=>{
+    setScreen(`${header()}
+      <div class="card tf">
+        <div class="hero-big rise">${ultraSVG(u,400)}</div>
+        <div class="call">咻哇——！${u.name} 登場！</div>
+      </div>`);
+    setTimeout(()=>{ transforming=false; monsterAppear(); }, 2200);
+  }, 500);
+}
+function monsterAppear(){
+  const m = pick(MONSTERS); battle.monster = m;
+  SFX.roar();
+  setScreen(`${header()}
+    <div class="card tf">
+      <div class="item shake" style="animation:shake .5s 3">${m.emoji}</div>
+      <div class="call" style="color:#ff8a80">怪獸「${m.name}」出現了！</div>
+      <div style="font-size:20px">${m.desc}</div>
+      <button class="btn" style="font-size:28px" onclick="beginFight()">⚔️ 開始戰鬥！（空白鍵）</button>
+    </div>`, (e)=>{ if(e.code==='Space'||e.key==='Enter'){ e.preventDefault(); beginFight(); } });
+  say(`怪獸${m.name}出現了！${m.desc}。準備戰鬥！`);
+}
+
+function beginFight(){
+  const u=battle.hero, m=battle.monster;
+  Object.assign(battle,{ hp:m.hp, maxHp:m.hp, hearts:3, time:45, energy:0, maxEnergy:8, over:false, warning:false, blocking:false, lastAttack:0, timers:[] });
+  setScreen(`
+    <div class="battle">
+      <div class="bhud">
+        <div class="hearts" id="hearts">❤️❤️❤️</div>
+        <div class="ctimer" id="ctimer"><div class="lamp"></div><span id="time">45</span> 秒</div>
+        <div class="hpwrap"><div class="bar" id="hpbar" style="width:100%"></div><div class="lbl">${m.name} 的體力</div></div>
+        <div class="stars">⭐ <span id="starcount">${state.stars}</span></div>
+        <button class="btn grey small home" onclick="goHome()">🏠</button>
+      </div>
+      <div class="arena" id="arena">
+        <div class="city"></div>
+        <div class="warn" id="warn">⚠️ 怪獸要攻擊了！快按 防禦！</div>
+        <div class="hero" id="hero">${ultraSVG(u,300)}</div>
+        <div class="beam" id="beam"></div>
+        <div class="monster" id="monster"><div class="memoji">${m.emoji}</div><div class="mname">${m.name}</div></div>
+      </div>
+      <div class="msg" id="msg">戰鬥開始！用力攻擊怪獸！</div>
+      <div class="energy" id="energy"><div class="ebar" id="ebar"></div><div class="lbl" id="elbl">能量 0 / 8</div></div>
+      <div class="controls">
+        <button class="btn ctl" onclick="act('attack')">👊 攻擊<small>A 或 L</small></button>
+        <button class="btn blue ctl" onclick="act('block')">🛡️ 防禦<small>S 或 K</small></button>
+        <button class="btn yellow ctl" id="beambtn" onclick="act('beam')" disabled>✨ ${u.beam}<small>空白鍵</small></button>
+      </div>
+      <div class="keys">👦 哥哥：<b>A</b> 攻擊 <b>S</b> 防禦　｜　👶 弟弟：<b>L</b> 攻擊 <b>K</b> 防禦　｜　能量滿了按 <b>空白鍵</b> 發射 ${u.beam}！</div>
+    </div>`, (e)=>{
+      if(e.repeat) return;
+      const k=e.key.toLowerCase();
+      if(k==='a'||k==='l'||k==='j'||k==='f') act('attack');
+      else if(k==='s'||k==='k'||k==='d'||k==='arrowdown') act('block');
+      else if(e.code==='Space'||k==='enter'){ e.preventDefault(); act('beam'); }
+    });
+  state.cleanup = ()=>{ battle.over=true; battle.timers.forEach(clearTimeout); clearInterval(battle.tick); };
+  say('戰鬥開始！用力攻擊怪獸！');
+  battle.tick = setInterval(()=>{
+    if(battle.over) return;
+    battle.time--; const t=document.getElementById('time'); if(t) t.textContent=battle.time;
+    if(battle.time<=10){ document.getElementById('ctimer').classList.add('danger'); SFX.tick(); }
+    if(battle.time<=0) endBattle(false, '叮…叮…時間到了！超人力霸王飛回光之國休息了。再挑戰一次吧！');
+  },1000);
+  scheduleMonsterAttack();
+}
+function setMsg(t){ const m=document.getElementById('msg'); if(m) m.textContent=t; }
+function updateHUD(){
+  const hb=document.getElementById('hpbar'); if(hb) hb.style.width=Math.max(0,battle.hp/battle.maxHp*100)+'%';
+  const eb=document.getElementById('ebar'); if(eb) eb.style.width=(battle.energy/battle.maxEnergy*100)+'%';
+  const el=document.getElementById('elbl'); if(el) el.textContent=battle.energy>=battle.maxEnergy?'能量滿了！發射必殺光線！':`能量 ${battle.energy} / ${battle.maxEnergy}`;
+  const en=document.getElementById('energy'); if(en) en.classList.toggle('full', battle.energy>=battle.maxEnergy);
+  const bb=document.getElementById('beambtn'); if(bb) bb.disabled = battle.energy<battle.maxEnergy;
+  const h=document.getElementById('hearts'); if(h) h.textContent='❤️'.repeat(battle.hearts)+'🖤'.repeat(3-battle.hearts);
+}
+function act(kind){
+  if(battle.over) return;
+  const hero=document.getElementById('hero'), mon=document.getElementById('monster');
+  if(kind==='attack'){
+    const now=Date.now(); if(now-battle.lastAttack<120) return; battle.lastAttack=now;
+    SFX.punch();
+    hero.classList.remove('attack'); void hero.offsetWidth; hero.classList.add('attack');
+    mon.classList.remove('hit'); void mon.offsetWidth; mon.classList.add('hit');
+    setTimeout(()=>hero.classList.remove('attack'),130);
+    battle.hp-=1; battle.energy=Math.min(battle.maxEnergy, battle.energy+1);
+    setMsg(pick(['喝！','嘿呀！','咻哇！','踢！','打中了！']));
+    updateHUD();
+    if(battle.energy>=battle.maxEnergy && !battle.saidFull){ battle.saidFull=true; say('能量滿了！按空白鍵發射必殺光線！'); }
+    if(battle.hp<=0) endBattle(true);
+  }else if(kind==='block'){
+    hero.classList.add('block'); battle.blocking=true;
+    setTimeout(()=>{ hero.classList.remove('block'); battle.blocking=false; }, 700);
+    if(battle.warning){ battle.warning=false; hideWarn(); SFX.block(); setMsg('🛡️ 擋住了！好厲害！'); battle.energy=Math.min(battle.maxEnergy, battle.energy+2); updateHUD(); }
+  }else if(kind==='beam'){
+    if(battle.energy<battle.maxEnergy) { setMsg('能量還不夠，繼續攻擊！'); return; }
+    battle.energy=0; battle.saidFull=false; SFX.beam();
+    const b=document.getElementById('beam'); b.classList.remove('fire'); void b.offsetWidth; b.classList.add('fire');
+    setMsg(`✨ ${battle.hero.beam}！！`); say(`${battle.hero.beam}！`, 1.1);
+    const fl=document.getElementById('flash'); fl.classList.remove('go'); void fl.offsetWidth; fl.classList.add('go');
+    setTimeout(()=>{ if(battle.over) return; mon.classList.remove('hit'); void mon.offsetWidth; mon.classList.add('hit'); battle.hp-=7; updateHUD(); if(battle.hp<=0) endBattle(true); }, 350);
+  }
+}
+function showWarn(){ const w=document.getElementById('warn'); if(w) w.classList.add('show'); }
+function hideWarn(){ const w=document.getElementById('warn'); if(w) w.classList.remove('show'); }
+function scheduleMonsterAttack(){
+  const t=setTimeout(()=>{
+    if(battle.over) return;
+    battle.warning=true; showWarn(); SFX.roar(); setMsg('⚠️ 小心！怪獸要攻擊了！按 防禦！');
+    const t2=setTimeout(()=>{
+      if(battle.over) return;
+      hideWarn();
+      const mon=document.getElementById('monster'), hero=document.getElementById('hero');
+      mon.classList.add('attacking'); setTimeout(()=>mon.classList.remove('attacking'),300);
+      if(battle.warning){ // 沒有防禦
+        battle.warning=false; battle.hearts--; SFX.hurt();
+        hero.classList.remove('hurt'); void hero.offsetWidth; hero.classList.add('hurt');
+        document.getElementById('arena').classList.add('shake'); setTimeout(()=>document.getElementById('arena').classList.remove('shake'),400);
+        setMsg('哎呀！被打到了！快站起來！'); updateHUD();
+        if(battle.hearts<=0) return endBattle(false, '超人力霸王受傷了，先回光之國休息。再挑戰一次吧！');
+      }
+      scheduleMonsterAttack();
+    }, 1600);
+    battle.timers.push(t2);
+  }, 3500+Math.random()*3000);
+  battle.timers.push(t);
+}
+function endBattle(win, text){
+  if(battle.over) return; battle.over=true;
+  clearInterval(battle.tick); battle.timers.forEach(clearTimeout); hideWarn();
+  const u=battle.hero, m=battle.monster;
+  if(win){
+    SFX.win(); confetti(140);
+    const mon=document.getElementById('monster'); if(mon) mon.classList.add('dead');
+    addStars(5);
+    setMsg(`🎉 ${m.name} 被打倒了！+5⭐`);
+    say(`太棒了！${m.name}被打倒了！和平回來了！`);
+    setTimeout(()=>{
+      setScreen(`${header()}
+        <div class="card result">
+          <div class="big">🏆 勝利！</div>
+          <div class="hero-big">${ultraSVG(u,300)}</div>
+          <div style="font-size:26px; font-weight:800; margin-top:8px">${u.call} 用 ${u.beam} 打倒了 ${m.name}！<br>地球和平了！ +5⭐</div>
+          <div class="row">
+            <button class="btn" onclick="monsterAppear()">👾 再打一隻怪獸</button>
+            <button class="btn purple" onclick="startBattle()">🦸 換一位超人</button>
+            ${homeBtn()}
+          </div>
+        </div>`);
+    }, 1800);
+  }else{
+    SFX.lose(); setMsg(text); say(text);
+    setTimeout(()=>{
+      setScreen(`${header()}
+        <div class="card result">
+          <div class="big">💫 沒關係！</div>
+          <div style="font-size:24px; font-weight:800; line-height:1.6">${text}<br>英雄永不放棄！</div>
+          <div class="row">
+            <button class="btn green" onclick="beginFight()">🔁 再挑戰 ${m.name}</button>
+            <button class="btn purple" onclick="startBattle()">🦸 換一位超人</button>
+            ${homeBtn()}
+          </div>
+        </div>`);
+    }, 2200);
+  }
+}
+
+/* =====================================================================
+   翻牌配對
+   ===================================================================== */
+const mem = {};
+function startMemory(){
+  SFX.click();
+  const pairs = state.mode==='little' ? 4 : 6;
+  // 選出道具名稱不重複的超人
+  const seen=new Set(); const chosen=shuffle(ULTRAS).filter(u=>{ if(seen.has(u.item.name)) return false; seen.add(u.item.name); return true; }).slice(0,pairs);
+  const cards = shuffle(chosen.flatMap(u=>[
+    {pair:u.id, kind:'hero', html:`${ultraSVG(u,90)}<div>${u.call}</div>`, label:u.call},
+    {pair:u.id, kind:'item', html:`<div class="em">${u.item.emoji}</div><div>${u.item.name}</div>`, label:u.item.name},
+  ]));
+  Object.assign(mem,{cards, open:[], lock:false, matched:0, pairs, moves:0});
+  setScreen(`${header()}
+    <div class="card">
+      <div class="question">🃏 翻牌配對：找出超人和他的變身道具！</div>
+      <div class="mgrid ${pairs===4?'four':'six'}">${cards.map((c,i)=>`<div class="mcard" id="mc${i}" onclick="flipCard(${i})"><div class="inner"><div class="face back">⭐</div><div class="face front">${c.html}</div></div></div>`).join('')}</div>
+      <div class="feedback" id="fb"></div>
+      <div class="row">${homeBtn()}</div>
+    </div>`);
+  say('翻牌配對！找出超人力霸王和他的變身道具！');
+}
+function flipCard(i){
+  if(mem.lock) return;
+  const el=document.getElementById('mc'+i); if(el.classList.contains('flip')) return;
+  SFX.flip(); el.classList.add('flip'); mem.open.push(i);
+  say(mem.cards[i].label, 1.1);
+  if(mem.open.length===2){
+    mem.lock=true; mem.moves++;
+    const [a,b]=mem.open; const ca=mem.cards[a], cb=mem.cards[b];
+    if(ca.pair===cb.pair && ca.kind!==cb.kind){
+      setTimeout(()=>{
+        SFX.correct(); document.getElementById('mc'+a).classList.add('done'); document.getElementById('mc'+b).classList.add('done');
+        mem.matched++; addStars(1); document.getElementById('fb').textContent=`🎉 配對成功！${byId(ca.pair).call} 用 ${byId(ca.pair).item.name} 變身！ +1⭐`;
+        say(`配對成功！${byId(ca.pair).call}用${byId(ca.pair).item.name}變身！`);
+        mem.open=[]; mem.lock=false;
+        if(mem.matched===mem.pairs){
+          setTimeout(()=>{ SFX.win(); confetti(120); addStars(3);
+            setScreen(`${header()}<div class="card result"><div class="big">🎉 全部配對成功！</div><div class="starsrow">⭐⭐⭐</div><div style="font-size:22px;font-weight:800">你翻了 ${mem.moves} 次就找完了！ +3⭐</div>
+              <div class="row"><button class="btn green" onclick="startMemory()">🔁 再玩一次</button>${homeBtn()}</div></div>`);
+            say('全部配對成功！你真是記憶大王！');
+          }, 900);
+        }
+      }, 500);
+    }else{
+      setTimeout(()=>{ SFX.wrong(); document.getElementById('mc'+a).classList.remove('flip'); document.getElementById('mc'+b).classList.remove('flip'); mem.open=[]; mem.lock=false; document.getElementById('fb').textContent='不一樣，再找找！'; }, 1000);
+    }
+  }
+}
+
+/* ===================================================================== */
+document.addEventListener('pointerdown', ()=>ac(), {once:true});
+goHome();
+</script>
+</body>
+</html>
