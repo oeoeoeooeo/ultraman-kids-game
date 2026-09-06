@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%AD%90%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>超人力霸王 小英雄遊樂園 v1.5.0</title>
+<title>超人力霸王 小英雄遊樂園 v1.5.1</title>
 <style>
   :root{
     --bg1:#0b1033; --bg2:#1b2a6b; --card:#182452; --card2:#22347a;
@@ -769,7 +769,7 @@ const MONSTERS = [
 /* =====================================================================
    狀態、工具
    ===================================================================== */
-const VERSION = '1.5.0';
+const VERSION = '1.5.1';
 const state = {
   stars: parseInt(localStorage.getItem('ultra_stars')||'0',10),
   mode: localStorage.getItem('ultra_mode') || 'little',   // little=弟弟(3選項) big=哥哥(4選項)
@@ -792,6 +792,7 @@ function loadVoices(){
   const tw = vs.filter(v=>/zh[-_]TW/i.test(v.lang)), other = vs.filter(v=>/^zh/i.test(v.lang) && !/zh[-_]TW/i.test(v.lang));
   const score = v => (/Google/i.test(v.name)?0:2) + (/Mei[- ]?Jia|美佳/i.test(v.name)?0:1) + (/Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley/i.test(v.name)?3:0);
   zhVoices = [...tw.sort((a,b)=>score(a)-score(b)), ...other];
+  const el=document.getElementById('voicepill'); if(el) el.textContent='🎤 聲音：'+((currentVoice()||{}).name||'預設');
 }
 if('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
 function currentVoice(){
@@ -959,7 +960,7 @@ function goHome(){
       <button class="pill ${state.mode==='little'?'on':''}" onclick="setMode('little')">👶 弟弟模式（3個選項）</button>
       <button class="pill ${state.mode==='big'?'on':''}" onclick="setMode('big')">👦 哥哥模式（4個選項）</button>
       <button class="pill ${state.voice?'on':''}" onclick="toggleVoice()">🔊 唸出題目：${state.voice?'開':'關'}</button>
-      <button class="pill" onclick="cycleVoice()" title="切換語音">🎤 聲音：${(currentVoice()||{}).name||'預設'}</button>
+      <button class="pill" id="voicepill" onclick="cycleVoice()" title="切換語音">🎤 聲音：${(currentVoice()||{}).name||'預設'}</button>
     </div>
     <div class="intro">
       💡 <b>怎麼玩：</b>用滑鼠點、用手指按，或用鍵盤都可以。答對就得 ⭐，答錯沒關係，可以再試一次！<br>
