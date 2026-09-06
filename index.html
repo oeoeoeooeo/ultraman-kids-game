@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%AD%90%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>超人力霸王 小英雄遊樂園 v1.6.0</title>
+<title>超人力霸王 小英雄遊樂園 v1.7.0</title>
 <style>
   :root{
     --bg1:#0b1033; --bg2:#1b2a6b; --card:#182452; --card2:#22347a;
@@ -129,7 +129,7 @@
   .flash{position:fixed; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:50;}
   .flash.go{animation:flash 1.2s ease-out forwards;}
   .rise{animation:rise 1.4s ease-out forwards;}
-  .hero-big svg{height:min(60vh,420px); width:auto; filter:drop-shadow(0 0 30px #2ec4ff88);}
+  .hero-big svg{height:min(62vh,460px); width:auto; filter:drop-shadow(0 0 30px #2ec4ff88);}
 
   /* ---------- battle ---------- */
   .battle{position:relative; display:flex; flex-direction:column; gap:6px; height:calc(100vh - 18px); height:calc(100dvh - 18px); min-height:420px;}
@@ -153,7 +153,7 @@
     linear-gradient(90deg, transparent 0 4%, #1c2748 4% 10%, transparent 10% 13%, #1c2748 13% 22%, transparent 22% 26%, #1c2748 26% 31%, transparent 31% 36%, #1c2748 36% 46%, transparent 46% 50%, #1c2748 50% 57%, transparent 57% 60%, #1c2748 60% 70%, transparent 70% 74%, #1c2748 74% 80%, transparent 80% 84%, #1c2748 84% 93%, transparent 93%);
     opacity:.8;}
   .hero{position:absolute; left:6%; bottom:6%; transition:transform .12s; filter:drop-shadow(0 10px 10px #0008);}
-  .hero svg{height:min(38vh,300px); height:min(72cqh,42cqw,360px); width:auto;}
+  .hero svg{height:min(38vh,300px); height:min(82cqh,48cqw,400px); width:auto;}
   .hero.attack{transform:translateX(60px) rotate(-8deg);}
   .hero.block{transform:scale(.95); filter:drop-shadow(0 0 20px var(--blue));}
   .hero.hurt{animation:shake .4s;}
@@ -193,7 +193,7 @@
   @media (orientation:portrait){
     .battle{height:auto; min-height:0;}
     .arena{flex:none; height:min(50vh,105vw);}
-    .hero svg{height:min(78cqh,44cqw,420px);}
+    .hero svg{height:min(86cqh,50cqw,440px);}
     .monster .memoji{font-size:min(52cqh,36cqw,260px);}
   }
   /* ---------- 手機直立 ---------- */
@@ -774,7 +774,7 @@ const MONSTERS = [
 /* =====================================================================
    狀態、工具
    ===================================================================== */
-const VERSION = '1.6.0';
+const VERSION = '1.7.0';
 const state = {
   stars: parseInt(localStorage.getItem('ultra_stars')||'0',10),
   mode: localStorage.getItem('ultra_mode') || 'little',   // little=弟弟(3選項) big=哥哥(4選項)
@@ -864,53 +864,134 @@ const SFX = {
   roar(){ tone(120,0.6,'sawtooth',0.18,60); noise(0.5,0.25); },
 };
 
-/* ---------- 繪製超人力霸王 (SVG) ---------- */
+/* ---------- 繪製超人力霸王 (SVG，精緻版) ---------- */
+const PATTERN = {
+  seven:'protector', zero:'protector', taro:'protector', father:'protector', king:'protector', zoffy:'protector', seven21:'protector', hikari:'protector', titas:'protector', omega:'protector', mebius:'protector',
+  tiga:'split', trigger:'split', triggerdark:'split', eviltiga:'split', dyna:'split', decker:'split', dinas:'split', saga:'split', legend:'split',
+  gaia:'lines', agul:'lines', geed:'lines', blazar:'lines', arc:'lines', belial:'lines', tregear:'lines', nexus:'lines', noa:'lines', x:'lines', ginga:'lines', victory:'lines', gingavictory:'lines', z:'lines', orb:'lines', zagi:'lines', regulos:'lines', fuma:'lines', reiga:'lines', groob:'lines', ruebe:'lines', grigio:'lines',
+};
 function ultraSVG(u, h=200, cls=''){
   const {base, accent, accent2=accent, head=base, crest='fin', protector=false, eyes='#ffe66d', marks=false} = u;
+  const pat = PATTERN[u.id] || (protector ? 'protector' : 'stripes');
+  const id = 'u_'+u.id;
+  const mx = x => 160 - x; // 鏡射
+  // ---- 頭冠 ----
   let crestSVG='';
-  if(crest==='fin') crestSVG=`<path d="M57 8 L60 -2 L63 8 L62 20 L58 20 Z" fill="#cfcfcf" stroke="#888" stroke-width="1"/>`;
-  else if(crest==='slugger') crestSVG=`<path d="M46 12 Q60 -6 74 12 L72 16 Q60 4 48 16 Z" fill="#e8e8e8" stroke="#777" stroke-width="1.2"/>`;
-  else if(crest==='zero') crestSVG=`<path d="M44 14 Q52 -2 60 8 L58 14 Q52 8 47 17 Z" fill="#e8e8e8" stroke="#777"/><path d="M76 14 Q68 -2 60 8 L62 14 Q68 8 73 17 Z" fill="#e8e8e8" stroke="#777"/>`;
-  else if(crest==='horn') crestSVG=`<path d="M46 14 L40 -4 L52 10 Z" fill="#e8e8e8" stroke="#777"/><path d="M74 14 L80 -4 L68 10 Z" fill="#e8e8e8" stroke="#777"/><path d="M57 8 L60 0 L63 8 L62 18 L58 18 Z" fill="#cfcfcf" stroke="#888"/>`;
-  else if(crest==='tiga') crestSVG=`<path d="M50 10 L60 -2 L70 10 L66 18 L60 8 L54 18 Z" fill="#e8e8e8" stroke="#777"/>`;
-  else if(crest==='geed') crestSVG=`<path d="M52 8 L60 -4 L68 8 L64 18 L60 6 L56 18 Z" fill="#e8e8e8" stroke="#777"/><path d="M57 4 L60 -8 L63 4 Z" fill="#ffd23f"/>`;
-  else if(crest==='crown') crestSVG=`<path d="M42 12 L46 -4 L52 8 L60 -8 L68 8 L74 -4 L78 12 Q60 4 42 12 Z" fill="#ffd23f" stroke="#a87400" stroke-width="1.2"/><circle cx="60" cy="-2" r="3" fill="#ff3b3b"/>`;
-  else if(crest==='ace') crestSVG=`<path d="M56 10 L60 -8 L64 10 L62 20 L58 20 Z" fill="#e8e8e8" stroke="#777"/>`;
-  else if(crest==='leo') crestSVG=`<path d="M52 10 L56 -4 L58 8 L60 -8 L62 8 L64 -4 L68 10 L64 18 L56 18 Z" fill="#e8e8e8" stroke="#777"/>`;
-  else if(crest==='arc') crestSVG=`<path d="M44 16 Q60 -8 76 16" fill="none" stroke="#e8e8e8" stroke-width="5"/><path d="M44 16 Q60 -8 76 16" fill="none" stroke="#2ec4ff" stroke-width="2"/>`;
-  return `<svg class="${cls}" viewBox="-5 -10 130 215" height="${h}" xmlns="http://www.w3.org/2000/svg">
-    <defs><filter id="g${u.id}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-    <!-- legs -->
-    <rect x="40" y="128" width="17" height="62" rx="8" fill="${base}"/>
-    <rect x="63" y="128" width="17" height="62" rx="8" fill="${base}"/>
-    <rect x="40" y="152" width="17" height="9" fill="${accent}"/>
-    <rect x="63" y="152" width="17" height="9" fill="${accent}"/>
-    <rect x="37" y="184" width="23" height="12" rx="5" fill="${accent}"/>
-    <rect x="60" y="184" width="23" height="12" rx="5" fill="${accent}"/>
-    <!-- arms -->
-    <rect x="14" y="64" width="17" height="62" rx="8" fill="${base}"/>
-    <rect x="89" y="64" width="17" height="62" rx="8" fill="${base}"/>
-    <rect x="14" y="88" width="17" height="9" fill="${accent}"/>
-    <rect x="89" y="88" width="17" height="9" fill="${accent}"/>
-    <rect x="12" y="116" width="21" height="14" rx="6" fill="${accent2}"/>
-    <rect x="87" y="116" width="21" height="14" rx="6" fill="${accent2}"/>
-    <!-- torso -->
-    <path d="M30 60 Q60 48 90 60 L86 134 L34 134 Z" fill="${base}"/>
-    <path d="M30 60 L60 96 L90 60 L90 74 L60 110 L30 74 Z" fill="${accent}"/>
-    <path d="M34 134 L60 112 L86 134 Z" fill="${accent2}"/>
-    <path d="M32 84 L44 84 L38 100 Z" fill="${accent2}" opacity=".9"/>
-    <path d="M88 84 L76 84 L82 100 Z" fill="${accent2}" opacity=".9"/>
-    ${protector?`<path d="M40 58 Q60 50 80 58 L78 80 Q60 88 42 80 Z" fill="#d4d4d4" stroke="#8a8a8a" stroke-width="1.5"/>`:''}
-    ${marks?`<circle cx="46" cy="66" r="2.5" fill="#ffd23f"/><circle cx="53" cy="63" r="2.5" fill="#ffd23f"/><circle cx="67" cy="63" r="2.5" fill="#ffd23f"/><circle cx="74" cy="66" r="2.5" fill="#ffd23f"/>`:''}
-    <!-- color timer -->
-    <circle cx="60" cy="86" r="7.5" fill="#2ec4ff" stroke="#fff" stroke-width="1.5" filter="url(#g${u.id})" class="ctimer-dot"/>
-    <!-- neck & head -->
-    <rect x="52" y="44" width="16" height="12" fill="${base}"/>
-    <ellipse cx="60" cy="30" rx="21" ry="25" fill="${head}"/>
-    ${crestSVG}
-    <path d="M41 30 Q49 19 57 31 Q50 38 41 30 Z" fill="${eyes}" stroke="#fff" stroke-width="1" filter="url(#g${u.id})"/>
-    <path d="M79 30 Q71 19 63 31 Q70 38 79 30 Z" fill="${eyes}" stroke="#fff" stroke-width="1" filter="url(#g${u.id})"/>
-    <path d="M50 46 Q60 50 70 46" stroke="#0004" stroke-width="2" fill="none"/>
+  const fin = `<path d="M77 12 L80 -2 L83 12 L82 26 L78 26 Z" fill="#e6e6e6" stroke="#8a8a8a" stroke-width="1"/>`;
+  if(crest==='fin') crestSVG=fin;
+  else if(crest==='slugger') crestSVG=`<path d="M68 16 C 72 -8, 88 -8, 92 16 L 88 22 C 86 6, 74 6, 72 22 Z" fill="#ececec" stroke="#777" stroke-width="1.2"/>`;
+  else if(crest==='zero') crestSVG=`<path d="M58 22 C 54 4, 64 -6, 78 4 L 76 14 C 68 8, 64 12, 64 24 Z" fill="#ececec" stroke="#777"/><path d="M102 22 C 106 4, 96 -6, 82 4 L 84 14 C 92 8, 96 12, 96 24 Z" fill="#ececec" stroke="#777"/>`;
+  else if(crest==='horn') crestSVG=`<path d="M62 18 L54 -2 L70 12 Z" fill="#ececec" stroke="#777"/><path d="M98 18 L106 -2 L90 12 Z" fill="#ececec" stroke="#777"/>${fin}`;
+  else if(crest==='tiga') crestSVG=`<path d="M66 14 L80 -2 L94 14 L90 24 L80 10 L70 24 Z" fill="#ececec" stroke="#777"/>`;
+  else if(crest==='geed') crestSVG=`<path d="M68 12 L80 -4 L92 12 L88 24 L80 8 L72 24 Z" fill="#ececec" stroke="#777"/><path d="M77 6 L80 -8 L83 6 Z" fill="#ffd23f"/>`;
+  else if(crest==='arc') crestSVG=`<path d="M58 22 C 64 -2, 96 -2, 102 22" fill="none" stroke="#ececec" stroke-width="6"/><path d="M58 22 C 64 -2, 96 -2, 102 22" fill="none" stroke="#2ec4ff" stroke-width="2.2"/>`;
+  else if(crest==='crown') crestSVG=`<path d="M58 16 L63 -2 L71 10 L80 -6 L89 10 L97 -2 L102 16 C 88 8, 72 8, 58 16 Z" fill="#ffd23f" stroke="#a87400" stroke-width="1.2"/><circle cx="80" cy="0" r="3.5" fill="#ff3b3b"/>`;
+  else if(crest==='ace') crestSVG=`<path d="M76 12 L80 -6 L84 12 L82 26 L78 26 Z" fill="#ececec" stroke="#777"/>`;
+  else if(crest==='leo') crestSVG=`<path d="M68 14 L73 -2 L76 10 L80 -6 L84 10 L87 -2 L92 14 L88 26 L72 26 Z" fill="#ececec" stroke="#777"/>`;
+
+  // ---- 身體各部件（左側，右側鏡射） ----
+  const shapes = [
+    // 脖子
+    `<path d="M68 70 L92 70 L97 88 L63 88 Z"/>`,
+    // 軀幹
+    `<path d="M46 92 C 58 84, 102 84, 114 92 L 118 132 C 118 150, 108 162, 100 170 L 60 170 C 52 162, 42 150, 42 132 Z"/>`,
+    // 三角肌
+    `<circle cx="47" cy="98" r="12"/><circle cx="113" cy="98" r="12"/>`,
+    // 上臂、前臂、拳頭（左）
+    `<path d="M32 100 C 38 96, 50 98, 56 104 L 52 142 C 46 146, 36 146, 32 142 Z"/>`,
+    `<path d="M32 140 C 38 136, 48 136, 52 140 L 48 184 C 44 188, 34 188, 30 184 Z"/>`,
+    `<rect x="26" y="182" width="24" height="24" rx="9"/>`,
+    // 右側
+    `<path d="M128 100 C 122 96, 110 98, 104 104 L 108 142 C 114 146, 124 146, 128 142 Z"/>`,
+    `<path d="M128 140 C 122 136, 112 136, 108 140 L 112 184 C 116 188, 126 188, 130 184 Z"/>`,
+    `<rect x="110" y="182" width="24" height="24" rx="9"/>`,
+    // 臀部
+    `<path d="M60 168 L100 168 L102 190 L58 190 Z"/>`,
+    // 大腿、小腿（左右）
+    `<path d="M56 188 L80 188 L78 226 L60 226 C 56 214, 54 200, 56 188 Z"/>`,
+    `<path d="M104 188 L80 188 L82 226 L100 226 C 104 214, 106 200, 104 188 Z"/>`,
+    `<path d="M60 224 L78 224 L76 252 L62 252 C 58 242, 58 232, 60 224 Z"/>`,
+    `<path d="M100 224 L82 224 L84 252 L98 252 C 102 242, 102 232, 100 224 Z"/>`,
+  ].join('');
+  const boots = `<rect x="56" y="248" width="26" height="12" rx="5" fill="${accent}"/><rect x="78" y="248" width="26" height="12" rx="5" fill="${accent}"/>`;
+
+  // ---- 花紋 ----
+  let pattern='';
+  const armBands = `<path d="M31 156 L51 158 L50 168 L30 166 Z" fill="${accent}"/><path d="M129 156 L109 158 L110 168 L130 166 Z" fill="${accent}"/>`;
+  const shinBands = `<path d="M60 232 L78 232 L77 240 L60 240 Z" fill="${accent}"/><path d="M100 232 L82 232 L83 240 L100 240 Z" fill="${accent}"/>`;
+  const thighFlash = `<path d="M59 192 L65 192 L61 220 Z" fill="${accent2}" opacity=".9"/><path d="M101 192 L95 192 L99 220 Z" fill="${accent2}" opacity=".9"/>`;
+  if(pat==='stripes'){
+    pattern = `<path d="M46 94 L80 132 L114 94 L116 110 L80 150 L44 110 Z" fill="${accent}"/>
+      <path d="M60 170 L80 150 L100 170 Z" fill="${accent2}"/>
+      <path d="M34 108 L52 112 L50 122 L33 118 Z" fill="${accent}"/><path d="M126 108 L108 112 L110 122 L127 118 Z" fill="${accent}"/>
+      ${armBands}${shinBands}${thighFlash}`;
+  } else if(pat==='protector'){
+    pattern = `<path d="M52 96 C 60 90, 76 92, 78 98 L 77 128 C 68 132, 56 130, 50 122 Z" fill="#d9d9d9" stroke="#8c8c8c" stroke-width="1.5"/>
+      <path d="M108 96 C 100 90, 84 92, 82 98 L 83 128 C 92 132, 104 130, 110 122 Z" fill="#d9d9d9" stroke="#8c8c8c" stroke-width="1.5"/>
+      <path d="M60 170 L80 152 L100 170 Z" fill="${accent2}"/>
+      <path d="M44 84 L56 84 L54 92 L42 92 Z" fill="#d9d9d9"/><path d="M116 84 L104 84 L106 92 L118 92 Z" fill="#d9d9d9"/>
+      ${armBands}${shinBands}${thighFlash}`;
+  } else if(pat==='split'){
+    pattern = `<path d="M46 92 C 58 84, 74 86, 82 90 C 78 118, 70 146, 62 170 L 60 170 C 52 162, 42 150, 42 132 Z" fill="${accent2}" opacity=".92"/>
+      <path d="M88 92 C 98 86, 108 88, 114 92 L 118 132 C 110 142, 98 150, 84 154 C 90 132, 92 110, 88 92 Z" fill="${accent}" opacity=".95"/>
+      <path d="M32 100 C 38 96, 50 98, 56 104 L 52 142 C 46 146, 36 146, 32 142 Z" fill="${accent2}" opacity=".9"/>
+      <path d="M56 188 L80 188 L78 226 L60 226 C 56 214, 54 200, 56 188 Z" fill="${accent2}" opacity=".9"/>
+      <path d="M100 224 L82 224 L84 252 L98 252 C 102 242, 102 232, 100 224 Z" fill="${accent}" opacity=".9"/>
+      <path d="M128 140 C 122 136, 112 136, 108 140 L 112 184 C 116 188, 126 188, 130 184 Z" fill="${accent}" opacity=".9"/>
+      <path d="M62 130 L80 118 L80 126 L64 138 Z" fill="#ffffff" opacity=".35"/>`;
+  } else if(pat==='lines'){
+    pattern = `<path d="M50 96 L80 126 L110 96" fill="none" stroke="${accent}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M46 116 L80 150 L114 116" fill="none" stroke="${accent2}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M34 106 L48 138 M126 106 L112 138" stroke="${accent}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M34 150 L46 176 M126 150 L114 176" stroke="${accent2}" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M62 194 L70 224 M98 194 L90 224" stroke="${accent}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M64 230 L66 248 M96 230 L94 248" stroke="${accent2}" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M60 170 L80 156 L100 170 Z" fill="${accent}" opacity=".9"/>`;
+  }
+
+  return `<svg class="${cls}" viewBox="-4 -12 168 276" height="${h}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="${id}_shade" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/>
+        <stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".38"/>
+      </linearGradient>
+      <linearGradient id="${id}_vshade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".22"/>
+      </linearGradient>
+      <radialGradient id="${id}_eye" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#fffbe0"/><stop offset=".45" stop-color="${eyes}"/><stop offset="1" stop-color="${eyes}" stop-opacity=".85"/></radialGradient>
+      <radialGradient id="${id}_timer" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#7fe3ff"/><stop offset="1" stop-color="#0a7fd6"/></radialGradient>
+      <filter id="${id}_glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <clipPath id="${id}_clip"><ellipse cx="80" cy="40" rx="30" ry="34"/>${shapes}</clipPath>
+    </defs>
+    <!-- 底色 -->
+    <g fill="${base}">${shapes}</g>
+    <!-- 花紋 -->
+    <g clip-path="url(#${id}_clip)">${pattern}</g>
+    ${boots}
+    <!-- 肌肉線條 -->
+    <g fill="none" stroke="#000" stroke-opacity=".18" stroke-width="1.6" stroke-linecap="round">
+      <path d="M62 104 C 70 112, 74 122, 78 128"/><path d="M98 104 C 90 112, 86 122, 82 128"/>
+      <path d="M72 140 C 76 150, 84 150, 88 140"/><path d="M70 154 C 76 160, 84 160, 90 154"/>
+      <path d="M80 170 L80 188"/>
+    </g>
+    <!-- 頭 -->
+    <g transform="translate(80 14) scale(1.35) translate(-80 -14)">${crestSVG}</g>
+    <path d="M80 6 C 100 6, 112 22, 112 42 C 112 60, 100 74, 80 76 C 60 74, 48 60, 48 42 C 48 22, 60 6, 80 6 Z" fill="${head}"/>
+    <path d="M52 40 C 58 26, 76 28, 78 40 C 72 48, 56 50, 52 40 Z" fill="url(#${id}_eye)" stroke="#fff" stroke-opacity=".7" stroke-width="1" filter="url(#${id}_glow)"/>
+    <path d="M108 40 C 102 26, 84 28, 82 40 C 88 48, 104 50, 108 40 Z" fill="url(#${id}_eye)" stroke="#fff" stroke-opacity=".7" stroke-width="1" filter="url(#${id}_glow)"/>
+    <path d="M58 30 C 66 24, 76 26, 79 34" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="1.5"/>
+    <path d="M102 30 C 94 24, 84 26, 81 34" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="1.5"/>
+    <path d="M66 62 Q80 65 94 62" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="2" stroke-linecap="round"/>
+    <path d="M80 56 L80 62" stroke="#000" stroke-opacity=".3" stroke-width="1.5"/>
+    <rect x="45" y="36" width="5" height="12" rx="2" fill="${head}" stroke="#000" stroke-opacity=".2"/><rect x="110" y="36" width="5" height="12" rx="2" fill="${head}" stroke="#000" stroke-opacity=".2"/>
+    <!-- 佐菲星點 -->
+    ${marks?`<g fill="#ffd23f" stroke="#a87400" stroke-width=".6"><circle cx="60" cy="100" r="3"/><circle cx="68" cy="94" r="3"/><circle cx="92" cy="94" r="3"/><circle cx="100" cy="100" r="3"/></g>`:''}
+    <!-- 光影 -->
+    <g clip-path="url(#${id}_clip)"><rect x="-10" y="-20" width="180" height="300" fill="url(#${id}_shade)"/><rect x="-10" y="-20" width="180" height="300" fill="url(#${id}_vshade)"/></g>
+    <ellipse cx="80" cy="40" rx="30" ry="34" fill="url(#${id}_shade)"/>
+    <!-- 彩色計時器 -->
+    <circle cx="80" cy="118" r="10" fill="#c9c9c9" stroke="#777" stroke-width="1"/>
+    <circle cx="80" cy="118" r="7.5" fill="url(#${id}_timer)" filter="url(#${id}_glow)" class="ctimer-dot"/>
   </svg>`;
 }
 
