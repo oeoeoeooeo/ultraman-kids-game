@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%AD%90%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>超人力霸王 小英雄遊樂園 v1.7.0</title>
+<title>超人力霸王 小英雄遊樂園 v1.8.0</title>
 <style>
   :root{
     --bg1:#0b1033; --bg2:#1b2a6b; --card:#182452; --card2:#22347a;
@@ -119,7 +119,7 @@
   .hero-card svg{height:120px; width:auto;}
   .dex .hero-card small{display:block; font-size:11px; opacity:.7; font-weight:600;}
   .dex-emoji{font-size:64px; line-height:1.2; filter:drop-shadow(0 4px 6px #0008);}
-  @media (max-width:600px){ .dex-emoji{font-size:44px;} }
+  @media (max-width:600px){ .dex-emoji svg{height:56px;} .monfig svg{height:clamp(120px,24vh,180px);} }
   .era-title{font-size:clamp(17px,3vw,22px); font-weight:900; margin:18px 0 4px; padding:6px 12px; background:#0006; border-radius:12px; border-left:6px solid var(--yellow);}
 
   /* ---------- transform ---------- */
@@ -158,7 +158,11 @@
   .hero.block{transform:scale(.95); filter:drop-shadow(0 0 20px var(--blue));}
   .hero.hurt{animation:shake .4s;}
   .monster{position:absolute; right:6%; bottom:8%; text-align:center; transition:transform .12s;}
-  .monster .memoji{font-size:min(28vh,190px); font-size:min(48cqh,34cqw,220px); line-height:1; filter:drop-shadow(0 10px 10px #0008);}
+  .monster .memoji{line-height:1; filter:drop-shadow(0 10px 10px #0008);}
+  .monster .memoji svg{height:min(30vh,200px); height:min(56cqh,44cqw,260px); width:auto; display:block; margin:0 auto;}
+  .tf .item.mon svg{height:min(34vh,240px); width:auto; filter:drop-shadow(0 0 24px #fff5);}
+  .dex-emoji svg{height:78px; width:auto;}
+  .monfig svg{height:clamp(150px,30vh,230px); width:auto;}
   .monster .mname{font-weight:900; font-size:clamp(13px,2.5vw,20px); background:#000a; border-radius:10px; padding:2px 10px; display:inline-block;}
   .monster.hit{animation:hit .3s;}
   .monster.attacking{transform:translateX(-50px) scale(1.08);}
@@ -194,7 +198,7 @@
     .battle{height:auto; min-height:0;}
     .arena{flex:none; height:min(50vh,105vw);}
     .hero svg{height:min(86cqh,50cqw,440px);}
-    .monster .memoji{font-size:min(52cqh,36cqw,260px);}
+    .monster .memoji svg{height:min(58cqh,46cqw,300px);}
   }
   /* ---------- 手機直立 ---------- */
   @media (max-width:600px){
@@ -774,7 +778,7 @@ const MONSTERS = [
 /* =====================================================================
    狀態、工具
    ===================================================================== */
-const VERSION = '1.7.0';
+const VERSION = '1.8.0';
 const state = {
   stars: parseInt(localStorage.getItem('ultra_stars')||'0',10),
   mode: localStorage.getItem('ultra_mode') || 'little',   // little=弟弟(3選項) big=哥哥(4選項)
@@ -880,7 +884,7 @@ function ultraSVG(u, h=200, cls=''){
   const fin = `<path d="M77 12 L80 -2 L83 12 L82 26 L78 26 Z" fill="#e6e6e6" stroke="#8a8a8a" stroke-width="1"/>`;
   if(crest==='fin') crestSVG=fin;
   else if(crest==='slugger') crestSVG=`<path d="M68 16 C 72 -8, 88 -8, 92 16 L 88 22 C 86 6, 74 6, 72 22 Z" fill="#ececec" stroke="#777" stroke-width="1.2"/>`;
-  else if(crest==='zero') crestSVG=`<path d="M58 22 C 54 4, 64 -6, 78 4 L 76 14 C 68 8, 64 12, 64 24 Z" fill="#ececec" stroke="#777"/><path d="M102 22 C 106 4, 96 -6, 82 4 L 84 14 C 92 8, 96 12, 96 24 Z" fill="#ececec" stroke="#777"/>`;
+  else if(crest==='zero') crestSVG=`<path d="M66 24 L56 -6 L76 8 L74 22 Z" fill="#ececec" stroke="#777"/><path d="M94 24 L104 -6 L84 8 L86 22 Z" fill="#ececec" stroke="#777"/><path d="M77 12 L80 0 L83 12 L82 24 L78 24 Z" fill="#e6e6e6" stroke="#8a8a8a"/>`;
   else if(crest==='horn') crestSVG=`<path d="M62 18 L54 -2 L70 12 Z" fill="#ececec" stroke="#777"/><path d="M98 18 L106 -2 L90 12 Z" fill="#ececec" stroke="#777"/>${fin}`;
   else if(crest==='tiga') crestSVG=`<path d="M66 14 L80 -2 L94 14 L90 24 L80 10 L70 24 Z" fill="#ececec" stroke="#777"/>`;
   else if(crest==='geed') crestSVG=`<path d="M68 12 L80 -4 L92 12 L88 24 L80 8 L72 24 Z" fill="#ececec" stroke="#777"/><path d="M77 6 L80 -8 L83 6 Z" fill="#ffd23f"/>`;
@@ -894,9 +898,9 @@ function ultraSVG(u, h=200, cls=''){
     // 脖子
     `<path d="M68 70 L92 70 L97 88 L63 88 Z"/>`,
     // 軀幹
-    `<path d="M46 92 C 58 84, 102 84, 114 92 L 118 132 C 118 150, 108 162, 100 170 L 60 170 C 52 162, 42 150, 42 132 Z"/>`,
+    `<path d="M42 92 C 56 82, 104 82, 118 92 L 120 130 C 118 150, 108 164, 98 172 L 62 172 C 52 164, 42 150, 40 130 Z"/>`,
     // 三角肌
-    `<circle cx="47" cy="98" r="12"/><circle cx="113" cy="98" r="12"/>`,
+    `<ellipse cx="44" cy="98" rx="13" ry="11"/><ellipse cx="116" cy="98" rx="13" ry="11"/>`,
     // 上臂、前臂、拳頭（左）
     `<path d="M32 100 C 38 96, 50 98, 56 104 L 52 142 C 46 146, 36 146, 32 142 Z"/>`,
     `<path d="M32 140 C 38 136, 48 136, 52 140 L 48 184 C 44 188, 34 188, 30 184 Z"/>`,
@@ -929,7 +933,7 @@ function ultraSVG(u, h=200, cls=''){
     pattern = `<path d="M52 96 C 60 90, 76 92, 78 98 L 77 128 C 68 132, 56 130, 50 122 Z" fill="#d9d9d9" stroke="#8c8c8c" stroke-width="1.5"/>
       <path d="M108 96 C 100 90, 84 92, 82 98 L 83 128 C 92 132, 104 130, 110 122 Z" fill="#d9d9d9" stroke="#8c8c8c" stroke-width="1.5"/>
       <path d="M60 170 L80 152 L100 170 Z" fill="${accent2}"/>
-      <path d="M44 84 L56 84 L54 92 L42 92 Z" fill="#d9d9d9"/><path d="M116 84 L104 84 L106 92 L118 92 Z" fill="#d9d9d9"/>
+      <path d="M44 84 L56 84 L54 92 L42 92 Z" fill="#d9d9d9"/><path d="M116 84 L104 84 L106 92 L118 92 Z" fill="#d9d9d9"/><path d="M64 84 C 72 80, 88 80, 96 84 L 97 90 L 63 90 Z" fill="#d9d9d9" stroke="#8c8c8c"/>
       ${armBands}${shinBands}${thighFlash}`;
   } else if(pat==='split'){
     pattern = `<path d="M46 92 C 58 84, 74 86, 82 90 C 78 118, 70 146, 62 170 L 60 170 C 52 162, 42 150, 42 132 Z" fill="${accent2}" opacity=".92"/>
@@ -961,13 +965,15 @@ function ultraSVG(u, h=200, cls=''){
       <radialGradient id="${id}_eye" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#fffbe0"/><stop offset=".45" stop-color="${eyes}"/><stop offset="1" stop-color="${eyes}" stop-opacity=".85"/></radialGradient>
       <radialGradient id="${id}_timer" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#7fe3ff"/><stop offset="1" stop-color="#0a7fd6"/></radialGradient>
       <filter id="${id}_glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      <clipPath id="${id}_clip"><ellipse cx="80" cy="40" rx="30" ry="34"/>${shapes}</clipPath>
+      <clipPath id="${id}_clip"><path d="M80 4 C 102 4, 114 22, 113 44 C 112 64, 98 78, 80 80 C 62 78, 48 64, 47 44 C 46 22, 58 4, 80 4 Z"/>${shapes}</clipPath>
     </defs>
     <!-- 底色 -->
-    <g fill="${base}">${shapes}</g>
+    <g fill="${base}" stroke="#000" stroke-opacity=".32" stroke-width="1.4" stroke-linejoin="round">${shapes}</g>
     <!-- 花紋 -->
     <g clip-path="url(#${id}_clip)">${pattern}</g>
     ${boots}
+    <!-- 肌肉高光 -->
+    <g fill="#fff" opacity=".16"><ellipse cx="66" cy="106" rx="12" ry="8"/><ellipse cx="94" cy="106" rx="12" ry="8"/><ellipse cx="66" cy="200" rx="6" ry="14"/><ellipse cx="94" cy="200" rx="6" ry="14"/><ellipse cx="42" cy="118" rx="5" ry="14"/><ellipse cx="118" cy="118" rx="5" ry="14"/></g>
     <!-- 肌肉線條 -->
     <g fill="none" stroke="#000" stroke-opacity=".18" stroke-width="1.6" stroke-linecap="round">
       <path d="M62 104 C 70 112, 74 122, 78 128"/><path d="M98 104 C 90 112, 86 122, 82 128"/>
@@ -976,7 +982,9 @@ function ultraSVG(u, h=200, cls=''){
     </g>
     <!-- 頭 -->
     <g transform="translate(80 14) scale(1.35) translate(-80 -14)">${crestSVG}</g>
-    <path d="M80 6 C 100 6, 112 22, 112 42 C 112 60, 100 74, 80 76 C 60 74, 48 60, 48 42 C 48 22, 60 6, 80 6 Z" fill="${head}"/>
+    <path d="M80 4 C 102 4, 114 22, 113 44 C 112 64, 98 78, 80 80 C 62 78, 48 64, 47 44 C 46 22, 58 4, 80 4 Z" fill="${head}" stroke="#000" stroke-opacity=".32" stroke-width="1.4"/>
+    <ellipse cx="58" cy="58" rx="8" ry="10" fill="#000" opacity=".12"/><ellipse cx="102" cy="58" rx="8" ry="10" fill="#000" opacity=".12"/>
+    <ellipse cx="66" cy="20" rx="9" ry="6" fill="#fff" opacity=".3" transform="rotate(-25 66 20)"/>
     <path d="M52 40 C 58 26, 76 28, 78 40 C 72 48, 56 50, 52 40 Z" fill="url(#${id}_eye)" stroke="#fff" stroke-opacity=".7" stroke-width="1" filter="url(#${id}_glow)"/>
     <path d="M108 40 C 102 26, 84 28, 82 40 C 88 48, 104 50, 108 40 Z" fill="url(#${id}_eye)" stroke="#fff" stroke-opacity=".7" stroke-width="1" filter="url(#${id}_glow)"/>
     <path d="M58 30 C 66 24, 76 26, 79 34" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="1.5"/>
@@ -988,10 +996,322 @@ function ultraSVG(u, h=200, cls=''){
     ${marks?`<g fill="#ffd23f" stroke="#a87400" stroke-width=".6"><circle cx="60" cy="100" r="3"/><circle cx="68" cy="94" r="3"/><circle cx="92" cy="94" r="3"/><circle cx="100" cy="100" r="3"/></g>`:''}
     <!-- 光影 -->
     <g clip-path="url(#${id}_clip)"><rect x="-10" y="-20" width="180" height="300" fill="url(#${id}_shade)"/><rect x="-10" y="-20" width="180" height="300" fill="url(#${id}_vshade)"/></g>
-    <ellipse cx="80" cy="40" rx="30" ry="34" fill="url(#${id}_shade)"/>
+    <path d="M80 4 C 102 4, 114 22, 113 44 C 112 64, 98 78, 80 80 C 62 78, 48 64, 47 44 C 46 22, 58 4, 80 4 Z" fill="url(#${id}_shade)"/>
     <!-- 彩色計時器 -->
     <circle cx="80" cy="118" r="10" fill="#c9c9c9" stroke="#777" stroke-width="1"/>
     <circle cx="80" cy="118" r="7.5" fill="url(#${id}_timer)" filter="url(#${id}_glow)" class="ctimer-dot"/>
+  </svg>`;
+}
+
+const LOOKS = {
+  // 超異象之謎 / 初代
+  gomess:{type:'dino', c1:'#6b6b5a', c2:'#b8b09a', c3:'#3e3e34', eye:'#ffd23f', horns:1, spikes:false},
+  litra:{type:'bird', c1:'#e0603a', c2:'#ffd28a', c3:'#7a2e14', eye:'#ffe66d', fire:true},
+  garamon:{type:'alien', head:'plain', c1:'#b3472f', c2:'#e8a06a', c3:'#7a2e14', eye:'#ffd23f', stripes:true},
+  kanegon:{type:'alien', head:'money', c1:'#c9a64a', c2:'#f3dd8a', c3:'#7a5a12', eye:'#fff'},
+  kemur:{type:'alien', head:'mask', c1:'#3b3b4a', c2:'#8a8aa0', c3:'#1e1e28', eye:'#ff9a3c', antenna:true},
+  ragon:{type:'alien', head:'plain', c1:'#2f6b5a', c2:'#7fc9a8', c3:'#1c4236', eye:'#ffe66d', teeth:true},
+  peguila:{type:'bird', c1:'#4a6fa8', c2:'#cfe3ff', c3:'#1f3a66', eye:'#a8e6ff', horns:true},
+  bemular:{type:'dino', c1:'#2f5f9e', c2:'#9ec4e8', c3:'#1a3a66', eye:'#ffd23f', spikes:true, arms:'claw'},
+  baltan:{type:'alien', head:'crab', c1:'#6b5a7a', c2:'#d9c9a8', c3:'#3a2f44', eye:'#ff3b3b', claws:true},
+  neronga:{type:'beast', c1:'#5a5a48', c2:'#a8a890', c3:'#2e2e24', eye:'#ffd23f', horns:2, hornColor:'#e8dcc0', spikes:false},
+  greenmons:{type:'blob', c1:'#3f8a3a', c2:'#9ad46a', c3:'#245420', eye:'#ffe66d', tent:5, spikes:true, face:true},
+  guesra:{type:'dino', c1:'#3a7a6a', c2:'#a8d8c8', c3:'#1c4a40', eye:'#ffd23f', spikes:true, horns:1},
+  antlar:{type:'beast', c1:'#4a3a2a', c2:'#8a6a4a', c3:'#e8dcc0', eye:'#ffd23f', tusks:true, shell:true, spikes:false},
+  redking:{type:'dino', c1:'#c9b48a', c2:'#f0e2c0', c3:'#8a6a3a', eye:'#ff3b3b', spikes:false, bulk:1.1},
+  pigmon:{type:'alien', head:'plain', c1:'#b3472f', c2:'#e8a06a', c3:'#7a2e14', eye:'#ffd23f', stripes:true},
+  gavora:{type:'dino', c1:'#8a7a4a', c2:'#d9c890', c3:'#4a3a12', eye:'#ff9a3c', plates:true, spikes:true},
+  jamila:{type:'alien', head:'plain', c1:'#7a6a4a', c2:'#a89a7a', c3:'#4a3e28', eye:'#ffe66d'},
+  gomora:{type:'dino', c1:'#8a5a3a', c2:'#d9b48a', c3:'#5a3a1a', eye:'#ffd23f', horns:2, plates:true, tailSpike:true},
+  dada:{type:'alien', head:'three', c1:'#222', c2:'#f0f0f0', c3:'#111', eye:'#ff3b3b', stripes:true},
+  goldon:{type:'beast', c1:'#c9a64a', c2:'#f3dd8a', c3:'#7a5a12', eye:'#ffd23f', horns:1, spikes:false},
+  mefilas:{type:'alien', head:'mask', c1:'#3a3a5a', c2:'#c9c9d9', c3:'#1e1e30', eye:'#ffd23f', cape:true},
+  skydon:{type:'beast', c1:'#7a7a6a', c2:'#b8b8a8', c3:'#4a4a3a', eye:'#ffd23f', horns:2, spikes:false},
+  zaragas:{type:'dino', c1:'#5a4a7a', c2:'#c9b8e8', c3:'#ffd23f', eye:'#ffe66d', spikes:true, plates:true},
+  keylla:{type:'dino', c1:'#8a6a2a', c2:'#f3dd8a', c3:'#ffd23f', eye:'#ffffff', spikes:true, glow:true},
+  zetton:{type:'alien', head:'beetle', c1:'#1a1a1a', c2:'#333', c3:'#ffd23f', eye:'#ffd23f'},
+  alienzetton:{type:'alien', head:'mask', c1:'#4a3a5a', c2:'#a89ab8', c3:'#2a1e30', eye:'#ffd23f', antenna:true},
+  geronimon:{type:'alien', head:'bird', c1:'#8a3a2a', c2:'#ffd23f', c3:'#3a7ab8', eye:'#ffe66d'},
+  bullton:{type:'blob', rock:true, c1:'#5a6a7a', c2:'#a8b8c8', c3:'#2e3a48', eye:'#ffd23f'},
+  telesdon:{type:'dino', c1:'#6a4a3a', c2:'#c99a7a', c3:'#3a2a1a', eye:'#ff9a3c', spikes:true, horns:1},
+  seabozu:{type:'alien', head:'skull', c1:'#e8e0d0', c2:'#f5f0e6', c3:'#8a8070', eye:'#000'},
+  zarab:{type:'alien', head:'mask', c1:'#5a4a3a', c2:'#c9b8a0', c3:'#3a2e24', eye:'#ffd23f', antenna:true},
+  abolas:{type:'dino', c1:'#3a6ab8', c2:'#cfe3ff', c3:'#1e3a66', eye:'#ffd23f', spikes:true},
+  banila:{type:'dino', c1:'#c93a2a', c2:'#ffb08a', c3:'#7a1e10', eye:'#ffd23f', spikes:true, horns:1},
+  // 七號
+  eleking:{type:'dino', c1:'#e8e8e8', c2:'#f8f8f8', c3:'#333', eye:'#ffd23f', antenna:true, eyeless:true, spikes:false, tailSpike:true},
+  kingjoe:{type:'robot', c1:'#c9a64a', c2:'#f3dd8a', c3:'#5a4a2a', eye:'#ff3b3b'},
+  metron:{type:'alien', head:'dome', c1:'#c93a2a', c2:'#ffd23f', c3:'#7a1e10', eye:'#ffe66d'},
+  gubila:{type:'beast', c1:'#3a5a8a', c2:'#cfe3ff', c3:'#8a8a8a', eye:'#ffd23f', drill:true, spikes:false},
+  windom:{type:'robot', c1:'#c9c9c9', c2:'#8a8a8a', c3:'#5a5a5a', eye:'#2ec4ff', horns:true},
+  miclas:{type:'alien', head:'plain', c1:'#c98a3a', c2:'#f3d9a8', c3:'#e8dcc0', eye:'#ffd23f', horns:2},
+  agira:{type:'dino', c1:'#6b8e4e', c2:'#c9d7a0', c3:'#3d5a2a', eye:'#ffd23f', horns:1, spikes:false},
+  guts:{type:'alien', head:'mask', c1:'#c9c9c9', c2:'#8a8a8a', c3:'#3a3a3a', eye:'#ff3b3b', antenna:true},
+  pandon:{type:'dino', c1:'#c94a2a', c2:'#ffd23f', c3:'#7a1e10', eye:'#ffe66d', horns:2, spikes:true},
+  // 傑克 / 衛司 / 太郎 / 雷歐
+  bemstar:{type:'bird', c1:'#5a7a3a', c2:'#ffd23f', c3:'#2e4a1a', eye:'#ff3b3b', horns:true},
+  twintail:{type:'blob', c1:'#c94a3a', c2:'#ffd28a', c3:'#7a2e14', eye:'#ffd23f', tent:2, spikes:true, face:true},
+  gudon:{type:'dino', c1:'#6a4a3a', c2:'#b89a7a', c3:'#3a2a1a', eye:'#ffd23f', spikes:true, arms:'claw'},
+  blackking:{type:'dino', c1:'#2a2a2a', c2:'#6a6a6a', c3:'#ffd23f', eye:'#ff3b3b', horns:1, spikes:true, bulk:1.1},
+  knuckle:{type:'alien', head:'plain', c1:'#5a3a2a', c2:'#c9a68a', c3:'#2e1e14', eye:'#ff3b3b', horns:1},
+  verokron:{type:'alien', head:'plain', c1:'#7a3a5a', c2:'#e8a0c8', c3:'#3a1e30', eye:'#ffd23f', arms:'missile', horns:2},
+  baraba:{type:'alien', head:'demon', c1:'#c93a2a', c2:'#ffd23f', c3:'#5a5a5a', eye:'#ffe66d'},
+  yapool:{type:'alien', head:'demon', c1:'#5a2a6a', c2:'#c98ae8', c3:'#ff3b3b', eye:'#ff3b3b', cape:true},
+  astromons:{type:'dino', c1:'#3a6a4a', c2:'#ff6fb5', c3:'#1e3a28', eye:'#ffd23f', horns:1, spikes:true},
+  enmargo:{type:'alien', head:'demon', c1:'#c94a2a', c2:'#ffd23f', c3:'#3a3a3a', eye:'#ffe66d'},
+  tyrant:{type:'dino', c1:'#5a3a6a', c2:'#c9a64a', c3:'#e8dcc0', eye:'#ff3b3b', horns:2, plates:true, spikes:true, tailSpike:true, arms:'claw', bulk:1.15},
+  birdon:{type:'bird', c1:'#c93a2a', c2:'#ffd23f', c3:'#ff7a00', eye:'#ffe66d', fire:true, horns:true},
+  magma:{type:'alien', head:'plain', c1:'#c94a2a', c2:'#ffd28a', c3:'#7a1e10', eye:'#ffd23f', horns:2},
+  nova:{type:'blob', c1:'#e03a3a', c2:'#ffd23f', c3:'#7a1010', eye:'#fff', tent:1, bigEye:true, face:true},
+  silverbloome:{type:'blob', c1:'#c9c9d9', c2:'#e8e8f8', c3:'#8a8aa0', eye:'#ff3b3b', tent:8, eyes:0},
+  // 迪卡 / 帝納 / 蓋亞 / 高斯
+  golza:{type:'dino', c1:'#4a4a3a', c2:'#a8a890', c3:'#2e2e24', eye:'#ff9a3c', horns:2, plates:true, bulk:1.1},
+  melba:{type:'bird', c1:'#3a3a5a', c2:'#8a6ab8', c3:'#ff3b3b', eye:'#ff3b3b', horns:true},
+  gazort:{type:'bird', c1:'#5a3a7a', c2:'#c9a0e8', c3:'#2e1e40', eye:'#ffd23f'},
+  silvagon:{type:'beast', c1:'#c9c9c9', c2:'#e8e8e8', c3:'#5a5a5a', eye:'#ff3b3b', horns:2, spikes:true},
+  goldras:{type:'beast', c1:'#c9a64a', c2:'#f3dd8a', c3:'#7a5a12', eye:'#ff3b3b', horns:2, spikes:true},
+  kyrieloid:{type:'alien', head:'demon', c1:'#c94a2a', c2:'#ff7a00', c3:'#ffd23f', eye:'#ffe66d', glow:true},
+  gatanothor:{type:'blob', c1:'#3a2a5a', c2:'#8a5ab8', c3:'#1e1230', eye:'#ff3b3b', tent:9, spikes:true, face:true},
+  gregorl:{type:'alien', head:'plain', c1:'#3a5a8a', c2:'#c9c9c9', c3:'#1e3a66', eye:'#ffd23f'},
+  sphere:{type:'blob', orb:true, c1:'#3a8ab8', c2:'#a8e6ff', c3:'#1e4a66', eye:'#fff', glow:true},
+  neodarambia:{type:'dino', c1:'#4a5a8a', c2:'#a8b8e8', c3:'#2e3a5a', eye:'#a8e6ff', spikes:true, plates:true},
+  galberos:{type:'beast', c1:'#5a3a3a', c2:'#c98a8a', c3:'#2e1e1e', eye:'#ff3b3b', heads:3, mane:true, spikes:false},
+  zog:{type:'alien', head:'plain', c1:'#f0e6ff', c2:'#c9a0ff', c3:'#8a5ab8', eye:'#ff3b3b', cape:true, horns:2},
+  chaosheader:{type:'blob', c1:'#3a3a5a', c2:'#8a5ab8', c3:'#ffd23f', eye:'#ffd23f', tent:4, spikes:true, glow:true, face:true},
+  lidorias:{type:'bird', c1:'#8ac9ff', c2:'#ffffff', c3:'#ffd23f', eye:'#3a3a8a'},
+  // 馬克斯 / 梅比斯
+  grangon:{type:'dino', c1:'#c94a2a', c2:'#ffd28a', c3:'#ff7a00', eye:'#ffe66d', spikes:true, horns:1, glow:true},
+  lagoras:{type:'dino', c1:'#4a8ab8', c2:'#cfe3ff', c3:'#ffffff', eye:'#a8e6ff', spikes:true, horns:2},
+  dinozaur:{type:'dino', c1:'#5a6a4a', c2:'#a8b890', c3:'#2e3a24', eye:'#ff3b3b', spikes:true, plates:true},
+  bogar:{type:'dino', c1:'#3a4a3a', c2:'#8a9a7a', c3:'#c94a2a', eye:'#ff3b3b', spikes:true, horns:2, arms:'claw'},
+  empera:{type:'alien', head:'demon', c1:'#1a1a2a', c2:'#3a3a5a', c3:'#c9a64a', eye:'#ff3b3b', cape:true},
+  // 傑洛 / 銀河 / 艾克斯
+  belial:{type:'alien', head:'ultra', c1:'#1a1a1a', c2:'#c93a2a', c3:'#c93a2a', eye:'#ff3b3b', stripes:true},
+  darklops:{type:'robot', c1:'#2a2a2a', c2:'#5a5a5a', c3:'#ff3b3b', eye:'#ff3b3b', horns:true, roundHead:true},
+  lugiel:{type:'alien', head:'demon', c1:'#1a1a2a', c2:'#5a3a8a', c3:'#8a5ab8', eye:'#8b5cf6', cape:true, glow:true},
+  fiveking:{type:'beast', c1:'#5a4a3a', c2:'#c9a64a', c3:'#c94a2a', eye:'#ff3b3b', heads:3, horns:2, spikes:true},
+  greeza:{type:'alien', head:'plain', c1:'#3a2a4a', c2:'#8a5ab8', c3:'#2ec4ff', eye:'#2ec4ff', glow:true, antenna:true},
+  zaigorg:{type:'alien', head:'demon', c1:'#3a2a2a', c2:'#c94a2a', c3:'#ffd23f', eye:'#ff3b3b'},
+  cybergomora:{type:'dino', c1:'#3a4a8a', c2:'#2ec4ff', c3:'#8a5a3a', eye:'#2ec4ff', horns:2, plates:true, tailSpike:true, glow:true},
+  // 歐布 / 捷德 / 羅布
+  magazetton:{type:'alien', head:'beetle', c1:'#1a1a1a', c2:'#333', c3:'#ff7a00', eye:'#ff7a00', glow:true},
+  magabasser:{type:'bird', c1:'#3a6a3a', c2:'#a8d890', c3:'#1e3a1e', eye:'#ffd23f', horns:true},
+  magaorochi:{type:'snake', c1:'#4a3a2a', c2:'#c9a64a', c3:'#e8dcc0', eye:'#ff3b3b', horns:true, heads:1, wings:true},
+  juggler:{type:'alien', head:'plain', c1:'#2a2a3a', c2:'#8a5ab8', c3:'#5a3a8a', eye:'#ffd23f', horns:2},
+  skullgomora:{type:'dino', c1:'#c9b48a', c2:'#8a5a3a', c3:'#3a2a1a', eye:'#ff3b3b', horns:2, plates:true, tailSpike:true, bulk:1.1},
+  bezelb:{type:'bird', c1:'#c9a64a', c2:'#2a2a2a', c3:'#7a5a12', eye:'#ff3b3b'},
+  grigioking:{type:'beast', c1:'#3a3a3a', c2:'#e8dcc0', c3:'#c94a2a', eye:'#ff3b3b', horns:2, spikes:true},
+  horoboros:{type:'beast', c1:'#4a3a5a', c2:'#c9a0e8', c3:'#ff7a00', eye:'#ff3b3b', mane:true, tusks:true, spikes:true},
+  // 大河 / 傑特 / 特利卡 / 德卡
+  hellberus:{type:'beast', c1:'#3a2a2a', c2:'#c94a2a', c3:'#ff7a00', eye:'#ff3b3b', mane:true, spikes:true, tusks:true},
+  zandrias:{type:'bird', c1:'#5a3a5a', c2:'#e8a0c8', c3:'#3a1e3a', eye:'#ffd23f'},
+  genegarg:{type:'dino', c1:'#3a5a8a', c2:'#cfe3ff', c3:'#1e3a5a', eye:'#ff3b3b', spikes:true, horns:1, arms:'claw'},
+  sevenger:{type:'robot', c1:'#c9c9c9', c2:'#6a6a6a', c3:'#3a3a3a', eye:'#ffd23f', roundHead:true},
+  celebro:{type:'alien', head:'dome', c1:'#5a2a6a', c2:'#e8a0ff', c3:'#3a1e40', eye:'#ff3b3b'},
+  destrudos:{type:'dino', c1:'#2a2a3a', c2:'#5a5a7a', c3:'#ff3b3b', eye:'#ff3b3b', horns:2, plates:true, spikes:true, tailSpike:true, arms:'missile', bulk:1.2},
+  golba:{type:'dino', c1:'#4a4a3a', c2:'#8a6ab8', c3:'#2e2e24', eye:'#ff3b3b', horns:2, plates:true, wings:true, bulk:1.1},
+  megalothor:{type:'blob', c1:'#2a1a3a', c2:'#8a3ab8', c3:'#ff3b3b', eye:'#ff3b3b', tent:9, spikes:true, face:true, glow:true},
+  spherezaurus:{type:'dino', c1:'#3a6a8a', c2:'#a8e6ff', c3:'#1e3a5a', eye:'#a8e6ff', spikes:true, plates:true, glow:true},
+  // Blazar / 雅克
+  bazanga:{type:'beast', c1:'#3a3a4a', c2:'#8a8aa0', c3:'#ff3b3b', eye:'#ff3b3b', shell:true, tusks:true, spikes:true},
+  gedos:{type:'blob', c1:'#3a6a6a', c2:'#a8d8d8', c3:'#1e3a3a', eye:'#ffd23f', tent:6, face:true},
+  nijikagachi:{type:'snake', c1:'#3a4a6a', c2:'#cfe3ff', c3:'#8a5ab8', eye:'#ffd23f', horns:true, rainbow:true},
+  earthgaron:{type:'robot', c1:'#3a5a8a', c2:'#c9c9c9', c3:'#2e2e2e', eye:'#2ec4ff'},
+  varallon:{type:'blob', c1:'#5a3a8a', c2:'#c9a0ff', c3:'#2ec4ff', eye:'#2ec4ff', tent:10, glow:true, spikes:true},
+  shagong:{type:'dino', c1:'#6a5a3a', c2:'#d9c890', c3:'#3a2a12', eye:'#ff9a3c', spikes:true, horns:2, tailSpike:true},
+};
+
+/* ---------- 繪製怪獸 (SVG) ---------- */
+// look: {type:'dino'|'alien'|'robot'|'beast'|'bird'|'blob'|'snake', c1 身體, c2 腹部/次色, c3 重點色, eye 眼色,
+//        horns 0-2, spikes 背棘, plates 頭冠, tailSpike, wings, claws 鉗子, antenna, drill, tent 觸手數, heads, teeth, glow, arms:'claw'|'hand'|'missile'}
+function monsterSVG(m, h=200, cls=''){
+  const L = LOOKS[m.id] || m.look || {type:'dino', c1:'#6b8e4e', c2:'#c9d7a0', c3:'#3d5a2a', eye:'#ffd23f'};
+  const {type='dino', c1='#6b8e4e', c2='#c9d7a0', c3='#3d5a2a', eye='#ffd23f'} = L;
+  const id = 'm_'+m.id;
+  const defs = `<defs>
+    <linearGradient id="${id}_b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".4"/></linearGradient>
+    <radialGradient id="${id}_e" cx=".4" cy=".4" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="${eye}"/><stop offset="1" stop-color="${eye}" stop-opacity=".7"/></radialGradient>
+    <filter id="${id}_g" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="${id}_s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000" flood-opacity=".45"/></filter>
+  </defs>`;
+  const O = `stroke="#000" stroke-opacity=".45" stroke-width="1.6" stroke-linejoin="round"`;
+  const eyeSVG = (x,y,r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#${id}_e)" filter="url(#${id}_g)"/><circle cx="${x-r*.25}" cy="${y-r*.3}" r="${r*.3}" fill="#fff" opacity=".9"/><circle cx="${x+r*.1}" cy="${y+r*.1}" r="${r*.35}" fill="#000" opacity="${L.pupil===false?0:.85}"/>`;
+  const spikesSVG = (pts, col=c3) => pts.map(([x,y,s])=>`<path d="M${x-s} ${y} L${x} ${y-s*1.8} L${x+s} ${y} Z" fill="${col}" ${O}/>`).join('');
+  const teethSVG = (x,y,n,dir=1,w=4) => Array.from({length:n},(_,i)=>`<path d="M${x+i*w} ${y} L${x+i*w+w/2} ${y+dir*6} L${x+i*w+w} ${y} Z" fill="#fff"/>`).join('');
+  let body='';
+
+  if(type==='dino'){
+    const bulk = L.bulk||1;
+    body += `<path d="M118 118 C 150 108, 172 118, 188 142 C 176 138, 160 134, 146 140" fill="${c1}" ${O}/>`; // 尾
+    if(L.tailSpike) body += spikesSVG([[150,118,5],[166,120,5],[182,132,5]]);
+    body += `<ellipse cx="108" cy="118" rx="${44*bulk}" ry="${40*bulk}" fill="${c1}" ${O}/>`; // 身體
+    body += `<ellipse cx="96" cy="128" rx="${26*bulk}" ry="${28*bulk}" fill="${c2}" opacity=".95"/>`; // 腹
+    body += `<path d="M78 130 Q96 122 114 130 M76 142 Q96 134 116 142 M80 154 Q96 146 112 154" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2"/>`;
+    if(L.spikes!==false) body += spikesSVG([[84,86,7],[100,80,8],[116,80,8],[132,86,7],[146,98,6]]);
+    // 後腿
+    body += `<path d="M124 140 C 140 150, 142 172, 134 188 L 150 190 L 150 198 L 112 198 L 116 186 C 108 168, 108 150, 118 140 Z" fill="${c1}" ${O}/>`;
+    body += `<path d="M82 142 C 66 154, 66 174, 74 188 L 58 190 L 58 198 L 96 198 L 92 186 C 100 168, 98 152, 90 142 Z" fill="${c1}" ${O}/>`;
+    body += `<path d="M58 198 L54 204 M66 198 L64 205 M74 198 L74 205 M112 198 L110 205 M120 198 L120 205 M128 198 L130 204" stroke="${c3}" stroke-width="3" stroke-linecap="round"/>`;
+    // 手
+    const arm = L.arms==='claw' ? `<path d="M74 118 L54 128 L46 122 M54 128 L50 136" fill="none" stroke="${c1}" stroke-width="9" stroke-linecap="round"/><path d="M46 122 L40 118 M50 136 L46 142" stroke="${c3}" stroke-width="3" stroke-linecap="round"/>`
+      : `<path d="M74 118 L56 132 L48 130" fill="none" stroke="${c1}" stroke-width="9" stroke-linecap="round"/><path d="M48 130 L42 126 M48 130 L42 134" stroke="${c3}" stroke-width="3" stroke-linecap="round"/>`;
+    body += arm;
+    // 頭
+    body += `<path d="M84 84 C 70 70, 40 72, 26 92 C 20 102, 24 112, 38 114 L 84 108 Z" fill="${c1}" ${O}/>`; // 頭與上顎
+    body += `<path d="M30 110 C 26 118, 34 126, 50 124 L 84 112 L 84 106 L 36 112 Z" fill="${c2}" ${O}/>`; // 下顎
+    body += teethSVG(34,110,6,1,5);
+    body += `<circle cx="30" cy="104" r="2.5" fill="#000" opacity=".5"/>`;
+    if(L.plates) body += `<path d="M60 76 L54 56 L66 68 L70 50 L78 70 L86 58 L86 80 Z" fill="${c3}" ${O}/>`;
+    if(L.horns>=1) body += `<path d="M62 78 L58 54 L70 74 Z" fill="${L.hornColor||'#e8dcc0'}" ${O}/>`;
+    if(L.horns>=2) body += `<path d="M78 76 L84 50 L88 76 Z" fill="${L.hornColor||'#e8dcc0'}" ${O}/>`;
+    if(L.antenna) body += `<path d="M54 78 C 44 60, 30 62, 20 70 M70 76 C 72 56, 84 50, 96 54" fill="none" stroke="${c3}" stroke-width="4" stroke-linecap="round"/><circle cx="20" cy="70" r="4" fill="${eye}" filter="url(#${id}_g)"/><circle cx="96" cy="54" r="4" fill="${eye}" filter="url(#${id}_g)"/>`;
+    if(L.drill) body += `<path d="M28 96 L-2 100 L28 106 Z" fill="${c3}" ${O}/><path d="M22 98 L8 100 M22 104 L8 102" stroke="#000" stroke-opacity=".3" stroke-width="1.5"/>`;
+    if(L.wings) body += `<path d="M104 90 C 120 50, 160 40, 196 56 C 168 62, 150 82, 140 100 Z" fill="${c2}" ${O} opacity=".95"/><path d="M104 90 L196 56 M118 84 L176 58 M132 92 L168 70" stroke="#000" stroke-opacity=".25" stroke-width="1.5" fill="none"/>`;
+    body += eyeSVG(52, 92, L.eyeless?0:6);
+    if(L.eyeless) body += `<path d="M44 94 Q54 90 64 94" fill="none" stroke="#000" stroke-opacity=".4" stroke-width="2"/>`;
+  }
+  else if(type==='alien'){
+    const hd = L.head||'plain';
+    body += `<path d="M78 196 L74 140 L88 138 L94 196 Z" fill="${c3}" ${O}/><path d="M122 196 L126 140 L112 138 L106 196 Z" fill="${c3}" ${O}/>`; // 腿
+    body += `<rect x="70" y="192" width="28" height="10" rx="4" fill="${c3}" ${O}/><rect x="102" y="192" width="28" height="10" rx="4" fill="${c3}" ${O}/>`;
+    body += `<path d="M70 82 C 84 74, 116 74, 130 82 L 128 146 L 72 146 Z" fill="${c1}" ${O}/>`; // 軀幹
+    body += `<path d="M84 92 L100 128 L116 92 L112 92 L100 118 L88 92 Z" fill="${c2}" opacity=".9"/>`;
+    if(L.stripes) body += `<path d="M76 100 H124 M78 116 H122 M80 132 H120" stroke="${c2}" stroke-width="4" opacity=".8"/>`;
+    // 手臂
+    if(L.claws){
+      body += `<path d="M72 88 L44 106 L30 96" fill="none" stroke="${c1}" stroke-width="10" stroke-linecap="round"/><path d="M128 88 L156 106 L170 96" fill="none" stroke="${c1}" stroke-width="10" stroke-linecap="round"/>`;
+      body += `<path d="M30 96 C 8 84, 6 112, 26 116 L 30 106 Z" fill="${c2}" ${O}/><path d="M30 96 C 18 78, 40 76, 40 92 Z" fill="${c2}" ${O}/>`;
+      body += `<path d="M170 96 C 192 84, 194 112, 174 116 L 170 106 Z" fill="${c2}" ${O}/><path d="M170 96 C 182 78, 160 76, 160 92 Z" fill="${c2}" ${O}/>`;
+    } else if(L.arms==='missile'){
+      body += `<path d="M72 92 L48 118 L44 142" fill="none" stroke="${c1}" stroke-width="10" stroke-linecap="round"/><path d="M128 92 L152 118 L156 142" fill="none" stroke="${c1}" stroke-width="10" stroke-linecap="round"/>`;
+      body += Array.from({length:4},(_,i)=>`<rect x="${78+i*11}" y="96" width="7" height="14" rx="3" fill="${c3}" ${O}/><circle cx="${81.5+i*11}" cy="96" r="3.5" fill="#ff5a3c"/>`).join('');
+    } else {
+      body += `<path d="M72 92 L50 122 L46 150" fill="none" stroke="${c1}" stroke-width="10" stroke-linecap="round"/><path d="M128 92 L150 122 L154 150" fill="none" stroke="${c1}" stroke-width="10" stroke-linecap="round"/>`;
+      body += `<path d="M46 150 L40 160 M46 150 L48 162 M46 150 L54 158 M154 150 L160 160 M154 150 L152 162 M154 150 L146 158" stroke="${c1}" stroke-width="4" stroke-linecap="round"/>`;
+    }
+    // 頭
+    if(hd==='beetle'){ // 積頓
+      body += `<path d="M76 78 C 72 48, 128 48, 124 78 L 122 88 L 78 88 Z" fill="${c1}" ${O}/><path d="M86 78 C 88 62, 112 62, 114 78 Z" fill="${eye}" filter="url(#${id}_g)" opacity=".95"/>`;
+      body += `<path d="M84 54 L74 30 M116 54 L126 30 M100 50 L100 28" stroke="${c1}" stroke-width="4" stroke-linecap="round"/><circle cx="74" cy="30" r="4" fill="${eye}"/><circle cx="126" cy="30" r="4" fill="${eye}"/><circle cx="100" cy="28" r="4" fill="${eye}"/>`;
+      body += `<path d="M84 96 H116 M84 104 H116 M84 112 H116" stroke="${eye}" stroke-width="3" opacity=".8"/>`;
+    } else if(hd==='crab'){ // 巴爾坦
+      body += `<path d="M78 82 C 72 56, 128 56, 122 82 L 120 90 L 80 90 Z" fill="${c1}" ${O}/>`;
+      body += `<path d="M88 58 L76 30 M112 58 L124 30" stroke="${c1}" stroke-width="5" stroke-linecap="round"/><circle cx="76" cy="30" r="5" fill="${c2}" ${O}/><circle cx="124" cy="30" r="5" fill="${c2}" ${O}/>`;
+      body += `<path d="M86 66 C 92 60, 108 60, 114 66 L 112 78 L 88 78 Z" fill="${c2}" opacity=".9"/>`;
+      body += eyeSVG(90,72,5)+eyeSVG(110,72,5);
+    } else if(hd==='skull'){
+      body += `<path d="M80 84 C 74 54, 126 54, 120 84 L 118 92 L 82 92 Z" fill="${c2}" ${O}/><ellipse cx="91" cy="72" rx="6" ry="7" fill="#000" opacity=".85"/><ellipse cx="109" cy="72" rx="6" ry="7" fill="#000" opacity=".85"/><path d="M92 84 H108" stroke="#000" stroke-opacity=".5" stroke-width="2"/>`;
+      body += teethSVG(88,86,6,1,4);
+    } else if(hd==='three'){ // 達達
+      body += `<path d="M78 84 C 72 52, 128 52, 122 84 L 120 92 L 80 92 Z" fill="${c1}" ${O}/><path d="M84 58 H116 M82 68 H118 M84 78 H116" stroke="${c2}" stroke-width="4"/>`;
+      body += `<ellipse cx="91" cy="70" rx="5" ry="6" fill="${eye}"/><ellipse cx="109" cy="70" rx="5" ry="6" fill="${eye}"/>`;
+    } else if(hd==='dome'){ // 美特隆
+      body += `<path d="M76 88 C 70 50, 130 50, 124 88 Z" fill="${c1}" ${O}/><path d="M82 82 C 82 62, 118 62, 118 82 Z" fill="${c2}" opacity=".85"/>`;
+      body += eyeSVG(92,74,4)+eyeSVG(108,74,4)+`<path d="M86 88 H114" stroke="${eye}" stroke-width="3"/>`;
+    } else if(hd==='demon'){
+      body += `<path d="M78 86 C 74 58, 126 58, 122 86 L 120 94 L 80 94 Z" fill="${c1}" ${O}/><path d="M82 62 L66 34 L90 56 Z" fill="${c3}" ${O}/><path d="M118 62 L134 34 L110 56 Z" fill="${c3}" ${O}/>`;
+      body += eyeSVG(90,76,5)+eyeSVG(110,76,5)+teethSVG(86,88,7,1,4)+`<path d="M84 88 H116" stroke="#000" stroke-opacity=".4" stroke-width="2"/>`;
+    } else if(hd==='ultra'){ // 貝利亞型
+      body += `<path d="M80 86 C 76 56, 124 56, 120 86 C 118 94, 82 94, 80 86 Z" fill="${c1}" ${O}/><path d="M97 58 L100 40 L103 58 Z" fill="${c3}"/>`;
+      body += `<path d="M84 72 C 88 64, 96 66, 97 72 C 94 76, 86 76, 84 72 Z" fill="${eye}" filter="url(#${id}_g)"/><path d="M116 72 C 112 64, 104 66, 103 72 C 106 76, 114 76, 116 72 Z" fill="${eye}" filter="url(#${id}_g)"/>`;
+      body += `<path d="M90 84 Q100 80 110 84" fill="none" stroke="#000" stroke-opacity=".5" stroke-width="2"/>`;
+    } else if(hd==='bird'){ // 傑羅尼蒙
+      body += `<path d="M80 86 C 76 60, 124 60, 120 86 L 118 92 L 82 92 Z" fill="${c1}" ${O}/><path d="M80 80 L60 84 L82 90 Z" fill="${c3}" ${O}/>`;
+      body += Array.from({length:7},(_,i)=>`<path d="M${84+i*5} 62 L${80+i*5} 36 L${88+i*5} 60 Z" fill="${i%2?c2:c3}" ${O}/>`).join('');
+      body += eyeSVG(90,76,5)+eyeSVG(110,76,5);
+    } else if(hd==='mask'){ // 凱姆爾/加茲 細長頭
+      body += `<path d="M82 88 C 78 44, 122 44, 118 88 Z" fill="${c1}" ${O}/><path d="M88 70 C 92 64, 108 64, 112 70 L 110 78 L 90 78 Z" fill="${c2}" opacity=".9"/>`;
+      body += eyeSVG(93,72,4)+eyeSVG(107,72,4);
+      if(L.antenna) body += `<path d="M100 48 L100 30" stroke="${c3}" stroke-width="4" stroke-linecap="round"/><circle cx="100" cy="28" r="5" fill="${eye}" filter="url(#${id}_g)"/>`;
+    } else if(hd==='money'){ // 卡內貢
+      body += `<path d="M74 92 C 66 50, 134 50, 126 92 Z" fill="${c1}" ${O}/><path d="M80 84 C 84 70, 116 70, 120 84 C 116 96, 84 96, 80 84 Z" fill="${c3}" ${O}/><path d="M86 84 H114" stroke="#000" stroke-opacity=".5" stroke-width="3"/>`;
+      body += `<rect x="84" y="102" width="32" height="12" rx="3" fill="#222"/><text x="100" y="112" font-size="9" fill="#ffd23f" text-anchor="middle" font-weight="bold">$</text>`;
+      body += eyeSVG(88,64,5)+eyeSVG(112,64,5);
+    } else { // plain
+      body += `<path d="M80 86 C 76 56, 124 56, 120 86 L 118 92 L 82 92 Z" fill="${c1}" ${O}/>`;
+      if(L.horns>=1) body += `<path d="M84 62 L74 36 L92 58 Z" fill="${c3}" ${O}/>`;
+      if(L.horns>=2) body += `<path d="M116 62 L126 36 L108 58 Z" fill="${c3}" ${O}/>`;
+      if(L.antenna) body += `<path d="M92 58 L84 34 M108 58 L116 34" stroke="${c3}" stroke-width="4" stroke-linecap="round"/><circle cx="84" cy="33" r="4" fill="${eye}"/><circle cx="116" cy="33" r="4" fill="${eye}"/>`;
+      body += eyeSVG(90,74,5)+eyeSVG(110,74,5);
+      if(L.teeth) body += `<path d="M86 86 H114" stroke="#000" stroke-opacity=".4" stroke-width="2"/>`+teethSVG(87,86,7,1,4);
+      else body += `<path d="M90 86 Q100 90 110 86" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="2"/>`;
+    }
+    if(L.cape) body += `<path d="M70 84 L40 190 L70 170 Z M130 84 L160 190 L130 170 Z" fill="${c3}" opacity=".9"/>`;
+  }
+  else if(type==='robot'){
+    body += `<rect x="72" y="150" width="22" height="42" rx="4" fill="${c3}" ${O}/><rect x="106" y="150" width="22" height="42" rx="4" fill="${c3}" ${O}/>`;
+    body += `<rect x="64" y="188" width="34" height="12" rx="3" fill="${c2}" ${O}/><rect x="102" y="188" width="34" height="12" rx="3" fill="${c2}" ${O}/>`;
+    body += `<rect x="66" y="84" width="68" height="70" rx="8" fill="${c1}" ${O}/>`;
+    body += `<rect x="78" y="96" width="44" height="26" rx="4" fill="${c2}" opacity=".9"/><path d="M84 102 H116 M84 110 H116" stroke="${c1}" stroke-width="3"/>`;
+    body += `<circle cx="80" cy="136" r="4" fill="${c3}"/><circle cx="100" cy="136" r="4" fill="${eye}"/><circle cx="120" cy="136" r="4" fill="${c3}"/>`;
+    body += `<rect x="40" y="88" width="24" height="52" rx="8" fill="${c1}" ${O}/><rect x="136" y="88" width="24" height="52" rx="8" fill="${c1}" ${O}/>`;
+    body += `<rect x="36" y="136" width="32" height="20" rx="6" fill="${c2}" ${O}/><rect x="132" y="136" width="32" height="20" rx="6" fill="${c2}" ${O}/>`;
+    body += `<rect x="76" y="44" width="48" height="42" rx="${L.roundHead?21:8}" fill="${c1}" ${O}/><rect x="82" y="56" width="36" height="12" rx="4" fill="${eye}" filter="url(#${id}_g)" opacity=".95"/>`;
+    body += `<path d="M100 44 L100 28" stroke="${c3}" stroke-width="4"/><circle cx="100" cy="26" r="4" fill="#ff5a3c"/>`;
+    if(L.horns) body += `<path d="M78 48 L64 30 L84 44 Z M122 48 L136 30 L116 44 Z" fill="${c2}" ${O}/>`;
+    body += `<path d="M70 92 H130 M70 148 H130 M66 120 H72 M128 120 H134" stroke="#000" stroke-opacity=".25" stroke-width="1.5"/>`;
+  }
+  else if(type==='beast'){
+    body += `<path d="M150 120 C 176 112, 190 124, 194 140 C 184 134, 170 130, 160 136" fill="${c1}" ${O}/>`;
+    body += `<ellipse cx="112" cy="128" rx="54" ry="34" fill="${c1}" ${O}/><ellipse cx="112" cy="140" rx="40" ry="18" fill="${c2}" opacity=".9"/>`;
+    if(L.spikes!==false) body += spikesSVG([[74,102,6],[92,96,7],[112,94,7],[132,96,7],[150,104,6]]);
+    if(L.shell) body += `<path d="M62 118 C 80 82, 144 82, 162 118" fill="${c3}" opacity=".85" ${O}/><path d="M80 110 C 96 92, 128 92, 144 110 M92 104 L84 120 M132 104 L140 120 M112 90 L112 122" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="2"/>`;
+    ['74,150','96,154','128,154','150,150'].forEach((p,i)=>{ const [x,y]=p.split(',').map(Number); body += `<path d="M${x-9} ${y} L${x-11} ${y+40} L${x+11} ${y+40} L${x+9} ${y} Z" fill="${c1}" ${O}/><rect x="${x-13}" y="${y+38}" width="26" height="10" rx="4" fill="${c3}" ${O}/>`; });
+    // 頭（左）
+    const heads = L.heads||1;
+    for(let k=0;k<heads;k++){
+      const dy = heads===1?0:(k-1)*22, dx = heads===1?0:Math.abs(k-1)*10;
+      body += `<g transform="translate(${dx} ${dy})"><path d="M66 112 C 50 96, 22 98, 14 116 C 12 126, 22 134, 38 132 L 66 128 Z" fill="${c1}" ${O}/><path d="M18 128 C 18 138, 34 142, 50 136 L 66 130 L 66 126 L 30 130 Z" fill="${c2}" ${O}/>${teethSVG(22,128,6,1,5)}${eyeSVG(40,112,5)}`;
+      if(L.tusks) body += `<path d="M22 130 L10 144 L26 134 Z" fill="#f3e9d2" ${O}/>`;
+      if(L.horns) body += `<path d="M48 100 L44 74 L58 98 Z" fill="${L.hornColor||'#e8dcc0'}" ${O}/>`+(L.horns>1?`<path d="M60 100 L66 76 L70 100 Z" fill="${L.hornColor||'#e8dcc0'}" ${O}/>`:'');
+      if(L.drill) body += `<path d="M16 118 L-8 122 L16 128 Z" fill="${c3}" ${O}/>`;
+      if(L.mane) body += `<path d="M66 100 C 60 84, 76 78, 82 92 C 88 78, 100 84, 96 100 Z" fill="${c3}" ${O}/>`;
+      body += `</g>`;
+    }
+  }
+  else if(type==='bird'){
+    body += `<path d="M100 120 C 60 60, 20 60, 4 96 C 34 86, 66 100, 92 130 Z" fill="${c1}" ${O}/><path d="M100 120 C 140 60, 180 60, 196 96 C 166 86, 134 100, 108 130 Z" fill="${c1}" ${O}/>`;
+    body += `<path d="M12 94 L40 84 M24 92 L56 86 M188 94 L160 84 M176 92 L144 86" stroke="#000" stroke-opacity=".25" stroke-width="1.5"/>`;
+    body += `<ellipse cx="100" cy="134" rx="30" ry="36" fill="${c1}" ${O}/><ellipse cx="100" cy="144" rx="18" ry="22" fill="${c2}" opacity=".9"/>`;
+    body += `<path d="M88 168 L80 190 M112 168 L120 190" stroke="${c3}" stroke-width="5" stroke-linecap="round"/><path d="M80 190 L72 196 M80 190 L80 198 M80 190 L88 196 M120 190 L112 196 M120 190 L120 198 M120 190 L128 196" stroke="${c3}" stroke-width="3" stroke-linecap="round"/>`;
+    body += `<path d="M90 170 L100 196 L110 170 Z" fill="${c2}" ${O}/>`;
+    body += `<circle cx="100" cy="94" r="20" fill="${c1}" ${O}/>`;
+    body += `<path d="M84 98 L60 104 L84 108 Z" fill="${c3}" ${O}/>`; // 鳥嘴
+    if(L.fire) body += `<path d="M62 104 C 50 98, 44 108, 52 112 C 42 114, 46 124, 56 118" fill="#ff7a00" opacity=".9"/>`;
+    if(L.horns) body += `<path d="M92 78 L84 56 L100 76 Z M108 78 L116 56 L100 76 Z" fill="${c3}" ${O}/>`;
+    else body += `<path d="M96 76 L92 58 L104 74 L110 60 L108 78 Z" fill="${c3}" ${O}/>`;
+    body += eyeSVG(90,92,5)+eyeSVG(110,92,5);
+  }
+  else if(type==='blob'){
+    const tent = L.tent ?? 6;
+    if(L.orb){
+      body += `<circle cx="100" cy="120" r="56" fill="${c1}" ${O}/><circle cx="100" cy="120" r="40" fill="none" stroke="${c2}" stroke-width="4" opacity=".8"/><circle cx="100" cy="120" r="22" fill="${c2}" opacity=".9" filter="url(#${id}_g)"/><circle cx="100" cy="120" r="8" fill="#fff"/><path d="M60 92 C 74 72, 126 72, 140 92" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="5" stroke-linecap="round"/>`;
+    } else if(L.rock){
+      body += `<path d="M40 150 L58 96 L100 70 L146 92 L164 150 L130 190 L70 190 Z" fill="${c1}" ${O}/><path d="M58 96 L100 120 L146 92 M100 120 L130 190 M100 120 L70 190" stroke="#000" stroke-opacity=".3" stroke-width="2" fill="none"/>`;
+      body += `<path d="M80 110 L92 100 L96 116 Z M118 112 L130 104 L128 122 Z" fill="${c2}" opacity=".7"/>`;
+    } else {
+      body += `<path d="M30 124 C 30 60, 170 60, 170 124 C 150 134, 50 134, 30 124 Z" fill="${c1}" ${O}/>`; // 傘/頭
+      body += `<path d="M50 108 C 60 80, 140 80, 150 108" fill="none" stroke="${c2}" stroke-width="6" opacity=".7"/>`;
+      for(let i=0;i<tent;i++){ const x= tent===1 ? 100 : 40+i*(120/(tent-1)); const sw = i%2?1:-1; body += `<path d="M${x} 126 C ${x+sw*10} 150, ${x-sw*10} 170, ${x+sw*6} 196" fill="none" stroke="${c1}" stroke-width="9" stroke-linecap="round" ${O}/><circle cx="${x+sw*6}" cy="196" r="4" fill="${c2}"/>`; }
+      if(L.spikes) body += spikesSVG([[60,78,7],[80,68,8],[100,64,9],[120,68,8],[140,78,7]]);
+      if(L.eyes!==0) body += eyeSVG(78,100,L.bigEye?12:7)+eyeSVG(122,100,L.bigEye?12:7);
+      if(L.face) body += `<path d="M80 116 Q100 126 120 116" fill="none" stroke="#000" stroke-opacity=".5" stroke-width="3"/>`+teethSVG(82,116,9,1,4);
+    }
+  }
+  else if(type==='snake'){
+    body += `<path d="M180 180 C 140 200, 100 160, 120 130 C 140 100, 190 120, 170 90 C 150 60, 90 70, 70 100" fill="none" stroke="${c1}" stroke-width="26" stroke-linecap="round"/>`;
+    body += `<path d="M180 180 C 140 200, 100 160, 120 130 C 140 100, 190 120, 170 90 C 150 60, 90 70, 70 100" fill="none" stroke="${c2}" stroke-width="10" stroke-linecap="round" opacity=".8" stroke-dasharray="10 12"/>`;
+    if(L.wings) body += `<path d="M150 100 C 170 60, 196 60, 198 84 C 182 82, 168 96, 160 112 Z" fill="${c2}" ${O}/>`;
+    body += `<path d="M78 92 C 60 78, 30 82, 18 100 C 14 110, 22 120, 38 118 L 78 112 Z" fill="${c1}" ${O}/><path d="M22 114 C 22 124, 36 128, 50 122 L 78 114 L 78 110 L 30 116 Z" fill="${c2}" ${O}/>`;
+    body += teethSVG(26,114,6,1,5)+eyeSVG(46,98,5);
+    if(L.horns) body += `<path d="M56 86 L52 62 L64 84 Z M70 84 L76 60 L80 86 Z" fill="${c3}" ${O}/>`;
+    if(L.heads>1) body += `<g transform="translate(60 -38) scale(.7)"><path d="M78 92 C 60 78, 30 82, 18 100 C 14 110, 22 120, 38 118 L 78 112 Z" fill="${c1}" ${O}/>${eyeSVG(46,98,5)}</g><g transform="translate(90 -8) scale(.6)"><path d="M78 92 C 60 78, 30 82, 18 100 C 14 110, 22 120, 38 118 L 78 112 Z" fill="${c1}" ${O}/>${eyeSVG(46,98,5)}</g>`;
+    if(L.rainbow) body += `<path d="M180 180 C 140 200, 100 160, 120 130 C 140 100, 190 120, 170 90 C 150 60, 90 70, 70 100" fill="none" stroke="url(#${id}_rb)" stroke-width="6" opacity=".9"/>`;
+  }
+  const extraDefs = L.rainbow ? `<linearGradient id="${id}_rb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff3b3b"/><stop offset=".25" stop-color="#ffd23f"/><stop offset=".5" stop-color="#3ddc84"/><stop offset=".75" stop-color="#2ec4ff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>` : '';
+  const glow = L.glow ? `filter="url(#${id}_g)"` : '';
+  return `<svg class="${cls}" viewBox="-10 20 220 190" height="${h}" xmlns="http://www.w3.org/2000/svg">${defs.replace('</defs>',extraDefs+'</defs>')}
+    <g filter="url(#${id}_s)" ${glow}>${body}</g>
   </svg>`;
 }
 
@@ -1009,6 +1329,7 @@ function setScreen(html, keyHandler=null){
   if(state.keyHandler){ window.removeEventListener('keydown', state.keyHandler); }
   state.keyHandler = keyHandler;
   if(keyHandler) window.addEventListener('keydown', keyHandler);
+  quiz.token = (quiz.token||0)+1;  // 換畫面即作廢待執行的跳題
   app.innerHTML = html;
   app.classList.toggle('inbattle', html.includes('class="battle"'));
   app.classList.remove('fade'); void app.offsetWidth; app.classList.add('fade');
@@ -1061,7 +1382,7 @@ function toggleVoice(){ state.voice=!state.voice; saveSettings(); SFX.click(); i
 /* =====================================================================
    猜謎（角色 / 型態 / 道具）
    ===================================================================== */
-const quiz = { type:'char', idx:0, total:5, correct:0, q:null, firstTry:true, hintN:1, used:new Set() };
+var quiz = { type:'char', idx:0, total:5, correct:0, q:null, firstTry:true, hintN:1, used:new Set(), token:0 };
 
 function startQuiz(type){
   SFX.click();
@@ -1146,7 +1467,7 @@ function makeKaijuQ(){
   const others = shuffle(POOL.filter(x=>x.id!==m.id && x.emoji!==m.emoji)).slice(0,optCount()-1);
   const opts = shuffle([m,...others]).map(x=>({label:x.name, html:`<span>${x.name}</span>`, correct:x.id===m.id}));
   const hints=[...m.hints, `他在「${m.from}」的故事裡出現。`];
-  return { figure:`<div class="bigemoji">${m.emoji}</div>`, question:'這隻怪獸是誰呢？', hints, opts, speak:`這隻怪獸是誰呢？提示，${hints[0]}`, answer:m.name };
+  return { figure:`<div class="monfig">${monsterSVG(m,220)}</div>`, question:'這隻怪獸是誰呢？', hints, opts, speak:`這隻怪獸是誰呢？提示，${hints[0]}`, answer:m.name };
 }
 function makeMoveQ(){
   const all = ULTRAS.flatMap(u=>u.moves.filter(m=>m.kind!=='shield').map(m=>({...m, owner:u})));
@@ -1294,7 +1615,7 @@ function monsterAppear(){
   SFX.roar();
   setScreen(`${header()}
     <div class="card tf">
-      <div class="item shake" style="animation:shake .5s 3">${m.emoji}</div>
+      <div class="item mon shake" style="animation:shake .5s 3">${monsterSVG(m,200)}</div>
       <div class="call" style="color:#ff8a80">${m.cat==='boss'?'👑 超級大魔王':'怪獸'}「${m.name}」出現了！</div>
       <div style="font-size:20px">${m.desc}<br><small style="opacity:.8">出自：${m.from}</small></div>
       <div class="row">
@@ -1322,7 +1643,7 @@ function beginFight(){
         <div class="warn" id="warn">⚠️ 怪獸要攻擊了！快按 防禦！</div>
         <div class="hero" id="hero">${ultraSVG(u,300)}</div>
         <div class="beam" id="beam"></div>
-        <div class="monster" id="monster"><div class="memoji">${m.emoji}</div><div class="mname">${m.name}</div></div>
+        <div class="monster" id="monster"><div class="memoji">${monsterSVG(m,200)}</div><div class="mname">${m.name}</div></div>
       </div>
       <div class="msg" id="msg">戰鬥開始！用力攻擊怪獸！</div>
       <div class="energy" id="energy"><div class="ebar" id="ebar"></div><div class="lbl" id="elbl">能量 0 / 8</div></div>
@@ -1463,7 +1784,7 @@ function showDex(){
     <div class="card">
       <div class="question">📖 怪獸圖鑑 <small style="font-size:15px;opacity:.8;font-weight:700">（共 ${MONSTERS.length} 隻，點一隻看介紹）</small></div>
       ${MCATS.map(c=>{ const list=MONSTERS.filter(m=>m.cat===c.id); if(!list.length) return ''; return `<div class="era-title">${c.title}<span style="opacity:.7;font-size:14px;margin-left:8px">${list.length} 隻</span></div>
-      <div class="grid dex">${list.map(m=>`<div class="hero-card" onclick="showMonster('${m.id}')"><div class="dex-emoji">${m.emoji}</div><div>${m.name}</div><small>${m.from}</small></div>`).join('')}</div>`; }).join('')}
+      <div class="grid dex">${list.map(m=>`<div class="hero-card" onclick="showMonster('${m.id}')"><div class="dex-emoji">${monsterSVG(m,90)}</div><div>${m.name}</div><small>${m.from}</small></div>`).join('')}</div>`; }).join('')}
       <div class="row">${homeBtn()}</div>
     </div>`);
   say('怪獸圖鑑！點一隻怪獸看介紹。');
@@ -1473,7 +1794,7 @@ function showMonster(id){
   const m = MONSTERS.find(x=>x.id===id); const c=MCATS.find(x=>x.id===m.cat);
   setScreen(`${header()}
     <div class="card tf">
-      <div class="item" style="animation:none">${m.emoji}</div>
+      <div class="item mon" style="animation:none">${monsterSVG(m,240)}</div>
       <div class="call" style="color:${m.friend?'#5cf0a0':'#ff8a80'}">${m.name}</div>
       <div style="font-size:18px;opacity:.85">${c.title}　｜　出自：${m.from}　｜　體力：${'❤️'.repeat(Math.min(5,Math.ceil(m.hp/4)))}</div>
       <div style="font-size:20px;line-height:1.6;max-width:640px">${m.desc}<br>${m.hints.map(h=>`💡 ${h}`).join('<br>')}</div>
