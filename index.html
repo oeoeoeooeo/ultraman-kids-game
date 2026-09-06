@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%AD%90%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>超人力霸王 小英雄遊樂園 v1.8.0</title>
+<title>超人力霸王 小英雄遊樂園 v1.8.1</title>
 <style>
   :root{
     --bg1:#0b1033; --bg2:#1b2a6b; --card:#182452; --card2:#22347a;
@@ -778,7 +778,7 @@ const MONSTERS = [
 /* =====================================================================
    狀態、工具
    ===================================================================== */
-const VERSION = '1.8.0';
+const VERSION = '1.8.1';
 const state = {
   stars: parseInt(localStorage.getItem('ultra_stars')||'0',10),
   mode: localStorage.getItem('ultra_mode') || 'little',   // little=弟弟(3選項) big=哥哥(4選項)
@@ -1007,61 +1007,61 @@ const LOOKS = {
   // 超異象之謎 / 初代
   gomess:{type:'dino', c1:'#6b6b5a', c2:'#b8b09a', c3:'#3e3e34', eye:'#ffd23f', horns:1, spikes:false},
   litra:{type:'bird', c1:'#e0603a', c2:'#ffd28a', c3:'#7a2e14', eye:'#ffe66d', fire:true},
-  garamon:{type:'alien', head:'plain', c1:'#b3472f', c2:'#e8a06a', c3:'#7a2e14', eye:'#ffd23f', stripes:true},
-  kanegon:{type:'alien', head:'money', c1:'#c9a64a', c2:'#f3dd8a', c3:'#7a5a12', eye:'#fff'},
-  kemur:{type:'alien', head:'mask', c1:'#3b3b4a', c2:'#8a8aa0', c3:'#1e1e28', eye:'#ff9a3c', antenna:true},
-  ragon:{type:'alien', head:'plain', c1:'#2f6b5a', c2:'#7fc9a8', c3:'#1c4236', eye:'#ffe66d', teeth:true},
+  garamon:{type:'alien', head:'plain', c1:'#b3472f', c2:'#e8a06a', c3:'#7a2e14', eye:'#ffd23f', chest:'bumps'},
+  kanegon:{type:'alien', head:'money', c1:'#c9a64a', c2:'#f3dd8a', c3:'#7a5a12', eye:'#fff', chest:'coins'},
+  kemur:{type:'alien', head:'mask', c1:'#3b3b4a', c2:'#8a8aa0', c3:'#1e1e28', eye:'#ff9a3c', antenna:true, chest:'belly'},
+  ragon:{type:'alien', head:'plain', c1:'#2f6b5a', c2:'#7fc9a8', c3:'#1c4236', eye:'#ffe66d', teeth:true, chest:'scales'},
   peguila:{type:'bird', c1:'#4a6fa8', c2:'#cfe3ff', c3:'#1f3a66', eye:'#a8e6ff', horns:true},
   bemular:{type:'dino', c1:'#2f5f9e', c2:'#9ec4e8', c3:'#1a3a66', eye:'#ffd23f', spikes:true, arms:'claw'},
-  baltan:{type:'alien', head:'crab', c1:'#6b5a7a', c2:'#d9c9a8', c3:'#3a2f44', eye:'#ff3b3b', claws:true},
+  baltan:{type:'alien', head:'crab', c1:'#6b5a7a', c2:'#d9c9a8', c3:'#3a2f44', eye:'#ff3b3b', claws:true, chest:'ribs'},
   neronga:{type:'beast', c1:'#5a5a48', c2:'#a8a890', c3:'#2e2e24', eye:'#ffd23f', horns:2, hornColor:'#e8dcc0', spikes:false},
   greenmons:{type:'blob', c1:'#3f8a3a', c2:'#9ad46a', c3:'#245420', eye:'#ffe66d', tent:5, spikes:true, face:true},
   guesra:{type:'dino', c1:'#3a7a6a', c2:'#a8d8c8', c3:'#1c4a40', eye:'#ffd23f', spikes:true, horns:1},
   antlar:{type:'beast', c1:'#4a3a2a', c2:'#8a6a4a', c3:'#e8dcc0', eye:'#ffd23f', tusks:true, shell:true, spikes:false},
   redking:{type:'dino', c1:'#c9b48a', c2:'#f0e2c0', c3:'#8a6a3a', eye:'#ff3b3b', spikes:false, bulk:1.1},
-  pigmon:{type:'alien', head:'plain', c1:'#b3472f', c2:'#e8a06a', c3:'#7a2e14', eye:'#ffd23f', stripes:true},
+  pigmon:{type:'alien', head:'plain', c1:'#b3472f', c2:'#e8a06a', c3:'#7a2e14', eye:'#ffd23f', chest:'bumps'},
   gavora:{type:'dino', c1:'#8a7a4a', c2:'#d9c890', c3:'#4a3a12', eye:'#ff9a3c', plates:true, spikes:true},
-  jamila:{type:'alien', head:'plain', c1:'#7a6a4a', c2:'#a89a7a', c3:'#4a3e28', eye:'#ffe66d'},
+  jamila:{type:'alien', head:'plain', c1:'#7a6a4a', c2:'#a89a7a', c3:'#4a3e28', eye:'#ffe66d', chest:'cracks'},
   gomora:{type:'dino', c1:'#8a5a3a', c2:'#d9b48a', c3:'#5a3a1a', eye:'#ffd23f', horns:2, plates:true, tailSpike:true},
-  dada:{type:'alien', head:'three', c1:'#222', c2:'#f0f0f0', c3:'#111', eye:'#ff3b3b', stripes:true},
+  dada:{type:'alien', head:'three', c1:'#222', c2:'#f0f0f0', c3:'#111', eye:'#ff3b3b', chest:'bands'},
   goldon:{type:'beast', c1:'#c9a64a', c2:'#f3dd8a', c3:'#7a5a12', eye:'#ffd23f', horns:1, spikes:false},
-  mefilas:{type:'alien', head:'mask', c1:'#3a3a5a', c2:'#c9c9d9', c3:'#1e1e30', eye:'#ffd23f', cape:true},
+  mefilas:{type:'alien', head:'mask', c1:'#3a3a5a', c2:'#c9c9d9', c3:'#1e1e30', eye:'#ffd23f', cape:true, chest:'chevrons'},
   skydon:{type:'beast', c1:'#7a7a6a', c2:'#b8b8a8', c3:'#4a4a3a', eye:'#ffd23f', horns:2, spikes:false},
   zaragas:{type:'dino', c1:'#5a4a7a', c2:'#c9b8e8', c3:'#ffd23f', eye:'#ffe66d', spikes:true, plates:true},
   keylla:{type:'dino', c1:'#8a6a2a', c2:'#f3dd8a', c3:'#ffd23f', eye:'#ffffff', spikes:true, glow:true},
-  zetton:{type:'alien', head:'beetle', c1:'#1a1a1a', c2:'#333', c3:'#ffd23f', eye:'#ffd23f'},
-  alienzetton:{type:'alien', head:'mask', c1:'#4a3a5a', c2:'#a89ab8', c3:'#2a1e30', eye:'#ffd23f', antenna:true},
-  geronimon:{type:'alien', head:'bird', c1:'#8a3a2a', c2:'#ffd23f', c3:'#3a7ab8', eye:'#ffe66d'},
+  zetton:{type:'alien', head:'beetle', c1:'#1a1a1a', c2:'#333', c3:'#ffd23f', eye:'#ffd23f', chest:'zetton'},
+  alienzetton:{type:'alien', head:'mask', c1:'#4a3a5a', c2:'#a89ab8', c3:'#2a1e30', eye:'#ffd23f', antenna:true, chest:'net'},
+  geronimon:{type:'alien', head:'bird', c1:'#8a3a2a', c2:'#ffd23f', c3:'#3a7ab8', eye:'#ffe66d', chest:'feathers'},
   bullton:{type:'blob', rock:true, c1:'#5a6a7a', c2:'#a8b8c8', c3:'#2e3a48', eye:'#ffd23f'},
   telesdon:{type:'dino', c1:'#6a4a3a', c2:'#c99a7a', c3:'#3a2a1a', eye:'#ff9a3c', spikes:true, horns:1},
-  seabozu:{type:'alien', head:'skull', c1:'#e8e0d0', c2:'#f5f0e6', c3:'#8a8070', eye:'#000'},
-  zarab:{type:'alien', head:'mask', c1:'#5a4a3a', c2:'#c9b8a0', c3:'#3a2e24', eye:'#ffd23f', antenna:true},
+  seabozu:{type:'alien', head:'skull', c1:'#e8e0d0', c2:'#f5f0e6', c3:'#8a8070', eye:'#000', chest:'ribcage'},
+  zarab:{type:'alien', head:'mask', c1:'#5a4a3a', c2:'#c9b8a0', c3:'#3a2e24', eye:'#ffd23f', antenna:true, chest:'scales'},
   abolas:{type:'dino', c1:'#3a6ab8', c2:'#cfe3ff', c3:'#1e3a66', eye:'#ffd23f', spikes:true},
   banila:{type:'dino', c1:'#c93a2a', c2:'#ffb08a', c3:'#7a1e10', eye:'#ffd23f', spikes:true, horns:1},
   // 七號
   eleking:{type:'dino', c1:'#e8e8e8', c2:'#f8f8f8', c3:'#333', eye:'#ffd23f', antenna:true, eyeless:true, spikes:false, tailSpike:true},
   kingjoe:{type:'robot', c1:'#c9a64a', c2:'#f3dd8a', c3:'#5a4a2a', eye:'#ff3b3b'},
-  metron:{type:'alien', head:'dome', c1:'#c93a2a', c2:'#ffd23f', c3:'#7a1e10', eye:'#ffe66d'},
+  metron:{type:'alien', head:'dome', c1:'#c93a2a', c2:'#ffd23f', c3:'#7a1e10', eye:'#ffe66d', chest:'spots'},
   gubila:{type:'beast', c1:'#3a5a8a', c2:'#cfe3ff', c3:'#8a8a8a', eye:'#ffd23f', drill:true, spikes:false},
   windom:{type:'robot', c1:'#c9c9c9', c2:'#8a8a8a', c3:'#5a5a5a', eye:'#2ec4ff', horns:true},
-  miclas:{type:'alien', head:'plain', c1:'#c98a3a', c2:'#f3d9a8', c3:'#e8dcc0', eye:'#ffd23f', horns:2},
+  miclas:{type:'alien', head:'plain', c1:'#c98a3a', c2:'#f3d9a8', c3:'#e8dcc0', eye:'#ffd23f', horns:2, chest:'fur'},
   agira:{type:'dino', c1:'#6b8e4e', c2:'#c9d7a0', c3:'#3d5a2a', eye:'#ffd23f', horns:1, spikes:false},
-  guts:{type:'alien', head:'mask', c1:'#c9c9c9', c2:'#8a8a8a', c3:'#3a3a3a', eye:'#ff3b3b', antenna:true},
+  guts:{type:'alien', head:'mask', c1:'#c9c9c9', c2:'#8a8a8a', c3:'#3a3a3a', eye:'#ff3b3b', antenna:true, chest:'dots'},
   pandon:{type:'dino', c1:'#c94a2a', c2:'#ffd23f', c3:'#7a1e10', eye:'#ffe66d', horns:2, spikes:true},
   // 傑克 / 衛司 / 太郎 / 雷歐
   bemstar:{type:'bird', c1:'#5a7a3a', c2:'#ffd23f', c3:'#2e4a1a', eye:'#ff3b3b', horns:true},
   twintail:{type:'blob', c1:'#c94a3a', c2:'#ffd28a', c3:'#7a2e14', eye:'#ffd23f', tent:2, spikes:true, face:true},
   gudon:{type:'dino', c1:'#6a4a3a', c2:'#b89a7a', c3:'#3a2a1a', eye:'#ffd23f', spikes:true, arms:'claw'},
   blackking:{type:'dino', c1:'#2a2a2a', c2:'#6a6a6a', c3:'#ffd23f', eye:'#ff3b3b', horns:1, spikes:true, bulk:1.1},
-  knuckle:{type:'alien', head:'plain', c1:'#5a3a2a', c2:'#c9a68a', c3:'#2e1e14', eye:'#ff3b3b', horns:1},
-  verokron:{type:'alien', head:'plain', c1:'#7a3a5a', c2:'#e8a0c8', c3:'#3a1e30', eye:'#ffd23f', arms:'missile', horns:2},
-  baraba:{type:'alien', head:'demon', c1:'#c93a2a', c2:'#ffd23f', c3:'#5a5a5a', eye:'#ffe66d'},
-  yapool:{type:'alien', head:'demon', c1:'#5a2a6a', c2:'#c98ae8', c3:'#ff3b3b', eye:'#ff3b3b', cape:true},
+  knuckle:{type:'alien', head:'plain', c1:'#5a3a2a', c2:'#c9a68a', c3:'#2e1e14', eye:'#ff3b3b', horns:1, chest:'plates'},
+  verokron:{type:'alien', head:'plain', c1:'#7a3a5a', c2:'#e8a0c8', c3:'#3a1e30', eye:'#ffd23f', arms:'missile', horns:2, chest:'v'},
+  baraba:{type:'alien', head:'demon', c1:'#c93a2a', c2:'#ffd23f', c3:'#5a5a5a', eye:'#ffe66d', chest:'bands'},
+  yapool:{type:'alien', head:'demon', c1:'#5a2a6a', c2:'#c98ae8', c3:'#ff3b3b', eye:'#ff3b3b', cape:true, chest:'net'},
   astromons:{type:'dino', c1:'#3a6a4a', c2:'#ff6fb5', c3:'#1e3a28', eye:'#ffd23f', horns:1, spikes:true},
-  enmargo:{type:'alien', head:'demon', c1:'#c94a2a', c2:'#ffd23f', c3:'#3a3a3a', eye:'#ffe66d'},
+  enmargo:{type:'alien', head:'demon', c1:'#c94a2a', c2:'#ffd23f', c3:'#3a3a3a', eye:'#ffe66d', chest:'bellyface'},
   tyrant:{type:'dino', c1:'#5a3a6a', c2:'#c9a64a', c3:'#e8dcc0', eye:'#ff3b3b', horns:2, plates:true, spikes:true, tailSpike:true, arms:'claw', bulk:1.15},
   birdon:{type:'bird', c1:'#c93a2a', c2:'#ffd23f', c3:'#ff7a00', eye:'#ffe66d', fire:true, horns:true},
-  magma:{type:'alien', head:'plain', c1:'#c94a2a', c2:'#ffd28a', c3:'#7a1e10', eye:'#ffd23f', horns:2},
+  magma:{type:'alien', head:'plain', c1:'#c94a2a', c2:'#ffd28a', c3:'#7a1e10', eye:'#ffd23f', horns:2, chest:'plates'},
   nova:{type:'blob', c1:'#e03a3a', c2:'#ffd23f', c3:'#7a1010', eye:'#fff', tent:1, bigEye:true, face:true},
   silverbloome:{type:'blob', c1:'#c9c9d9', c2:'#e8e8f8', c3:'#8a8aa0', eye:'#ff3b3b', tent:8, eyes:0},
   // 迪卡 / 帝納 / 蓋亞 / 高斯
@@ -1070,13 +1070,13 @@ const LOOKS = {
   gazort:{type:'bird', c1:'#5a3a7a', c2:'#c9a0e8', c3:'#2e1e40', eye:'#ffd23f'},
   silvagon:{type:'beast', c1:'#c9c9c9', c2:'#e8e8e8', c3:'#5a5a5a', eye:'#ff3b3b', horns:2, spikes:true},
   goldras:{type:'beast', c1:'#c9a64a', c2:'#f3dd8a', c3:'#7a5a12', eye:'#ff3b3b', horns:2, spikes:true},
-  kyrieloid:{type:'alien', head:'demon', c1:'#c94a2a', c2:'#ff7a00', c3:'#ffd23f', eye:'#ffe66d', glow:true},
+  kyrieloid:{type:'alien', head:'demon', c1:'#c94a2a', c2:'#ff7a00', c3:'#ffd23f', eye:'#ffe66d', glow:true, chest:'flames'},
   gatanothor:{type:'blob', c1:'#3a2a5a', c2:'#8a5ab8', c3:'#1e1230', eye:'#ff3b3b', tent:9, spikes:true, face:true},
-  gregorl:{type:'alien', head:'plain', c1:'#3a5a8a', c2:'#c9c9c9', c3:'#1e3a66', eye:'#ffd23f'},
+  gregorl:{type:'alien', head:'plain', c1:'#3a5a8a', c2:'#c9c9c9', c3:'#1e3a66', eye:'#ffd23f', chest:'disc'},
   sphere:{type:'blob', orb:true, c1:'#3a8ab8', c2:'#a8e6ff', c3:'#1e4a66', eye:'#fff', glow:true},
   neodarambia:{type:'dino', c1:'#4a5a8a', c2:'#a8b8e8', c3:'#2e3a5a', eye:'#a8e6ff', spikes:true, plates:true},
   galberos:{type:'beast', c1:'#5a3a3a', c2:'#c98a8a', c3:'#2e1e1e', eye:'#ff3b3b', heads:3, mane:true, spikes:false},
-  zog:{type:'alien', head:'plain', c1:'#f0e6ff', c2:'#c9a0ff', c3:'#8a5ab8', eye:'#ff3b3b', cape:true, horns:2},
+  zog:{type:'alien', head:'plain', c1:'#f0e6ff', c2:'#c9a0ff', c3:'#8a5ab8', eye:'#ff3b3b', cape:true, horns:2, chest:'ornate'},
   chaosheader:{type:'blob', c1:'#3a3a5a', c2:'#8a5ab8', c3:'#ffd23f', eye:'#ffd23f', tent:4, spikes:true, glow:true, face:true},
   lidorias:{type:'bird', c1:'#8ac9ff', c2:'#ffffff', c3:'#ffd23f', eye:'#3a3a8a'},
   // 馬克斯 / 梅比斯
@@ -1084,20 +1084,20 @@ const LOOKS = {
   lagoras:{type:'dino', c1:'#4a8ab8', c2:'#cfe3ff', c3:'#ffffff', eye:'#a8e6ff', spikes:true, horns:2},
   dinozaur:{type:'dino', c1:'#5a6a4a', c2:'#a8b890', c3:'#2e3a24', eye:'#ff3b3b', spikes:true, plates:true},
   bogar:{type:'dino', c1:'#3a4a3a', c2:'#8a9a7a', c3:'#c94a2a', eye:'#ff3b3b', spikes:true, horns:2, arms:'claw'},
-  empera:{type:'alien', head:'demon', c1:'#1a1a2a', c2:'#3a3a5a', c3:'#c9a64a', eye:'#ff3b3b', cape:true},
+  empera:{type:'alien', head:'demon', c1:'#1a1a2a', c2:'#3a3a5a', c3:'#c9a64a', eye:'#ff3b3b', cape:true, chest:'armor'},
   // 傑洛 / 銀河 / 艾克斯
-  belial:{type:'alien', head:'ultra', c1:'#1a1a1a', c2:'#c93a2a', c3:'#c93a2a', eye:'#ff3b3b', stripes:true},
+  belial:{type:'alien', head:'ultra', c1:'#1a1a1a', c2:'#c93a2a', c3:'#c93a2a', eye:'#ff3b3b', chest:'ultra'},
   darklops:{type:'robot', c1:'#2a2a2a', c2:'#5a5a5a', c3:'#ff3b3b', eye:'#ff3b3b', horns:true, roundHead:true},
-  lugiel:{type:'alien', head:'demon', c1:'#1a1a2a', c2:'#5a3a8a', c3:'#8a5ab8', eye:'#8b5cf6', cape:true, glow:true},
+  lugiel:{type:'alien', head:'demon', c1:'#1a1a2a', c2:'#5a3a8a', c3:'#8a5ab8', eye:'#8b5cf6', cape:true, glow:true, chest:'core'},
   fiveking:{type:'beast', c1:'#5a4a3a', c2:'#c9a64a', c3:'#c94a2a', eye:'#ff3b3b', heads:3, horns:2, spikes:true},
-  greeza:{type:'alien', head:'plain', c1:'#3a2a4a', c2:'#8a5ab8', c3:'#2ec4ff', eye:'#2ec4ff', glow:true, antenna:true},
-  zaigorg:{type:'alien', head:'demon', c1:'#3a2a2a', c2:'#c94a2a', c3:'#ffd23f', eye:'#ff3b3b'},
+  greeza:{type:'alien', head:'plain', c1:'#3a2a4a', c2:'#8a5ab8', c3:'#2ec4ff', eye:'#2ec4ff', glow:true, antenna:true, chest:'void'},
+  zaigorg:{type:'alien', head:'demon', c1:'#3a2a2a', c2:'#c94a2a', c3:'#ffd23f', eye:'#ff3b3b', chest:'spikes'},
   cybergomora:{type:'dino', c1:'#3a4a8a', c2:'#2ec4ff', c3:'#8a5a3a', eye:'#2ec4ff', horns:2, plates:true, tailSpike:true, glow:true},
   // 歐布 / 捷德 / 羅布
-  magazetton:{type:'alien', head:'beetle', c1:'#1a1a1a', c2:'#333', c3:'#ff7a00', eye:'#ff7a00', glow:true},
+  magazetton:{type:'alien', head:'beetle', c1:'#1a1a1a', c2:'#333', c3:'#ff7a00', eye:'#ff7a00', glow:true, chest:'zetton'},
   magabasser:{type:'bird', c1:'#3a6a3a', c2:'#a8d890', c3:'#1e3a1e', eye:'#ffd23f', horns:true},
   magaorochi:{type:'snake', c1:'#4a3a2a', c2:'#c9a64a', c3:'#e8dcc0', eye:'#ff3b3b', horns:true, heads:1, wings:true},
-  juggler:{type:'alien', head:'plain', c1:'#2a2a3a', c2:'#8a5ab8', c3:'#5a3a8a', eye:'#ffd23f', horns:2},
+  juggler:{type:'alien', head:'plain', c1:'#2a2a3a', c2:'#8a5ab8', c3:'#5a3a8a', eye:'#ffd23f', horns:2, chest:'armor'},
   skullgomora:{type:'dino', c1:'#c9b48a', c2:'#8a5a3a', c3:'#3a2a1a', eye:'#ff3b3b', horns:2, plates:true, tailSpike:true, bulk:1.1},
   bezelb:{type:'bird', c1:'#c9a64a', c2:'#2a2a2a', c3:'#7a5a12', eye:'#ff3b3b'},
   grigioking:{type:'beast', c1:'#3a3a3a', c2:'#e8dcc0', c3:'#c94a2a', eye:'#ff3b3b', horns:2, spikes:true},
@@ -1107,7 +1107,7 @@ const LOOKS = {
   zandrias:{type:'bird', c1:'#5a3a5a', c2:'#e8a0c8', c3:'#3a1e3a', eye:'#ffd23f'},
   genegarg:{type:'dino', c1:'#3a5a8a', c2:'#cfe3ff', c3:'#1e3a5a', eye:'#ff3b3b', spikes:true, horns:1, arms:'claw'},
   sevenger:{type:'robot', c1:'#c9c9c9', c2:'#6a6a6a', c3:'#3a3a3a', eye:'#ffd23f', roundHead:true},
-  celebro:{type:'alien', head:'dome', c1:'#5a2a6a', c2:'#e8a0ff', c3:'#3a1e40', eye:'#ff3b3b'},
+  celebro:{type:'alien', head:'dome', c1:'#5a2a6a', c2:'#e8a0ff', c3:'#3a1e40', eye:'#ff3b3b', chest:'folds'},
   destrudos:{type:'dino', c1:'#2a2a3a', c2:'#5a5a7a', c3:'#ff3b3b', eye:'#ff3b3b', horns:2, plates:true, spikes:true, tailSpike:true, arms:'missile', bulk:1.2},
   golba:{type:'dino', c1:'#4a4a3a', c2:'#8a6ab8', c3:'#2e2e24', eye:'#ff3b3b', horns:2, plates:true, wings:true, bulk:1.1},
   megalothor:{type:'blob', c1:'#2a1a3a', c2:'#8a3ab8', c3:'#ff3b3b', eye:'#ff3b3b', tent:9, spikes:true, face:true, glow:true},
@@ -1139,6 +1139,39 @@ function monsterSVG(m, h=200, cls=''){
   const spikesSVG = (pts, col=c3) => pts.map(([x,y,s])=>`<path d="M${x-s} ${y} L${x} ${y-s*1.8} L${x+s} ${y} Z" fill="${col}" ${O}/>`).join('');
   const teethSVG = (x,y,n,dir=1,w=4) => Array.from({length:n},(_,i)=>`<path d="M${x+i*w} ${y} L${x+i*w+w/2} ${y+dir*6} L${x+i*w+w} ${y} Z" fill="#fff"/>`).join('');
   let body='';
+  // 人型宇宙人的胸口紋路（每隻不同）
+  const chestSVG = (kind)=>{
+    const S = `stroke="${c2}" stroke-linecap="round" fill="none"`;
+    switch(kind){
+      case 'ribs': return Array.from({length:6},(_,i)=>`<path d="M${78+i*9} 90 L${78+i*9} 138" ${S} stroke-width="3.5" opacity=".85"/>`).join('')+`<path d="M74 112 H126" ${S} stroke-width="3"/>`;
+      case 'bands': return `<path d="M72 96 L128 92 L128 104 L72 108 Z M72 116 L128 114 L128 122 L72 124 Z M72 132 L128 128 L128 140 L72 142 Z" fill="${c2}" opacity=".9"/>`;
+      case 'chevrons': return `<path d="M78 104 L100 90 L122 104 M78 120 L100 106 L122 120 M78 136 L100 122 L122 136" ${S} stroke-width="4"/>`;
+      case 'scales': return Array.from({length:5},(_,r)=>Array.from({length:6},(_,i)=>`<path d="M${74+i*9+(r%2?4:0)} ${94+r*10} a4.5 4.5 0 0 1 9 0" fill="none" stroke="${c3}" stroke-width="1.6" opacity=".8"/>`).join('')).join('');
+      case 'zetton': return Array.from({length:4},(_,i)=>`<rect x="82" y="${94+i*11}" width="36" height="5" rx="2" fill="${eye}" opacity=".9" filter="url(#${id}_g)"/>`).join('')+`<path d="M72 92 V146 M128 92 V146" stroke="${c2}" stroke-width="2"/>`;
+      case 'spots': return `<ellipse cx="86" cy="98" rx="7" ry="5" fill="${c2}"/><ellipse cx="112" cy="102" rx="8" ry="6" fill="${c2}"/><ellipse cx="96" cy="118" rx="9" ry="6" fill="${c2}"/><ellipse cx="118" cy="128" rx="6" ry="5" fill="${c2}"/><ellipse cx="82" cy="134" rx="6" ry="4" fill="${c2}"/>`;
+      case 'dots': return Array.from({length:4},(_,r)=>Array.from({length:5},(_,i)=>`<circle cx="${80+i*10}" cy="${96+r*12}" r="2.6" fill="${c3}" opacity=".9"/>`).join('')).join('');
+      case 'belly': return `<ellipse cx="100" cy="122" rx="24" ry="20" fill="${c2}" opacity=".9"/><path d="M82 116 Q100 112 118 116 M80 124 Q100 120 120 124 M82 132 Q100 128 118 132" fill="none" stroke="#000" stroke-opacity=".2" stroke-width="1.5"/>`;
+      case 'plates': return `<path d="M74 96 Q100 88 126 96 L124 106 Q100 100 76 106 Z M76 110 Q100 104 124 110 L122 120 Q100 114 78 120 Z M78 124 Q100 118 122 124 L120 134 Q100 128 80 134 Z" fill="${c3}" stroke="${c2}" stroke-width="1.5"/>`;
+      case 'flames': return `<path d="M76 146 C 80 126, 86 128, 84 110 C 92 124, 96 116, 94 100 C 102 118, 106 110, 108 96 C 112 118, 118 118, 116 104 C 122 126, 126 126, 124 146 Z" fill="${c2}" opacity=".9"/><path d="M86 146 C 88 132, 94 132, 94 120 C 100 132, 106 128, 106 116 C 112 132, 114 136, 114 146 Z" fill="${c3}" opacity=".9"/>`;
+      case 'disc': return `<circle cx="100" cy="112" r="16" fill="${c2}"/><circle cx="100" cy="112" r="9" fill="none" stroke="${c3}" stroke-width="3"/><path d="M100 90 V96 M100 128 V134 M78 112 H84 M116 112 H122" ${S} stroke-width="3"/>`;
+      case 'folds': return `<path d="M74 96 Q86 88 98 96 T122 96 M74 108 Q86 100 98 108 T122 108 M74 120 Q86 112 98 120 T122 120 M76 132 Q88 124 100 132 T124 132" ${S} stroke-width="3.5"/>`;
+      case 'armor': return `<path d="M76 90 Q100 84 124 90 L122 124 Q100 134 78 124 Z" fill="${c2}" stroke="${c3}" stroke-width="2"/><path d="M100 90 V128" stroke="${c3}" stroke-width="2"/><path d="M100 98 L110 110 L100 122 L90 110 Z" fill="${c3}"/><circle cx="82" cy="96" r="2" fill="${c3}"/><circle cx="118" cy="96" r="2" fill="${c3}"/>`;
+      case 'ultra': return `<path d="M76 92 L100 122 L124 92 M78 106 L100 134 L122 106" ${S} stroke-width="4"/><circle cx="100" cy="108" r="7" fill="#111" stroke="${c3}" stroke-width="2.5"/><circle cx="100" cy="108" r="3" fill="${eye}" filter="url(#${id}_g)"/>`;
+      case 'net': return `<path d="M72 92 L128 140 M72 108 L118 146 M88 92 L128 124 M104 92 L128 108 M128 92 L72 140 M128 108 L82 146 M112 92 L72 124 M96 92 L72 108" ${S} stroke-width="2" opacity=".85"/>`;
+      case 'ornate': return `<path d="M100 90 C 84 96, 84 116, 100 122 C 116 116, 116 96, 100 90 Z" fill="none" stroke="${c3}" stroke-width="3"/><path d="M78 100 C 86 108, 86 124, 78 134 M122 100 C 114 108, 114 124, 122 134 M90 140 Q100 132 110 140" fill="none" stroke="${c3}" stroke-width="2.5"/><circle cx="100" cy="106" r="4" fill="${c3}"/>`;
+      case 'core': return `<circle cx="100" cy="112" r="12" fill="${eye}" filter="url(#${id}_g)" opacity=".95"/><path d="M100 100 L96 88 M108 104 L120 96 M112 114 L126 118 M106 122 L112 136 M92 122 L84 136 M88 114 L74 116 M92 104 L82 94" stroke="${eye}" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>`;
+      case 'void': return `<circle cx="100" cy="114" r="16" fill="#050510"/><circle cx="100" cy="114" r="16" fill="none" stroke="${eye}" stroke-width="3" filter="url(#${id}_g)"/><circle cx="100" cy="114" r="22" fill="none" stroke="${eye}" stroke-width="1.2" opacity=".5"/>`;
+      case 'spikes': return Array.from({length:3},(_,r)=>Array.from({length:4},(_,i)=>`<path d="M${80+i*12+(r%2?6:0)} ${100+r*14} l4 -8 l4 8 z" fill="${c3}" stroke="#000" stroke-opacity=".3"/>`).join('')).join('');
+      case 'bellyface': return `<ellipse cx="100" cy="118" rx="22" ry="18" fill="${c2}" opacity=".95"/><circle cx="92" cy="112" r="3.5" fill="${eye}"/><circle cx="108" cy="112" r="3.5" fill="${eye}"/><path d="M86 124 Q100 132 114 124" fill="none" stroke="#000" stroke-opacity=".6" stroke-width="2.5"/>${Array.from({length:6},(_,i)=>`<path d="M${88+i*4} 124 l2 5 l2 -5 z" fill="#fff"/>`).join('')}`;
+      case 'fur': return Array.from({length:6},(_,r)=>Array.from({length:6},(_,i)=>`<path d="M${76+i*9+(r%2?4:0)} ${92+r*9} l3 6" stroke="${c3}" stroke-width="2" stroke-linecap="round" opacity=".8"/>`).join('')).join('');
+      case 'ribcage': return `<path d="M100 88 V140" stroke="${c2}" stroke-width="4"/>${Array.from({length:4},(_,i)=>`<path d="M100 ${96+i*11} Q84 ${98+i*11} 78 ${106+i*11} M100 ${96+i*11} Q116 ${98+i*11} 122 ${106+i*11}" ${S} stroke-width="3.5"/>`).join('')}`;
+      case 'cracks': return `<path d="M80 90 L88 104 L82 118 L92 132 L86 146 M104 90 L98 102 L108 116 L100 130 L106 144 M124 96 L114 108 L120 122 L112 136" stroke="${c3}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+      case 'feathers': return Array.from({length:3},(_,r)=>Array.from({length:5},(_,i)=>`<path d="M${80+i*10} ${96+r*14} q5 -8 10 0 q-5 10 -10 0 z" fill="${(i+r)%2?c2:c3}" stroke="#000" stroke-opacity=".25"/>`).join('')).join('');
+      case 'bumps': return Array.from({length:4},(_,r)=>Array.from({length:5},(_,i)=>`<circle cx="${80+i*10+(r%2?5:0)}" cy="${96+r*12}" r="4" fill="${c2}" stroke="#000" stroke-opacity=".25"/>`).join('')).join('');
+      case 'coins': return `<rect x="84" y="102" width="32" height="12" rx="3" fill="#222"/><text x="100" y="112" font-size="9" fill="#ffd23f" text-anchor="middle" font-weight="bold">$$$</text><circle cx="84" cy="128" r="5" fill="${c2}" stroke="#7a5a12"/><circle cx="100" cy="132" r="5" fill="${c2}" stroke="#7a5a12"/><circle cx="116" cy="128" r="5" fill="${c2}" stroke="#7a5a12"/>`;
+      default: return `<path d="M84 92 L100 128 L116 92 L112 92 L100 118 L88 92 Z" fill="${c2}" opacity=".9"/>`;
+    }
+  };
 
   if(type==='dino'){
     const bulk = L.bulk||1;
@@ -1175,8 +1208,8 @@ function monsterSVG(m, h=200, cls=''){
     body += `<path d="M78 196 L74 140 L88 138 L94 196 Z" fill="${c3}" ${O}/><path d="M122 196 L126 140 L112 138 L106 196 Z" fill="${c3}" ${O}/>`; // 腿
     body += `<rect x="70" y="192" width="28" height="10" rx="4" fill="${c3}" ${O}/><rect x="102" y="192" width="28" height="10" rx="4" fill="${c3}" ${O}/>`;
     body += `<path d="M70 82 C 84 74, 116 74, 130 82 L 128 146 L 72 146 Z" fill="${c1}" ${O}/>`; // 軀幹
-    body += `<path d="M84 92 L100 128 L116 92 L112 92 L100 118 L88 92 Z" fill="${c2}" opacity=".9"/>`;
-    if(L.stripes) body += `<path d="M76 100 H124 M78 116 H122 M80 132 H120" stroke="${c2}" stroke-width="4" opacity=".8"/>`;
+    body += chestSVG(L.chest || (L.stripes?'bands':'v'));
+    body += `<path d="M74 140 Q100 146 126 140" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="2"/>`; // 腰線
     // 手臂
     if(L.claws){
       body += `<path d="M72 88 L44 106 L30 96" fill="none" stroke="${c1}" stroke-width="10" stroke-linecap="round"/><path d="M128 88 L156 106 L170 96" fill="none" stroke="${c1}" stroke-width="10" stroke-linecap="round"/>`;
@@ -1225,7 +1258,6 @@ function monsterSVG(m, h=200, cls=''){
       if(L.antenna) body += `<path d="M100 48 L100 30" stroke="${c3}" stroke-width="4" stroke-linecap="round"/><circle cx="100" cy="28" r="5" fill="${eye}" filter="url(#${id}_g)"/>`;
     } else if(hd==='money'){ // 卡內貢
       body += `<path d="M74 92 C 66 50, 134 50, 126 92 Z" fill="${c1}" ${O}/><path d="M80 84 C 84 70, 116 70, 120 84 C 116 96, 84 96, 80 84 Z" fill="${c3}" ${O}/><path d="M86 84 H114" stroke="#000" stroke-opacity=".5" stroke-width="3"/>`;
-      body += `<rect x="84" y="102" width="32" height="12" rx="3" fill="#222"/><text x="100" y="112" font-size="9" fill="#ffd23f" text-anchor="middle" font-weight="bold">$</text>`;
       body += eyeSVG(88,64,5)+eyeSVG(112,64,5);
     } else { // plain
       body += `<path d="M80 86 C 76 56, 124 56, 120 86 L 118 92 L 82 92 Z" fill="${c1}" ${O}/>`;
