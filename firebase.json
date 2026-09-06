@@ -19,7 +19,7 @@
         ]
       },
       {
-        "source": "index.html",
+        "source": "/",
         "headers": [ { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" } ]
       }
     ]
